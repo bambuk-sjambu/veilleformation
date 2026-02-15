@@ -323,3 +323,6 @@ A discuter ensemble
 🔗 **Outil gratuit** : [SEO ROI Calculator](https://hi-commerce.fr/semantic-cluster/) — Analysez vos opportunités SEO, estimez le ROI de vos clusters sémantiques, comparez vos concurrents. 100% gratuit, sans inscription.
 
 **Offre White Label SEO** pour agences : [Voir le guide partenaire](https://daisy-sphere-f98.notion.site/White-Label-Semantic-Clusters-Partner-Onboarding-Guide-2ac1757e874580f4ba57c28a3c274e69) | **Offre Google Discover** disponible sur demande
+
+---
+**Publié sur :** [obsidiansja.vercel.app](https://obsidiansja.vercel.app/analyses-seo-conseils/reponse-brief-dms-menuiseries/)

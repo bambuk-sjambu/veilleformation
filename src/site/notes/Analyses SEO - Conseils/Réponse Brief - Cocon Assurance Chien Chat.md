@@ -80,16 +80,16 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ## 2. Proposition commerciale
 
-### Option A - Clean & Dirty (20 EUR HT / page)
+### Offre Premium (40 EUR HT / page)
 
-> Production IA optimisée, idéale pour couvrir rapidement le terrain sémantique.
+> Contenus approfondis, template sur-mesure, images premium. Le meilleur rapport qualité/impact pour un marché concurrentiel comme l'assurance animale.
 
 | Élément | Détail |
 |---|---|
 | **Nombre de pages** | 67 |
-| **Tarif unitaire** | 20 EUR HT |
-| **Total** | **1 340 EUR HT** |
-| **Délai** | 15-20 jours ouvrés |
+| **Tarif unitaire** | 40 EUR HT |
+| **Total** | **2 680 EUR HT** |
+| **Délai** | 20-30 jours ouvrés |
 
 **Inclus :**
 - Cadrage (questionnaire ligne éditoriale + méthode de déploiement)
@@ -101,58 +101,22 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 - Top 10 Google parcouru pour informations fraîches
 - Optimisation sémantique (topic modeling)
 - Maillage interne cocon + mise en gras + listes à puces
-- 1 image par page (MidJourney)
+- Images sur-mesure à la charte visuelle du site (non IA)
+  - Image à la une, graphiques/données, points clés, comparatifs, citations
+  - Images réutilisables pour posts réseaux sociaux
 - Contenus adaptés aux LLM : encadré résumé, auto-citations, FAQ IA
 - Données structurées JSON-LD (FAQ, HowTo, Article, Author)
 - Bloc auteur avec expertise + liens réseaux sociaux
 - Balises Title + Meta Description
 - Livraison HTML + déploiement CMS
-- Page Recap (sitemap du cocon)
-- **Suivi mensuel** : positions (Monitorank) + GSC (impressions, clics) + analyse et conseil
-
----
-
-### Option B - Premium (40 EUR HT / page) - **Recommandée**
-
-> Contenus approfondis, template sur-mesure, images premium. Le meilleur rapport qualité/impact pour un marché concurrentiel comme l'assurance animale.
-
-| Élément | Détail |
-|---|---|
-| **Nombre de pages** | 67 |
-| **Tarif unitaire** | 40 EUR HT |
-| **Total** | **2 680 EUR HT** |
-| **Délai** | 20-30 jours ouvrés |
-
-**Tout Clean & Dirty +**
-- Page Recap enrichie (pas un simple sitemap : sections, images, liens dynamiques)
+- Page Recap enrichie (sections, images, liens dynamiques)
 - Glossaire avec définitions et liens vers les pages du cocon
 - Template de page développé par notre équipe (Custom Post Type)
-- Images améliorées (non IA), sur-mesure à la charte visuelle du site
-  - Image à la une, graphiques/données, points clés, comparatifs, citations
-  - Images réutilisables pour posts réseaux sociaux
 - Vidéo intégrée si pertinent et disponible
 - Blocs "mise en avant" pour engagement
 - Quiz ou équivalent pour augmenter le temps sur page
 - Contenus approfondis et personnalisés pour les pages N1 et N2 (sous-piliers)
-
----
-
-### Option C - Ultra (200 EUR HT / page)
-
-> Rédaction experte par des spécialistes du secteur assurance/vétérinaire. Qualité journalistique.
-
-| Élément | Détail |
-|---|---|
-| **Nombre de pages** | 67 |
-| **Tarif unitaire** | 200 EUR HT |
-| **Total** | **13 400 EUR HT** |
-| **Délai** | 30-45 jours ouvrés |
-
-**Tout Premium +**
-- Rédacteurs experts dans le domaine (assurance, vétérinaire)
-- Recherches approfondies avec sources primaires
-- Rédaction de type journalistique
-- Relecture et correction incluses
+- **Suivi mensuel** : positions (Monitorank) + GSC (impressions, clics) + analyse et conseil
 
 ---
 
@@ -160,10 +124,9 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 | Option | Description |
 |---|---|
-| **Relecture/correction** (Clean & Premium) | Vérification ligne éditoriale, orthographe, cohérence - 1,5 EUR HT / 100 mots |
 | **Mise à jour régulière** | Rafraîchissement des contenus tous les 3, 6 ou 12 mois (dates, chiffres, sources, législation) |
 | **Contenus additionnels** | Études de cas, guides d'achat, contenus saisonniers, UGC |
-| **Netlinking** | Campagne de backlinks thématiques (3 vagues de 20 domaines) |
+| **Netlinking** | Campagne de backlinks thématiques (domaines référents qualifiés) |
 | **Plugin AI Search** | Tracking des bots IA, LLM traffic detection, Share of Voice dans les LLM |
 
 ---
@@ -180,20 +143,20 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ## 5. Pourquoi Hi-Commerce
 
-- **+1 500 cocons sémantiques** déployés depuis 2014
+- **+1 200 cocons sémantiques** déployés depuis 2014
 - **650+ clients** accompagnés en e-commerce et visibilité
 - **25 ans d'expérience** IT, e-commerce et SEO
 - **Formation SEO** : BootCamp Laurent Bourrelly (3 ans), Masterclass Frères Peyronnet
 - **Méthodologie éprouvée** : RAG anti-hallucination, topic modeling, enrichissement SERP temps réel
 - **Stack 2026** : contenus optimisés pour Google ET pour les LLM (ChatGPT, Perplexity, Gemini)
-- **78 recommandations LinkedIn** de clients satisfaits
+- **79 recommandations LinkedIn** de clients satisfaits
 - **Suivi inclus** : pas de "livrer et disparaître", accompagnement mensuel avec données GSC + positions
 
 ---
 
 ## 6. Prochaines étapes
 
-1. **Choix de l'offre** (Clean & Dirty / Premium / Ultra)
+1. **Validation de l'offre** Premium
 2. **Cadrage** : questionnaire ligne éditoriale + cibles + tone of voice
 3. **Mindmap du cocon** : architecture détaillée soumise à validation
 4. **Validation** puis lancement de la production
@@ -203,5 +166,5 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 ---
 
 *Stéphane Jambu - Hi-Commerce*
-*Consultant e-commerce & visibilité | +1 500 cocons sémantiques*
+*Consultant e-commerce & visibilité | +1 200 cocons sémantiques*
 *contact@hi-commerce.fr*

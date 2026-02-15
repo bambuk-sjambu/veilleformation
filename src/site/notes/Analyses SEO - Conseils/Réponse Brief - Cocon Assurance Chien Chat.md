@@ -221,3 +221,6 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 *Stéphane Jambu - Hi-Commerce*
 *Consultant e-commerce & visibilité | +1 200 cocons sémantiques*
 *contact@hi-commerce.fr*
+
+---
+**Publié sur :** [obsidiansja.vercel.app](https://obsidiansja.vercel.app/analyses-seo-conseils/reponse-brief-cocon-assurance-chien-chat/)

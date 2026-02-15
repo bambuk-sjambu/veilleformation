@@ -5,7 +5,7 @@
 # Ebauche de stratégie SEO pour DMS Menuiseries
 
 **Date :** 15/02/2026
-**Auteur :** Stéphane Jambu - Hi-Commerce
+**Auteur :** [Stéphane Jambu](https://www.linkedin.com/in/stephanejambu/) - Hi-Commerce
 **Objet :** Proposition de stratégie SEO et cocon sémantique pour DMS Menuiseries
 **Site analysé :** [dms-menuiseries.com](https://dms-menuiseries.com/)
 

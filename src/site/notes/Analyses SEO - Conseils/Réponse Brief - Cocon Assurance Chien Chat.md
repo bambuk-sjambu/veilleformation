@@ -5,7 +5,7 @@
 # Réponse au Brief SEO - Cocon Sémantique Assurance Chien & Chat
 
 **Date :** 13/02/2026
-**Auteur :** Stéphane Jambu - Hi-Commerce
+**Auteur :** [Stéphane Jambu](https://www.linkedin.com/in/stephanejambu/) - Hi-Commerce
 **Objet :** Proposition de réalisation du cocon sémantique "Assurance Chien & Chat"
 **Brief client :** [Lien Google Docs](https://docs.google.com/document/d/1-lFYJv0ekZJwYucg8SMD8s2IIfLwdNSbYv3vDBUOOis/edit?tab=t.0#heading=h.ndcffocw7iua)
 
@@ -194,21 +194,13 @@ Le netlinking consiste à obtenir des liens depuis d'autres sites vers le vôtre
 
 **Notre approche :**
 - Liens depuis des sites thématiques (animaux, santé animale, lifestyle)
-- Partenariats avec blogs de propriétaires, vétérinaires, éleveurs
-- Contenu partageable (infographies, études) pour liens naturels
-- **Aucun lien toxique** : nous travaillons uniquement avec des domaines qualifiés
+- **Liens de qualité** : domaines qualifiés, thématiques, avec autorité
 
 **Impact attendu :** +25 à +50 domaines référents en 6 mois, amélioration significative des positions sur les mots-clés cibles.
 
 ---
 
-### B. Stratégie de netlinking recommandée
-
-| Phase | Objectif | Action |
-|-------|----------|--------|
-| **Mois 1-2** | Foundation | Soumission annuaires thématiques, profils sociaux optimisés |
-| **Mois 2-3** | Thématique | Guest posts sur blogs animaux, partenariats vétérinaires/éleveurs |
-| **Mois 3+** | Autorité | Campagne de backlinks thématiques (domaines référents qualifiés) |
+### B. Netlinking
 
 **Recommandation pour ce projet :**
 - **Objectif RD (Referring Domains) :** 50-80 domaines dans les 6 mois
@@ -218,17 +210,18 @@ Le netlinking consiste à obtenir des liens depuis d'autres sites vers le vôtre
 ---
 
 ## 4. Proposition commerciale
+A discuter ensemble
 
-### Offre Premium (40 EUR HT / page)
+### Cocons sémantiques Premiums
 
 > Contenus approfondis, template sur-mesure, images premium. Le meilleur rapport qualité/impact pour un marché concurrentiel comme l'assurance animale.
 
 | Élément | Détail |
 |---|---|
-| **Nombre de pages** | 67 |
-| **Tarif unitaire** | 40 EUR HT |
-| **Total** | **2 680 EUR HT** |
-| **Délai** | 20-30 jours ouvrés |
+| **Contenus** | 67 pages × *** € = *** € HT |
+| **Netlinking** | 50-80 liens × *** € = *** € à *** € HT |
+| **Total projet** | *** € à *** € HT |
+| **Délai** | 3 à 6 semaines |
 
 **Inclus :**
 - Cadrage (questionnaire ligne éditoriale + méthode de déploiement)
@@ -265,7 +258,6 @@ Le netlinking consiste à obtenir des liens depuis d'autres sites vers le vôtre
 |---|---|
 | **Mise à jour régulière** | Rafraîchissement des contenus tous les 3, 6 ou 12 mois (dates, chiffres, sources, législation) |
 | **Contenus additionnels** | Études de cas, guides d'achat, contenus saisonniers, UGC |
-| **Netlinking** | Campagne de backlinks thématiques (domaines référents qualifiés) |
 | **Plugin AI Search** | **OFFERT** (valeur 500€) — Plugin WordPress propriétaire : tracking 17 bots IA (ChatGPT, Claude, Perplexity…), détection trafic LLM, Share of Voice, JSON-LD automatique, llms.txt, sitemap IA, audit E-E-A-T, alertes email, dashboard complet |
 
 ---
@@ -280,7 +272,7 @@ Le netlinking consiste à obtenir des liens depuis d'autres sites vers le vôtre
 
 ---
 
-## 7. Pourquoi Hi-Commerce
+## 7. Pourquoi Stéphane Jambu (Hi-Commerce)
 
 - **+1 200 cocons sémantiques** déployés depuis 2014
 - **650+ clients** accompagnés en e-commerce et visibilité
@@ -295,12 +287,13 @@ Le netlinking consiste à obtenir des liens depuis d'autres sites vers le vôtre
 
 ## 8. Prochaines étapes
 
-1. **Validation de l'offre** Premium
-2. **Cadrage** : questionnaire ligne éditoriale + cibles + tone of voice
-3. **Mindmap du cocon** : architecture détaillée soumise à validation
-4. **Validation** puis lancement de la production
-5. **Livraison** + déploiement CMS
-6. **Suivi mensuel** des performances
+1. **Visio** pour en discuter ensemble et répondre à vos questions
+2. **Validation de l'offre**
+3. **Cadrage** : questionnaire ligne éditoriale + cibles + tone of voice
+4. **Mindmap du cocon** : architecture détaillée soumise à validation
+5. **Validation** puis lancement de la production
+6. **Livraison** + déploiement CMS
+7. **Suivi mensuel** des performances
 
 ---
 

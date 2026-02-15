@@ -7,6 +7,7 @@
 **Date :** 13/02/2026
 **Auteur :** Stéphane Jambu - Hi-Commerce
 **Objet :** Proposition de réalisation du cocon sémantique "Assurance Chien & Chat"
+**Brief client :** [Lien Google Docs](https://docs.google.com/document/d/1-lFYJv0ekZJwYucg8SMD8s2IIfLwdNSbYv3vDBUOOis/edit?tab=t.0#heading=h.ndcffocw7iua)
 
 ---
 
@@ -78,7 +79,59 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 2. Proposition commerciale
+## 2. Analyse des intentions de recherche (Haloscan)
+
+### Volumes et concurrence par cluster
+
+| Mot-clé principal | Volume mensuel | CPC | Concurrence | KGR | Opportunité |
+|---|---|---|---|---|---|
+| **assurance chien** | 9 700 | 16,10 € | 93% | 0,53 | Élevée |
+| **assurance chat** | 5 800 | 14,65 € | 89% | 0,62 | Élevée |
+| **mutuelle chien** | 6 600 | 14,82 € | 93% | 0,26 | **Très forte** |
+| **assurance chien chat** | 400 | 11,54 € | 40% | - | Moyenne |
+| **comparatif assurance chien** | 400 | 13,93 € | 94% | 0,57 | Élevée |
+| **assurance chien prix** | 700 | 4,47 € | 79% | 0,69 | Forte |
+
+> **KGR (Keyword Golden Ratio)** < 0,25 = opportunité SEO significative. "Mutuelle chien" présente le meilleur ratio (0,26).
+
+### Intentions dominantes
+
+| Type de page | Intention | Volume estimé cluster |
+|---|---|---|
+| Page pilier "Assurance chien chat" | Transactionnelle + Informationnelle | ~2 500 |
+| Sous-pilier "Assurance chien" | Transactionnelle forte | ~25 000 |
+| Sous-pilier "Assurance chat" | Transactionnelle forte | ~15 000 |
+| Cluster Prix | Transactionnelle (comparaison) | ~5 000 |
+| Cluster Comparatif marques | Transactionnelle (conversion) | ~3 000 |
+| Guides & Information | Informationnelle | ~8 000 |
+
+### Questions clés à couvrir (PAA - People Also Ask)
+
+**Top questions identifiées :**
+1. "Quelle est la meilleure assurance pour chien/chat ?"
+2. "Comment choisir une assurance chien ?"
+3. "Pourquoi prendre une assurance pour son animal ?"
+4. "Quel budget pour un chien ?"
+5. "Comment fonctionne une mutuelle pour chien ?"
+6. "Où assurer son chien ?"
+
+> Ces questions doivent être intégrées dans les FAQ de chaque page pour maximiser les chances de featured snippets et de positionnement dans les AI Overviews.
+
+### Concurrents SERP principaux
+
+| Domaine | Score | Type |
+|---|---|---|
+| santevet.com | 57 | Assureur spécialisé |
+| macif.fr | 64 | Assureur généraliste |
+| carrefour.fr | 65 | Distributeur |
+| meilleurtaux.com | 58 | Comparateur |
+| lecomparateurassurance.com | 52 | Comparateur |
+
+> **Opportunité** : Les comparateurs dominent sur "comparatif" mais sont moins présents sur les requêtes informationnelles et guides pratiques.
+
+---
+
+## 3. Proposition commerciale
 
 ### Offre Premium (40 EUR HT / page)
 
@@ -120,18 +173,18 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 3. Options complémentaires (sur devis)
+## 4. Options complémentaires (sur devis)
 
 | Option | Description |
 |---|---|
 | **Mise à jour régulière** | Rafraîchissement des contenus tous les 3, 6 ou 12 mois (dates, chiffres, sources, législation) |
 | **Contenus additionnels** | Études de cas, guides d'achat, contenus saisonniers, UGC |
 | **Netlinking** | Campagne de backlinks thématiques (domaines référents qualifiés) |
-| **Plugin AI Search** | Tracking des bots IA, LLM traffic detection, Share of Voice dans les LLM |
+| **Plugin AI Search** | **OFFERT** (valeur 500€) — Plugin WordPress propriétaire : tracking 17 bots IA (ChatGPT, Claude, Perplexity…), détection trafic LLM, Share of Voice, JSON-LD automatique, llms.txt, sitemap IA, audit E-E-A-T, alertes email, dashboard complet |
 
 ---
 
-## 4. Conditions
+## 5. Conditions
 
 - **Acompte :** 30% à la commande
 - **Solde :** à la livraison
@@ -141,7 +194,7 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 5. Pourquoi Hi-Commerce
+## 6. Pourquoi Hi-Commerce
 
 - **+1 200 cocons sémantiques** déployés depuis 2014
 - **650+ clients** accompagnés en e-commerce et visibilité
@@ -154,7 +207,7 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 6. Prochaines étapes
+## 7. Prochaines étapes
 
 1. **Validation de l'offre** Premium
 2. **Cadrage** : questionnaire ligne éditoriale + cibles + tone of voice

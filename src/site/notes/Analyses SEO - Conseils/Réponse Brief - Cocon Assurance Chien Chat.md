@@ -131,7 +131,93 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 3. Proposition commerciale
+## 3. Stratégie SEO proposée
+
+Notre stratégie repose sur **deux piliers complémentaires** : le contenu (cocons sémantiques) et l'autorité (netlinking). Les deux sont nécessaires pour obtenir des résultats durables sur un marché aussi concurrentiel que l'assurance animale.
+
+---
+
+### Pourquoi des cocons sémantiques ?
+
+**Le problème actuel :** Sans architecture de contenu structurée, impossible de rivaliser avec les acteurs établis (Santevet, Macif, comparateurs). Chaque recherche spécifique (par race, pathologie, situation) mérite une page dédiée.
+
+**La solution - Cocons sémantiques :**
+
+Un cocon sémantique est une architecture de contenus organisée en silo thématique. Chaque page cible un groupe de mots-clés précis et renforce les autres pages par maillage interne.
+
+**Pourquoi ça fonctionne :**
+| Bénéfice | Explication |
+|----------|-------------|
+| **Couverture sémantique** | Chaque intention de recherche (race, pathologie, prix) a sa page dédiée |
+| **Autorité topique** | Google comprend que vous êtes expert sur l'assurance animale → meilleures positions |
+| **Maillage interne** | La page pilier transmet du "jus" SEO vers les pages produits |
+| **Conversion** | Une page "assurance chien bouledogue" convertit mieux qu'une page générique |
+| **Longue traîne** | Captation de trafic sur des requêtes précises à forte intention d'achat |
+
+**Impact attendu :** +1 500 à +3 000 visiteurs mensuels qualifiés après 6-12 mois.
+
+---
+
+### A. Architecture du cocon sémantique
+
+Reprise de l'architecture du brief, enrichie de nos recommandations (67 pages au total).
+
+**Optimisations structurelles :**
+| Recommandation | Impact |
+|---|---|
+| **Page Recap (sitemap du cocon)** liée depuis le footer | Maillage interne + crawl budget |
+| **Glossaire** : franchise, plafond, délai de carence, exclusion... | Autorité topique + featured snippets |
+| **Bloc auteur expert** (vétérinaire ou courtier) sur chaque page | E-E-A-T, confiance, signal LLM |
+| **JSON-LD sur toutes les pages** : FAQ, HowTo, Article, Author | Rich snippets + visibilité AI Search |
+| **Encadré résumé** en haut de chaque page (réponse directe à la question) | Optimisation LLM / AI Overviews |
+| **FAQ format LLM** en bas de page (auto-citations de la marque) | Positionnement dans ChatGPT, Perplexity, Gemini |
+| **Dates de publication et mise à jour visibles** | Freshness signal Google |
+
+---
+
+### Pourquoi le netlinking ?
+
+**Le problème :** L'assurance animale est un marché hyper-concurrentiel avec des CPC à 14-16€. Les acteurs historiques ont des milliers de backlinks. Sans autorité de domaine, même le meilleur contenu reste invisible.
+
+**La solution - Campagne de netlinking :**
+
+Le netlinking consiste à obtenir des liens depuis d'autres sites vers le vôtre. Ces liens sont des "votes de confiance" pour Google.
+
+**Pourquoi c'est indispensable :**
+| Bénéfice | Explication |
+|----------|-------------|
+| **Autorité de domaine** | Plus de liens qualités = meilleur classement global |
+| **Compétitivité** | Permet de rivaliser avec Santevet, Macif et les comparateurs |
+| **Indexation rapide** | Les bots découvrent vos nouvelles pages plus vite |
+| **Trafic de referral** | Visiteurs directs depuis les sites partenaires |
+| **E-E-A-T** | Les liens depuis des sources animales renforcent votre crédibilité |
+
+**Notre approche :**
+- Liens depuis des sites thématiques (animaux, santé animale, lifestyle)
+- Partenariats avec blogs de propriétaires, vétérinaires, éleveurs
+- Contenu partageable (infographies, études) pour liens naturels
+- **Aucun lien toxique** : nous travaillons uniquement avec des domaines qualifiés
+
+**Impact attendu :** +25 à +50 domaines référents en 6 mois, amélioration significative des positions sur les mots-clés cibles.
+
+---
+
+### B. Stratégie de netlinking recommandée
+
+| Phase | Objectif | Action |
+|-------|----------|--------|
+| **Mois 1-2** | Foundation | Soumission annuaires thématiques, profils sociaux optimisés |
+| **Mois 2-3** | Thématique | Guest posts sur blogs animaux, partenariats vétérinaires/éleveurs |
+| **Mois 3+** | Autorité | Campagne de backlinks thématiques (domaines référents qualifiés) |
+
+**Recommandation pour ce projet :**
+- **Objectif RD (Referring Domains) :** 50-80 domaines dans les 6 mois
+- **Focus qualité :** Sites à thématique animale ou finance/assurance
+- **Ancrages variés :** Mix de marque, URL nue et mots-clés naturels
+
+---
+
+## 4. Proposition commerciale
 
 ### Offre Premium (40 EUR HT / page)
 
@@ -173,7 +259,7 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 4. Options complémentaires (sur devis)
+## 5. Options complémentaires (sur devis)
 
 | Option | Description |
 |---|---|
@@ -184,7 +270,7 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 5. Conditions
+## 6. Conditions
 
 - **Acompte :** 30% à la commande
 - **Solde :** à la livraison
@@ -194,7 +280,7 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 6. Pourquoi Hi-Commerce
+## 7. Pourquoi Hi-Commerce
 
 - **+1 200 cocons sémantiques** déployés depuis 2014
 - **650+ clients** accompagnés en e-commerce et visibilité
@@ -207,7 +293,7 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 ---
 
-## 7. Prochaines étapes
+## 8. Prochaines étapes
 
 1. **Validation de l'offre** Premium
 2. **Cadrage** : questionnaire ligne éditoriale + cibles + tone of voice
@@ -220,7 +306,16 @@ Le brief est bien structuré et couvre les fondamentaux d'un cocon sémantique d
 
 *Stéphane Jambu - Hi-Commerce*
 *Consultant e-commerce & visibilité | +1 200 cocons sémantiques*
-*contact@hi-commerce.fr*
+
+📧 **hicommerceweb@gmail.com** | **angkorglab@gmail.com**
+📱 **France** : +33 6 35 26 16 44 (WhatsApp)
+📱 **Cambodge** : +855 9 63 02 45 41 (tel et SMS)
+
+🔗 **Outil gratuit** : [SEO ROI Calculator](https://hi-commerce.fr/semantic-cluster/) — Analysez vos opportunités SEO, estimez le ROI de vos clusters sémantiques, comparez vos concurrents. 100% gratuit, sans inscription.
+
+---
+
+**Offre White Label SEO** pour agences : [Voir le guide partenaire](https://daisy-sphere-f98.notion.site/White-Label-Semantic-Clusters-Partner-Onboarding-Guide-2ac1757e874580f4ba57c28a3c274e69) | **Offre Google Discover** disponible sur demande
 
 ---
 **Publié sur :** [obsidiansja.vercel.app](https://obsidiansja.vercel.app/analyses-seo-conseils/reponse-brief-cocon-assurance-chien-chat/)

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire — Veille Reglementaire Formation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f4f8; color: #1a202c; line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #1E40AF, #3B82F6); color: white; padding: 40px 30px; border-radius: 16px 16px 0 0; text-align: center; }
+        .header h1 { font-size: 1.6rem; margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; opacity: 0.9; }
+        .form-body { background: white; padding: 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .section { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
+        .section:last-of-type { border-bottom: none; }
+        .section-title { font-size: 1.15rem; font-weight: 700; color: #1E40AF; margin-bottom: 4px; }
+        .section-desc { font-size: 0.85rem; color: #64748b; margin-bottom: 16px; }
+        .question { margin-bottom: 20px; }
+        .question label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 6px; color: #334155; }
+        .question .hint { font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px; font-style: italic; }
+        input[type="text"], input[type="email"], input[type="number"], textarea, select {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px;
+            font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        textarea { resize: vertical; min-height: 80px; }
+        .radio-group, .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+        .radio-group label, .checkbox-group label { font-weight: 400; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+        .radio-group label:hover, .checkbox-group label:hover { border-color: #3B82F6; background: #eff6ff; }
+        .radio-group input:checked + span, .checkbox-group input:checked + span { color: #1E40AF; font-weight: 600; }
+        .radio-group input, .checkbox-group input { accent-color: #1E40AF; }
+        .scale-group { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+        .scale-group label { font-weight: 400; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; cursor: pointer; min-width: 44px; transition: all 0.2s; }
+        .scale-group label:hover { border-color: #3B82F6; background: #eff6ff; }
+        .scale-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
+        .required::after { content: " *"; color: #ef4444; }
+        .submit-btn { display: block; width: 100%; padding: 14px; background: #1E40AF; color: white; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 20px; }
+        .submit-btn:hover { background: #1e3a8a; }
+        .privacy { text-align: center; font-size: 0.78rem; color: #94a3b8; margin-top: 16px; }
+        .success-msg { display: none; text-align: center; padding: 60px 20px; }
+        .success-msg h2 { color: #10b981; margin-bottom: 12px; }
+        .badge { display: inline-block; background: #FEF3C7; color: #92400E; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 4px; }
+        @media (max-width: 600px) { .container { padding: 10px; } .header { padding: 28px 20px; } .form-body { padding: 20px; } .radio-group, .checkbox-group { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Questionnaire — Veille Reglementaire Formation</h1>
+            <p>Aidez-nous a creer l'outil de veille ideal pour les organismes de formation.<br>Temps estime : 10-15 minutes. Vos reponses sont confidentielles.</p>
+        </div>
+        <div class="form-body" id="formContainer">
+            <form id="questionnaire" action="https://formsubmit.co/stephane@sja.digital" method="POST">
+                <!-- FormSubmit config -->
+                <input type="hidden" name="_subject" value="Questionnaire VeilleFormation - Nouvelle reponse">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_next" value="">
+                <input type="text" name="_honey" style="display:none">
+
+                <!-- BLOC A -->
+                <div class="section">
+                    <div class="section-title">A — Votre organisme de formation</div>
+                    <div class="section-desc">Quelques informations pour comprendre votre contexte.</div>
+
+                    <div class="question">
+                        <label class="required">A1. Nom de votre organisme et annee de creation</label>
+                        <input type="text" name="a1_organisme" required placeholder="Ex: FormaPro, cree en 2018">
+                    </div>
+                    <div class="question">
+                        <label class="required">A2. Combien de personnes dans votre equipe ? (formateurs + admin)</label>
+                        <input type="text" name="a2_taille" required placeholder="Ex: 3 formateurs + 1 assistante">
+                    </div>
+                    <div class="question">
+                        <label class="required">A3. Quels sont vos domaines de formation principaux ?</label>
+                        <textarea name="a3_domaines" required placeholder="Ex: Management, RH, securite au travail, bureautique..."></textarea>
+                    </div>
+                    <div class="question">
+                        <label class="required">A4. Depuis quand etes-vous certifie Qualiopi ? Prochain audit prevu ?</label>
+                        <input type="text" name="a4_qualiopi" required placeholder="Ex: Certifie depuis 2022, prochain audit en octobre 2026">
+                    </div>
+                    <div class="question">
+                        <label>A5. Sur quelle(s) region(s) travaillez-vous ?</label>
+                        <input type="text" name="a5_regions" placeholder="Ex: Ile-de-France + Hauts-de-France">
+                    </div>
+                    <div class="question">
+                        <label>A6. Quelle part de votre CA vient de financements publics/OPCO ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="a6_ca_public" value="0-25"><span>0-25%</span></label>
+                            <label><input type="radio" name="a6_ca_public" value="25-50"><span>25-50%</span></label>
+                            <label><input type="radio" name="a6_ca_public" value="50-75"><span>50-75%</span></label>
+                            <label><input type="radio" name="a6_ca_public" value="75-100"><span>75-100%</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOC B -->
+                <div class="section">
+                    <div class="section-title">B — Votre veille reglementaire aujourd'hui</div>
+                    <div class="section-desc">Comment gerez-vous la veille au quotidien ? Soyez aussi concret que possible.</div>
+
+                    <div class="question">
+                        <label class="required">B1. Comment faites-vous votre veille reglementaire concretement ? Decrivez votre processus.</label>
+                        <div class="hint">Par exemple : "Je lis des newsletters, je consulte Legifrance, je sauvegarde des articles dans un dossier..."</div>
+                        <textarea name="b1_processus" required rows="4"></textarea>
+                    </div>
+                    <div class="question">
+                        <label class="required">B2. Qui s'en occupe ? C'est son role principal ou c'est "en plus" ?</label>
+                        <textarea name="b2_qui" required placeholder="Ex: C'est moi, en plus de tout le reste / Notre assistante qualite y consacre 1 jour/mois"></textarea>
+                    </div>
+                    <div class="question">
+                        <label class="required">B3. Combien de temps par mois consacrez-vous a la veille ? (en heures)</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="b3_temps" value="0-1h" required><span>Moins d'1h</span></label>
+                            <label><input type="radio" name="b3_temps" value="1-3h"><span>1 a 3h</span></label>
+                            <label><input type="radio" name="b3_temps" value="3-5h"><span>3 a 5h</span></label>
+                            <label><input type="radio" name="b3_temps" value="5-10h"><span>5 a 10h</span></label>
+                            <label><input type="radio" name="b3_temps" value="10h+"><span>Plus de 10h</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label class="required">B4. Quelles sources consultez-vous ?</label>
+                        <div class="hint">Cochez tout ce qui s'applique.</div>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="b4_sources" value="legifrance"><span>Legifrance</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="centre_inffo"><span>Centre Inffo</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="newsletters"><span>Newsletters</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="google"><span>Google</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="facebook"><span>Groupes Facebook</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="linkedin"><span>LinkedIn</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="opco"><span>Site OPCO</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="federation"><span>Federation (FFP, Synofdes)</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="outil_paye"><span>Outil paye (Veille Formation, Digiforma...)</span></label>
+                            <label><input type="checkbox" name="b4_sources" value="rien"><span>Rien / pas de veille structuree</span></label>
+                        </div>
+                        <input type="text" name="b4_sources_autre" placeholder="Autre source ? Precisez..." style="margin-top: 8px;">
+                    </div>
+                    <div class="question">
+                        <label>B5. Avez-vous deja rate un texte important ? Quelles consequences ?</label>
+                        <textarea name="b5_rate" placeholder="Ex: Oui, on n'avait pas vu le changement sur les certifications RS, on a du refaire notre catalogue en urgence"></textarea>
+                    </div>
+                    <div class="question">
+                        <label>B6. Comment archivez-vous votre veille ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="b6_archivage" value="classeur_papier"><span>Classeur papier</span></label>
+                            <label><input type="radio" name="b6_archivage" value="dossier_ordi"><span>Dossier sur l'ordinateur</span></label>
+                            <label><input type="radio" name="b6_archivage" value="excel"><span>Tableau Excel</span></label>
+                            <label><input type="radio" name="b6_archivage" value="outil_dedie"><span>Outil dedie</span></label>
+                            <label><input type="radio" name="b6_archivage" value="email"><span>Emails sauvegardes</span></label>
+                            <label><input type="radio" name="b6_archivage" value="rien"><span>Pas d'archivage</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label class="required">B7. Sur une echelle de 1 a 5, a quel point la veille est penible pour vous ?</label>
+                        <div class="scale-group">
+                            <label><input type="radio" name="b7_douleur" value="1" required><span>1</span></label>
+                            <label><input type="radio" name="b7_douleur" value="2"><span>2</span></label>
+                            <label><input type="radio" name="b7_douleur" value="3"><span>3</span></label>
+                            <label><input type="radio" name="b7_douleur" value="4"><span>4</span></label>
+                            <label><input type="radio" name="b7_douleur" value="5"><span>5</span></label>
+                        </div>
+                        <div class="scale-labels"><span>Pas penible du tout</span><span>Tres penible</span></div>
+                    </div>
+                </div>
+
+                <!-- BLOC C -->
+                <div class="section">
+                    <div class="section-title">C — Votre experience audit Qualiopi</div>
+                    <div class="section-desc">Votre vecu concret lors des audits, specifiquement sur les indicateurs 23 a 26.</div>
+
+                    <div class="question">
+                        <label class="required">C1. Racontez votre dernier audit : comment ca s'est passe sur les indicateurs 23 a 26 (veille) ?</label>
+                        <textarea name="c1_audit" required rows="4" placeholder="Ex: L'auditeur a demande notre dossier de veille, on avait imprime quelques articles..."></textarea>
+                    </div>
+                    <div class="question">
+                        <label>C2. Qu'est-ce que l'auditeur a demande comme preuves de veille ?</label>
+                        <textarea name="c2_preuves" placeholder="Ex: Des traces datees de lecture, un tableau de suivi, des comptes-rendus de reunions..."></textarea>
+                    </div>
+                    <div class="question">
+                        <label>C3. Avez-vous eu des remarques ou non-conformites sur la veille ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="c3_nc" value="non_conformite_majeure"><span>Non-conformite majeure</span></label>
+                            <label><input type="radio" name="c3_nc" value="non_conformite_mineure"><span>Non-conformite mineure</span></label>
+                            <label><input type="radio" name="c3_nc" value="remarque"><span>Remarque / point d'amelioration</span></label>
+                            <label><input type="radio" name="c3_nc" value="ras"><span>Aucun probleme</span></label>
+                            <label><input type="radio" name="c3_nc" value="pas_encore"><span>Pas encore audite</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>C4. Combien de temps avez-vous passe a preparer le dossier veille avant l'audit ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="c4_prep" value="0"><span>Rien (j'ai improvise)</span></label>
+                            <label><input type="radio" name="c4_prep" value="1-2h"><span>1-2 heures</span></label>
+                            <label><input type="radio" name="c4_prep" value="demi-journee"><span>Une demi-journee</span></label>
+                            <label><input type="radio" name="c4_prep" value="1-2j"><span>1-2 jours</span></label>
+                            <label><input type="radio" name="c4_prep" value="plus"><span>Plus de 2 jours</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>C5. Si un outil generait automatiquement un PDF de preuve de veille pour l'audit, ca vaudrait quoi pour vous ?</label>
+                        <textarea name="c5_valeur_pdf" placeholder="Ex: Ca serait genial, ca m'enleverait un stress enorme / Bof, l'audit c'est pas si grave"></textarea>
+                    </div>
+                </div>
+
+                <!-- BLOC D -->
+                <div class="section">
+                    <div class="section-title">D — Appels d'offres formation</div>
+                    <div class="section-desc">Votre rapport aux marches publics et appels d'offres.</div>
+
+                    <div class="question">
+                        <label class="required">D1. Repondez-vous a des appels d'offres publics ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="d1_ao" value="jamais" required><span>Jamais</span></label>
+                            <label><input type="radio" name="d1_ao" value="rarement"><span>Rarement (1-2/an)</span></label>
+                            <label><input type="radio" name="d1_ao" value="regulierement"><span>Regulierement (3-10/an)</span></label>
+                            <label><input type="radio" name="d1_ao" value="beaucoup"><span>Beaucoup (10+/an)</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>D2. Comment trouvez-vous les AO aujourd'hui ?</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="d2_sources_ao" value="boamp"><span>BOAMP</span></label>
+                            <label><input type="checkbox" name="d2_sources_ao" value="opco"><span>OPCO</span></label>
+                            <label><input type="checkbox" name="d2_sources_ao" value="france_travail"><span>France Travail</span></label>
+                            <label><input type="checkbox" name="d2_sources_ao" value="region"><span>Conseil Regional</span></label>
+                            <label><input type="checkbox" name="d2_sources_ao" value="bouche_oreille"><span>Bouche-a-oreille</span></label>
+                            <label><input type="checkbox" name="d2_sources_ao" value="agregateur"><span>Agregateur (marche-public.fr...)</span></label>
+                            <label><input type="checkbox" name="d2_sources_ao" value="pas_cherche"><span>Je ne cherche pas d'AO</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>D3. Avez-vous deja rate un AO interessant parce que vous l'avez vu trop tard ?</label>
+                        <textarea name="d3_rate_ao" placeholder="Ex: Oui, un marche regional a 50K, on l'a vu 2 jours avant la deadline, impossible de repondre"></textarea>
+                    </div>
+                    <div class="question">
+                        <label>D4. Si vous receviez chaque semaine les AO pertinents pour vous, ca changerait quoi ?</label>
+                        <textarea name="d4_impact_ao" placeholder="Ex: Ca pourrait generer 30% de CA en plus / Ca ne changerait pas grand chose"></textarea>
+                    </div>
+                </div>
+
+                <!-- BLOC E -->
+                <div class="section">
+                    <div class="section-title">E — Outils et budget</div>
+                    <div class="section-desc">Ce que vous utilisez et depensez aujourd'hui.</div>
+
+                    <div class="question">
+                        <label>E1. Quels outils numeriques utilisez-vous pour votre gestion ?</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="e1_outils" value="digiforma"><span>Digiforma</span></label>
+                            <label><input type="checkbox" name="e1_outils" value="dendreo"><span>Dendreo</span></label>
+                            <label><input type="checkbox" name="e1_outils" value="queoval"><span>Queoval</span></label>
+                            <label><input type="checkbox" name="e1_outils" value="ypareo"><span>Ypareo</span></label>
+                            <label><input type="checkbox" name="e1_outils" value="excel"><span>Excel / Google Sheets</span></label>
+                            <label><input type="checkbox" name="e1_outils" value="autre"><span>Autre</span></label>
+                        </div>
+                        <input type="text" name="e1_outils_autre" placeholder="Si autre, precisez..." style="margin-top: 8px;">
+                    </div>
+                    <div class="question">
+                        <label>E2. Avez-vous deja teste un service de veille payant ? Lequel ? Votre avis ?</label>
+                        <textarea name="e2_veille_payante" placeholder="Ex: Oui, Veille Formation pendant 3 mois, bien mais trop cher pour ce que c'est / Non jamais"></textarea>
+                    </div>
+                    <div class="question">
+                        <label>E3. Pour un outil qui fait veille + AO + preuve audit automatiquement, quel budget mensuel ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="e3_budget" value="gratuit_only"><span>Gratuit uniquement</span></label>
+                            <label><input type="radio" name="e3_budget" value="5-15"><span>5-15 EUR/mois</span></label>
+                            <label><input type="radio" name="e3_budget" value="15-30"><span>15-30 EUR/mois</span></label>
+                            <label><input type="radio" name="e3_budget" value="30-50"><span>30-50 EUR/mois</span></label>
+                            <label><input type="radio" name="e3_budget" value="50-100"><span>50-100 EUR/mois</span></label>
+                            <label><input type="radio" name="e3_budget" value="100+"><span>100+ EUR/mois</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>E4. Qu'est-ce qui vous ferait essayer un nouvel outil ? Et qu'est-ce qui vous ferait arreter ?</label>
+                        <textarea name="e4_adoption" placeholder="Essayer : gratuit au debut, recommandation d'un collegue... / Arreter : trop complique, pas pertinent..."></textarea>
+                    </div>
+                </div>
+
+                <!-- BLOC F -->
+                <div class="section">
+                    <div class="section-title">F — Vos priorites</div>
+                    <div class="section-desc">Ce qui compte le plus pour vous — ca nous aide a construire la bonne chose en premier.</div>
+
+                    <div class="question">
+                        <label class="required">F1. Si vous ne pouviez choisir qu'UNE chose, ce serait ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="f1_priorite" value="resume_reglementaire" required><span>Un resume hebdo des textes reglementaires</span></label>
+                            <label><input type="radio" name="f1_priorite" value="ao_filtres"><span>Les AO formation filtres pour moi</span></label>
+                            <label><input type="radio" name="f1_priorite" value="preuve_audit"><span>Un document de preuve pour l'audit Qualiopi</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>F2. Quel format preferez-vous ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="f2_format" value="email"><span>Newsletter par email</span></label>
+                            <label><input type="radio" name="f2_format" value="dashboard"><span>Dashboard web (site)</span></label>
+                            <label><input type="radio" name="f2_format" value="les_deux"><span>Les deux</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>F3. A quelle frequence souhaitez-vous recevoir l'info ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="f3_frequence" value="quotidien"><span>Tous les jours</span></label>
+                            <label><input type="radio" name="f3_frequence" value="hebdo"><span>1 fois par semaine</span></label>
+                            <label><input type="radio" name="f3_frequence" value="bimensuel"><span>2 fois par mois</span></label>
+                            <label><input type="radio" name="f3_frequence" value="mensuel"><span>1 fois par mois</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label>F4. Y a-t-il des sujets de veille qui vous manquent et qu'aucun outil ne couvre ?</label>
+                        <textarea name="f4_manque" placeholder="Ex: La veille sur les financements OPCO par secteur, les changements de referentiels..."></textarea>
+                    </div>
+                    <div class="question">
+                        <label>F5. Combien d'autres OF connaissez-vous qui galeraient aussi avec la veille ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="f5_referral" value="0"><span>Aucun</span></label>
+                            <label><input type="radio" name="f5_referral" value="1-3"><span>1-3</span></label>
+                            <label><input type="radio" name="f5_referral" value="4-10"><span>4-10</span></label>
+                            <label><input type="radio" name="f5_referral" value="10+"><span>Plus de 10</span></label>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <label class="required">F6. Si on lance une newsletter gratuite sur la veille formation la semaine prochaine, vous inscririez-vous ?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="f6_inscription" value="oui_certain" required><span>Oui, sans hesiter</span></label>
+                            <label><input type="radio" name="f6_inscription" value="probable"><span>Probablement</span></label>
+                            <label><input type="radio" name="f6_inscription" value="peut_etre"><span>Peut-etre</span></label>
+                            <label><input type="radio" name="f6_inscription" value="non"><span>Non</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOC G — Bonus ecrans concurrent -->
+                <div class="section">
+                    <div class="section-title">G — Bonus <span class="badge">Optionnel</span></div>
+                    <div class="section-desc">Si vous utilisez un outil de veille (Veille Formation, Digiforma Veille, autre), vos retours detailles nous seraient precieux.</div>
+
+                    <div class="question">
+                        <label>G1. Quel outil de veille utilisez-vous actuellement ?</label>
+                        <input type="text" name="g1_outil" placeholder="Ex: Veille Formation, Digiforma Veille, autre...">
+                    </div>
+                    <div class="question">
+                        <label>G2. Qu'est-ce qui marche bien dans cet outil ?</label>
+                        <textarea name="g2_points_forts" placeholder="Ex: Les alertes AO sont rapides, le contenu est pertinent..."></textarea>
+                    </div>
+                    <div class="question">
+                        <label>G3. Qu'est-ce qui vous frustre ou manque ?</label>
+                        <textarea name="g3_frustrations" placeholder="Ex: Trop cher, pas assez personnalise, interface datee, pas de preuve audit..."></textarea>
+                    </div>
+                    <div class="question">
+                        <label>G4. Seriez-vous d'accord pour nous envoyer quelques screenshots de l'interface ?</label>
+                        <div class="hint">Cela nous aiderait enormement a comprendre ce qui existe. Vous pouvez les envoyer par email a stephane@sja.digital</div>
+                        <div class="radio-group">
+                            <label><input type="radio" name="g4_screenshots" value="oui"><span>Oui, pas de probleme</span></label>
+                            <label><input type="radio" name="g4_screenshots" value="a_voir"><span>Peut-etre, j'en parle a mon responsable</span></label>
+                            <label><input type="radio" name="g4_screenshots" value="non"><span>Non, je prefere pas</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="section">
+                    <div class="section-title">Pour vous recontacter</div>
+                    <div class="question">
+                        <label>Votre prenom</label>
+                        <input type="text" name="prenom" placeholder="Prenom">
+                    </div>
+                    <div class="question">
+                        <label>Votre email (pour recevoir la newsletter en avant-premiere)</label>
+                        <input type="email" name="email" placeholder="email@example.com">
+                    </div>
+                    <div class="question">
+                        <label>Un commentaire, une remarque, quelque chose qu'on n'a pas demande ?</label>
+                        <textarea name="commentaire_libre" placeholder="Parlez librement..."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Envoyer mes reponses</button>
+                <p class="privacy">Vos reponses sont confidentielles et utilisees uniquement pour concevoir l'outil. Aucune donnee n'est revendue.</p>
+            </form>
+        </div>
+
+        <div class="success-msg" id="successMsg">
+            <h2>Merci !</h2>
+            <p>Vos reponses ont bien ete envoyees. Elles vont nous aider enormement a construire le bon outil.</p>
+            <p style="margin-top: 16px; color: #64748b;">Vous recevrez la newsletter en avant-premiere des qu'elle sera prete.</p>
+        </div>
+    </div>
+</body>
+</html>

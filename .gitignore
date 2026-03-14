@@ -1,13 +1,46 @@
-node_modules
-dist
-netlify/functions/search/data.json
-netlify/functions/search/index.json
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Build outputs
+dist/
+.cache/
+_site/
+
+# Database
+*.db
+data/*.db
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# OS
+**/.DS_Store
+
+# Netlify / Vercel
+.netlify/
+.vercel/
+
+# Old Eleventy files
 src/site/styles/theme.*.css
 src/site/styles/_theme.*.css
-# Local Netlify folder
-.netlify
-.idea/
-.vercel
-.cache
-_site/
-**/.DS_Store
+netlify/functions/search/data.json
+netlify/functions/search/index.json
+.venv/
+__pycache__/
+data/*.db*

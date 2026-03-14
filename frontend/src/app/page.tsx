@@ -598,14 +598,11 @@ function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
           <p>&copy; 2026 VeilleFormation.fr &mdash; SJA Digital</p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-white transition-colors">
+            <Link href="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales
             </Link>
-            <Link href="#" className="hover:text-white transition-colors">
+            <Link href="/confidentialite" className="hover:text-white transition-colors">
               Confidentialité
-            </Link>
-            <Link href="#" className="hover:text-white transition-colors">
-              CGU
             </Link>
           </div>
         </div>

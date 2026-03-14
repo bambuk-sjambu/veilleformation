@@ -5,12 +5,17 @@ Filters for CPV 80500000 (formation professionnelle) and related keywords.
 """
 
 import re
+import time
 from datetime import datetime, timedelta
 from typing import Optional
 
 import requests
 
 from collectors.base import BaseCollector
+
+# Retry configuration
+RETRY_DELAYS = [30, 60, 120]  # Exponential backoff in seconds
+MAX_CONSECUTIVE_FAILURES = 3  # Alert threshold
 
 
 # BOAMP OpenDataSoft API endpoint
@@ -132,6 +137,34 @@ class BOAMPCollector(BaseCollector):
             "cpv_code": cpv,
         }
 
+    def _fetch_with_retry(self, params: dict) -> Optional[dict]:
+        """Fetch API with exponential backoff retry.
+
+        Args:
+            params: Query parameters for the API.
+
+        Returns:
+            JSON response dict or None if all retries failed.
+        """
+        last_error = None
+
+        for attempt, delay in enumerate(RETRY_DELAYS):
+            try:
+                response = requests.get(API_URL, params=params, timeout=30)
+                response.raise_for_status()
+                return response.json()
+            except requests.RequestException as e:
+                last_error = e
+                self.logger.warning(
+                    f"BOAMP tentative {attempt + 1}/{len(RETRY_DELAYS)} echouee: {e}"
+                )
+                if attempt < len(RETRY_DELAYS) - 1:
+                    self.logger.info(f"BOAMP retry dans {delay}s...")
+                    time.sleep(delay)
+
+        self.logger.error(f"BOAMP: toutes les tentatives ont echoue - {last_error}")
+        return None
+
     def collect(self) -> list[dict]:
         """Fetch BOAMP announcements matching training-related criteria.
 
@@ -141,6 +174,7 @@ class BOAMPCollector(BaseCollector):
         all_articles = []
         offset = 0
         max_pages = 10  # Safety limit
+        consecutive_failures = 0
 
         for page in range(max_pages):
             params = self._build_query()
@@ -150,14 +184,18 @@ class BOAMPCollector(BaseCollector):
                 f"BOAMP requete page {page + 1} (offset={offset})"
             )
 
-            try:
-                response = requests.get(API_URL, params=params, timeout=30)
-                response.raise_for_status()
-            except requests.RequestException as e:
-                self.logger.error(f"BOAMP erreur API: {e}")
+            data = self._fetch_with_retry(params)
+
+            if data is None:
+                consecutive_failures += 1
+                if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                    self.logger.error(
+                        f"BOAMP: {consecutive_failures} echecs consecutifs - alerte monitoring"
+                    )
+                    # TODO: Appeler send_monitoring_alert() quand module monitoring pret
                 break
 
-            data = response.json()
+            consecutive_failures = 0  # Reset on success
             results = data.get("results", [])
 
             if not results:

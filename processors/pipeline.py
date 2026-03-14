@@ -193,7 +193,13 @@ class AIProcessor:
 
             # Step 4: Parse and validate
             raw_text = response.content[0].text
-            data = self.parse_json_response(raw_text)
+            self.logger.debug(f"Reponse brute IA pour article {article_id}: {raw_text[:500]}...")
+            try:
+                data = self.parse_json_response(raw_text)
+            except ValueError as parse_error:
+                self.logger.error(f"Erreur parsing JSON: {parse_error}")
+                self.logger.error(f"Texte complet: {raw_text}")
+                raise
 
             is_ao = article.get("source") == "boamp" or article.get("category") == "ao"
             self.validate_response(data, is_ao=is_ao)

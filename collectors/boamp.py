@@ -12,6 +12,7 @@ from typing import Optional
 import requests
 
 from collectors.base import BaseCollector
+from storage.monitoring import send_monitoring_alert
 
 # Retry configuration
 RETRY_DELAYS = [30, 60, 120]  # Exponential backoff in seconds
@@ -192,7 +193,14 @@ class BOAMPCollector(BaseCollector):
                     self.logger.error(
                         f"BOAMP: {consecutive_failures} echecs consecutifs - alerte monitoring"
                     )
-                    # TODO: Appeler send_monitoring_alert() quand module monitoring pret
+                    send_monitoring_alert(
+                        db_path=self.db_path,
+                        severity="critical",
+                        alert_type="api_failure",
+                        source="boamp",
+                        message=f"API BOAMP inaccessible apres {MAX_CONSECUTIVE_FAILURES} tentatives",
+                        details={"consecutive_failures": consecutive_failures},
+                    )
                 break
 
             consecutive_failures = 0  # Reset on success

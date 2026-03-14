@@ -16,6 +16,7 @@ import {
   BarChart3,
   AlertTriangle,
 } from "lucide-react";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const faqItems = [
   {
@@ -156,19 +157,7 @@ function Hero() {
             Résumés IA · Classification auto · Newsletter hebdo · Export audit
             PDF
           </p>
-          <div className="flex flex-col sm:flex-row items-center gap-3 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="votre@email.fr"
-              className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-            <Link
-              href="/inscription"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-amber-600 transition-colors whitespace-nowrap"
-            >
-              S&apos;inscrire gratuitement
-            </Link>
-          </div>
+          <NewsletterForm />
           <p className="text-sm text-gray-500 mt-3">
             Gratuit, sans carte bancaire. 45 000 OF concernés.
           </p>

@@ -3,16 +3,19 @@
 Collects calls for proposals (appels a projets) and news from
 the 11 French OPCO websites relevant to training organizations.
 
-Accessible OPCOs:
+Updated 2026-03-18 with improved selectors and additional OPCOs.
+
+Working OPCOs:
 - OPCO Sante: static HTML, appels d'offres page
 - L'OPCOMMERCE: static HTML, appels d'offres page
 - AKTO: httpx, appels d'offres page
-- OPCO 2i: httpx, appels d'offres page
+- OPCO 2i: WordPress-like, appels d'offres page
 - Uniformation: httpx, appels d'offre page
+- OPCO EP: static HTML, marches publics page
 
-Inaccessible (timeouts/SSL/connection errors):
-- OCAPIAT, OPCO Mobilites, ATLAS, Constructys
-- OPCO EP, AFDAS (redirect to external platforms)
+Inaccessible or JS-heavy:
+- OCAPIAT, OPCO Mobilites, ATLAS, Constructys (timeouts/SSL)
+- AFDAS (redirects, page structure changed)
 """
 
 import re
@@ -33,7 +36,7 @@ HEADERS = {
     "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.5",
 }
 
-TIMEOUT = 20
+TIMEOUT = 25
 
 
 def make_source_id(source: str, url: str) -> str:
@@ -71,15 +74,96 @@ def extract_date_fr(text: str) -> Optional[str]:
     return None
 
 
+def extract_articles_from_links(soup: BeautifulSoup, base_url: str, source_name: str, opco_name: str,
+                                url_patterns: list[str] = None) -> list[dict]:
+    """Generic article extraction from links in a page."""
+    articles = []
+    seen_urls = set()
+
+    # Patterns to look for in URLs
+    if url_patterns is None:
+        url_patterns = ["appel", "offre", "marche", "consultation", "projet", "ao", "aap"]
+
+    for a in soup.find_all("a", href=True):
+        href = a.get("href", "")
+        if not href or href == "#" or href.startswith("javascript:"):
+            continue
+        if "mailto:" in href:
+            continue
+
+        full_url = urljoin(base_url, href)
+
+        # Skip duplicates and external links
+        if full_url in seen_urls:
+            continue
+        if not (full_url.startswith(base_url) or
+                full_url.startswith(base_url.replace("www.", ""))):
+            continue
+
+        # Check if URL looks like an AAP
+        href_lower = href.lower()
+        if not any(p in href_lower for p in url_patterns):
+            continue
+
+        # Get title
+        title = a.get_text(strip=True)
+        if not title or len(title) < 15:
+            # Try parent or siblings
+            parent = a.find_parent(["div", "li", "article", "section"])
+            if parent:
+                h = parent.find(["h2", "h3", "h4", "strong"])
+                if h:
+                    title = h.get_text(strip=True)
+
+        if not title or len(title) < 15:
+            continue
+
+        # Skip generic links
+        generic = ["consulter", "candidater", "telecharger", "dossier", "en savoir plus",
+                   "lire la suite", "voir plus", "acceder", "retour", "accueil", "contact"]
+        title_lower = title.lower().strip()
+        if title_lower in generic or len(title.split()) < 4:
+            continue
+
+        seen_urls.add(full_url)
+
+        # Look for date nearby
+        date_str = None
+        parent = a.find_parent(["div", "li", "article", "section"])
+        if parent:
+            time_el = parent.find("time")
+            if time_el:
+                date_str = time_el.get("datetime", "")[:10]
+                if not date_str:
+                    date_str = extract_date_fr(time_el.get_text(strip=True))
+            if not date_str:
+                date_el = parent.find(class_=re.compile(r"date|time|meta", re.I))
+                if date_el:
+                    date_str = extract_date_fr(date_el.get_text(strip=True))
+
+        articles.append({
+            "source": source_name,
+            "source_id": make_source_id(source_name, full_url),
+            "title": title[:500],
+            "url": full_url,
+            "content": None,
+            "published_date": date_str,
+            "category": "ao",
+            "status": "new",
+            "acheteur": opco_name,
+            "region": None,
+        })
+
+    return articles
+
+
 class OPCOSanteCollector(BaseCollector):
     """Scraper for OPCO Sante appels d'offres."""
 
-    SOURCE_NAME = "opco"
-    OPCO_NAME = "opco_sante"
+    SOURCE_NAME = "opco_sante"
+    OPCO_NAME = "OPCO Sante"
     BASE_URL = "https://www.opco-sante.fr"
-    PAGES = [
-        "/prestataire/nos-appels-d-offres/",
-    ]
+    PAGES = ["/prestataire/nos-appels-d-offres/"]
 
     def collect(self) -> list[dict]:
         articles = []
@@ -108,80 +192,64 @@ class OPCOSanteCollector(BaseCollector):
 
     def _parse_list_page(self, soup: BeautifulSoup, base_url: str) -> list[dict]:
         articles = []
+        seen_urls = set()
 
-        # Look for article cards / links in common patterns
-        for link in soup.select("article a[href], .card a[href], .view-content a[href], .field-content a[href]"):
-            href = link.get("href", "")
-            if not href or href == "#":
-                continue
+        # Try multiple selectors for OPCO Sante
+        selectors = [
+            "article a[href*='appel']",
+            ".view-content a[href]",
+            ".field-content a[href]",
+            "main a[href*='appel']",
+            ".content a[href*='offre']",
+        ]
 
-            full_url = urljoin(base_url, href)
-            title = link.get_text(strip=True)
-            if not title or len(title) < 10:
-                # Try parent for title
+        for selector in selectors:
+            for link in soup.select(selector):
+                href = link.get("href", "")
+                if not href or href == "#":
+                    continue
+
+                full_url = urljoin(base_url, href)
+                if full_url in seen_urls:
+                    continue
+
+                # Get title
+                title = link.get_text(strip=True)
+                if not title or len(title) < 10:
+                    parent = link.find_parent(["article", "div", "li"])
+                    if parent:
+                        h = parent.find(["h2", "h3", "h4"])
+                        if h:
+                            title = h.get_text(strip=True)
+
+                if not title or len(title) < 10:
+                    continue
+
+                # Skip generic links
+                generic = ["consulter", "candidater", "telecharger", "dossier", "en savoir plus"]
+                if title.lower().strip() in generic:
+                    continue
+
+                seen_urls.add(full_url)
+
+                # Find date
+                date_str = None
                 parent = link.find_parent(["article", "div", "li"])
                 if parent:
-                    h = parent.find(["h2", "h3", "h4"])
-                    if h:
-                        title = h.get_text(strip=True)
+                    time_el = parent.find("time")
+                    if time_el:
+                        date_str = time_el.get("datetime", "")[:10] or extract_date_fr(time_el.get_text())
 
-            if not title or len(title) < 10:
-                continue
-
-            # Skip generic navigation links
-            generic = ["consulter", "candidater", "telecharger", "dossier", "en savoir plus",
-                        "lire la suite", "voir plus", "acceder", "retour"]
-            if title.lower().strip() in generic or len(title.split()) < 4:
-                continue
-
-            # Find date nearby
-            parent = link.find_parent(["article", "div", "li"])
-            date_text = ""
-            if parent:
-                date_el = parent.find(class_=re.compile(r"date|time|meta", re.I))
-                if date_el:
-                    date_text = date_el.get_text(strip=True)
-                time_el = parent.find("time")
-                if time_el:
-                    date_text = time_el.get("datetime", "") or time_el.get_text(strip=True)
-
-            articles.append({
-                "source": "opco",
-                "source_id": make_source_id(self.OPCO_NAME, full_url),
-                "title": title[:500],
-                "url": full_url,
-                "content": None,
-                "published_date": extract_date_fr(date_text),
-                "category": "financement",
-                "status": "new",
-                "acheteur": "OPCO Sante",
-                "region": None,
-            })
-
-        # Fallback: scan all h2/h3 with nearby links
-        if not articles:
-            for heading in soup.select("h2, h3"):
-                a = heading.find("a")
-                if not a:
-                    a = heading.find_next("a")
-                if not a or not a.get("href"):
-                    continue
-
-                title = heading.get_text(strip=True)
-                if len(title) < 10:
-                    continue
-
-                full_url = urljoin(base_url, a["href"])
                 articles.append({
-                    "source": "opco",
-                    "source_id": make_source_id(self.OPCO_NAME, full_url),
+                    "source": self.SOURCE_NAME,
+                    "source_id": make_source_id(self.SOURCE_NAME, full_url),
                     "title": title[:500],
                     "url": full_url,
                     "content": None,
-                    "published_date": None,
-                    "category": "financement",
+                    "published_date": date_str,
+                    "category": "ao",
                     "status": "new",
-                    "acheteur": "OPCO Sante",
+                    "acheteur": self.OPCO_NAME,
                     "region": None,
                 })
 
@@ -191,265 +259,284 @@ class OPCOSanteCollector(BaseCollector):
 class OPCOmmerceCollector(BaseCollector):
     """Scraper for L'OPCOMMERCE appels d'offres."""
 
-    SOURCE_NAME = "opco"
-    OPCO_NAME = "opco_commerce"
+    SOURCE_NAME = "opcommerce"
+    OPCO_NAME = "L'OPCOMMERCE"
     BASE_URL = "https://www.lopcommerce.com"
-    PAGE = "/partenaire/appels-d-offres/consulter-nos-appels-d-offres/"
+    PAGES = ["/partenaire/appels-d-offres/consulter-nos-appels-d-offres/"]
 
     def collect(self) -> list[dict]:
         articles = []
-        url = self.BASE_URL + self.PAGE
-
-        self.logger.info(f"OPCOMMERCE: scraping {url}")
+        client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
 
         try:
-            client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
-            resp = client.get(url)
-            resp.raise_for_status()
-        except httpx.HTTPError as e:
-            self.logger.error(f"OPCOMMERCE: erreur {url}: {e}")
-            return []
+            for page_path in self.PAGES:
+                url = self.BASE_URL + page_path
+                self.logger.info(f"OPCOMMERCE: scraping {url}")
+
+                try:
+                    resp = client.get(url)
+                    resp.raise_for_status()
+                except httpx.HTTPError as e:
+                    self.logger.error(f"OPCOMMERCE: erreur {url}: {e}")
+                    continue
+
+                soup = BeautifulSoup(resp.text, "lxml")
+                items = self._parse_page(soup, url)
+                articles.extend(items)
+                self.logger.info(f"OPCOMMERCE: {len(items)} items collectes")
         finally:
             client.close()
 
-        soup = BeautifulSoup(resp.text, "lxml")
-        articles = self._parse_page(soup, url)
-        self.logger.info(f"OPCOMMERCE: {len(articles)} items collectes")
         return articles
 
     def _parse_page(self, soup: BeautifulSoup, base_url: str) -> list[dict]:
-        articles = []
+        # Look for content area
+        content_area = soup.find("main") or soup.find(class_=re.compile(r"content|main", re.I)) or soup
 
-        # Find content area - look for AO listings
-        containers = soup.select(".field-item, .node-content, .view-content, .content, main")
-        if not containers:
-            containers = [soup]
-
-        seen_urls = set()
-        for container in containers:
-            for a in container.find_all("a", href=True):
-                href = a["href"]
-                full_url = urljoin(base_url, href)
-
-                # Skip navigation, anchors, external
-                if href.startswith("#") or "mailto:" in href:
-                    continue
-                if full_url in seen_urls:
-                    continue
-
-                title = a.get_text(strip=True)
-                if not title or len(title) < 15:
-                    continue
-
-                # Must look like an AO or appel a projets
-                text_lower = (title + " " + href).lower()
-                if not any(kw in text_lower for kw in [
-                    "appel", "offre", "marche", "consultation",
-                    "formation", "prestation", "cahier", "ao-", "aap-"
-                ]):
-                    continue
-
-                # Skip generic navigation links
-                generic = ["appels d'offres", "consulter nos appels d'offres",
-                           "consulter le cahier des charges", "telecharger le dossier",
-                           "consulter appel d'offre"]
-                if title.lower().strip() in generic or len(title.split()) < 4:
-                    continue
-
-                seen_urls.add(full_url)
-                articles.append({
-                    "source": "opco",
-                    "source_id": make_source_id(self.OPCO_NAME, full_url),
-                    "title": title[:500],
-                    "url": full_url,
-                    "content": None,
-                    "published_date": None,
-                    "category": "financement",
-                    "status": "new",
-                    "acheteur": "L'OPCOMMERCE",
-                    "region": None,
-                })
-
-        return articles
+        # Extract links that look like AAP
+        return extract_articles_from_links(
+            content_area, base_url, self.SOURCE_NAME, self.OPCO_NAME,
+            url_patterns=["appel", "offre", "marche", "ao", "aap", "consultation", "dossier"]
+        )
 
 
 class AKTOCollector(BaseCollector):
     """Scraper for AKTO appels d'offres."""
 
-    SOURCE_NAME = "opco"
-    OPCO_NAME = "akto"
+    SOURCE_NAME = "opco_akto"
+    OPCO_NAME = "AKTO"
     BASE_URL = "https://www.akto.fr"
-    PAGE = "/appels-d-offres/"
+    PAGES = ["/appels-d-offres/"]
 
     def collect(self) -> list[dict]:
-        url = self.BASE_URL + self.PAGE
-        self.logger.info(f"AKTO: scraping {url}")
+        articles = []
+        client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
 
         try:
-            client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
-            resp = client.get(url)
-            resp.raise_for_status()
-        except httpx.HTTPError as e:
-            self.logger.error(f"AKTO: erreur {url}: {e}")
-            return []
+            for page_path in self.PAGES:
+                url = self.BASE_URL + page_path
+                self.logger.info(f"AKTO: scraping {url}")
+
+                try:
+                    resp = client.get(url)
+                    resp.raise_for_status()
+                except httpx.HTTPError as e:
+                    self.logger.error(f"AKTO: erreur {url}: {e}")
+                    continue
+
+                soup = BeautifulSoup(resp.text, "lxml")
+                items = self._parse_page(soup, url)
+                articles.extend(items)
+                self.logger.info(f"AKTO: {len(items)} items collectes")
         finally:
             client.close()
 
-        soup = BeautifulSoup(resp.text, "lxml")
+        return articles
+
+    def _parse_page(self, soup: BeautifulSoup, base_url: str) -> list[dict]:
         articles = []
+        seen_urls = set()
 
         # AKTO uses card-based layout
-        for card in soup.select("article, .card, .node, .views-row, .item-list li"):
+        for card in soup.select("article, .card, .node, .views-row, .item-list li, .post"):
             a = card.find("a", href=True)
             if not a:
                 continue
 
             href = a["href"]
-            full_url = urljoin(url, href)
-            title = ""
+            full_url = urljoin(base_url, href)
+            if full_url in seen_urls:
+                continue
 
+            # Get title
             h = card.find(["h2", "h3", "h4"])
-            if h:
-                title = h.get_text(strip=True)
-            else:
-                title = a.get_text(strip=True)
-
+            title = h.get_text(strip=True) if h else a.get_text(strip=True)
             if not title or len(title) < 10:
                 continue
+
+            # Skip generic
+            if title.lower().strip() in ["consulter", "en savoir plus", "lire la suite"]:
+                continue
+
+            seen_urls.add(full_url)
 
             # Extract date
             date_str = None
             time_el = card.find("time")
             if time_el:
-                date_str = time_el.get("datetime", "")[:10]
-            else:
-                date_el = card.find(class_=re.compile(r"date|time", re.I))
-                if date_el:
-                    date_str = extract_date_fr(date_el.get_text(strip=True))
+                date_str = time_el.get("datetime", "")[:10] or extract_date_fr(time_el.get_text())
 
             # Extract summary
             summary_el = card.find(class_=re.compile(r"desc|summary|excerpt|body|chapo", re.I))
             content = summary_el.get_text(strip=True) if summary_el else None
 
             articles.append({
-                "source": "opco",
-                "source_id": make_source_id(self.OPCO_NAME, full_url),
+                "source": self.SOURCE_NAME,
+                "source_id": make_source_id(self.SOURCE_NAME, full_url),
                 "title": title[:500],
                 "url": full_url,
                 "content": content,
                 "published_date": date_str,
-                "category": "financement",
+                "category": "ao",
                 "status": "new",
-                "acheteur": "AKTO",
+                "acheteur": self.OPCO_NAME,
                 "region": None,
             })
 
-        self.logger.info(f"AKTO: {len(articles)} items collectes")
         return articles
 
 
 class OPCO2iCollector(BaseCollector):
     """Scraper for OPCO 2i appels d'offres."""
 
-    SOURCE_NAME = "opco"
-    OPCO_NAME = "opco_2i"
+    SOURCE_NAME = "opco_2i"
+    OPCO_NAME = "OPCO 2i"
     BASE_URL = "https://www.opco2i.fr"
-    PAGE = "/appels-doffres/"
+    PAGES = ["/appels-doffres/"]
 
     def collect(self) -> list[dict]:
-        url = self.BASE_URL + self.PAGE
-        self.logger.info(f"OPCO 2i: scraping {url}")
+        articles = []
+        client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
 
         try:
-            client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
-            resp = client.get(url)
-            resp.raise_for_status()
-        except httpx.HTTPError as e:
-            self.logger.error(f"OPCO 2i: erreur {url}: {e}")
-            return []
+            for page_path in self.PAGES:
+                url = self.BASE_URL + page_path
+                self.logger.info(f"OPCO 2i: scraping {url}")
+
+                try:
+                    resp = client.get(url)
+                    resp.raise_for_status()
+                except httpx.HTTPError as e:
+                    self.logger.error(f"OPCO 2i: erreur {url}: {e}")
+                    continue
+
+                soup = BeautifulSoup(resp.text, "lxml")
+                items = self._parse_page(soup, url)
+                articles.extend(items)
+                self.logger.info(f"OPCO 2i: {len(items)} items collectes")
         finally:
             client.close()
 
-        soup = BeautifulSoup(resp.text, "lxml")
+        return articles
+
+    def _parse_page(self, soup: BeautifulSoup, base_url: str) -> list[dict]:
         articles = []
+        seen_urls = set()
 
-        for card in soup.select("article, .card, .wp-block-post, .entry, .post"):
-            a = card.find("a", href=True)
-            if not a:
-                continue
+        # OPCO 2i uses WordPress-like structure
+        selectors = [
+            "article.post",
+            ".post-item",
+            ".entry",
+            ".wp-block-post",
+            ".card",
+            "main article",
+        ]
 
-            href = a["href"]
-            full_url = urljoin(url, href)
+        for selector in selectors:
+            for card in soup.select(selector):
+                a = card.find("a", href=True)
+                if not a:
+                    continue
 
-            h = card.find(["h2", "h3", "h4"])
-            title = h.get_text(strip=True) if h else a.get_text(strip=True)
+                href = a["href"]
+                full_url = urljoin(base_url, href)
+                if full_url in seen_urls:
+                    continue
+                if not full_url.startswith(self.BASE_URL):
+                    continue
 
-            if not title or len(title) < 10:
-                continue
+                h = card.find(["h2", "h3", "h4"])
+                title = h.get_text(strip=True) if h else a.get_text(strip=True)
+                if not title or len(title) < 10:
+                    continue
 
-            date_str = None
-            time_el = card.find("time")
-            if time_el:
-                date_str = time_el.get("datetime", "")[:10]
+                seen_urls.add(full_url)
 
-            excerpt_el = card.find(class_=re.compile(r"excerpt|desc|summary|chapo", re.I))
-            content = excerpt_el.get_text(strip=True) if excerpt_el else None
+                date_str = None
+                time_el = card.find("time")
+                if time_el:
+                    date_str = time_el.get("datetime", "")[:10]
 
-            articles.append({
-                "source": "opco",
-                "source_id": make_source_id(self.OPCO_NAME, full_url),
-                "title": title[:500],
-                "url": full_url,
-                "content": content,
-                "published_date": date_str,
-                "category": "financement",
-                "status": "new",
-                "acheteur": "OPCO 2i",
-                "region": None,
-            })
+                excerpt_el = card.find(class_=re.compile(r"excerpt|desc|summary|chapo", re.I))
+                content = excerpt_el.get_text(strip=True) if excerpt_el else None
 
-        self.logger.info(f"OPCO 2i: {len(articles)} items collectes")
+                articles.append({
+                    "source": self.SOURCE_NAME,
+                    "source_id": make_source_id(self.SOURCE_NAME, full_url),
+                    "title": title[:500],
+                    "url": full_url,
+                    "content": content,
+                    "published_date": date_str,
+                    "category": "ao",
+                    "status": "new",
+                    "acheteur": self.OPCO_NAME,
+                    "region": None,
+                })
+
+        # Fallback: generic link extraction
+        if not articles:
+            content_area = soup.find("main") or soup
+            articles = extract_articles_from_links(
+                content_area, base_url, self.SOURCE_NAME, self.OPCO_NAME
+            )
+
         return articles
 
 
 class UniformationCollector(BaseCollector):
     """Scraper for Uniformation appels d'offre."""
 
-    SOURCE_NAME = "opco"
-    OPCO_NAME = "uniformation"
+    SOURCE_NAME = "uniformation"
+    OPCO_NAME = "Uniformation"
     BASE_URL = "https://www.uniformation.fr"
-    PAGE = "/partenaire-prestataire/appels-doffre"
+    PAGES = ["/partenaire-prestataire/appels-doffre"]
 
     def collect(self) -> list[dict]:
-        url = self.BASE_URL + self.PAGE
-        self.logger.info(f"Uniformation: scraping {url}")
+        articles = []
+        client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
 
         try:
-            client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
-            resp = client.get(url)
-            resp.raise_for_status()
-        except httpx.HTTPError as e:
-            self.logger.error(f"Uniformation: erreur {url}: {e}")
-            return []
+            for page_path in self.PAGES:
+                url = self.BASE_URL + page_path
+                self.logger.info(f"Uniformation: scraping {url}")
+
+                try:
+                    resp = client.get(url)
+                    resp.raise_for_status()
+                except httpx.HTTPError as e:
+                    self.logger.error(f"Uniformation: erreur {url}: {e}")
+                    continue
+
+                soup = BeautifulSoup(resp.text, "lxml")
+                items = self._parse_page(soup, url)
+                articles.extend(items)
+                self.logger.info(f"Uniformation: {len(items)} items collectes")
         finally:
             client.close()
 
-        soup = BeautifulSoup(resp.text, "lxml")
-        articles = []
+        return articles
 
-        for card in soup.select("article, .card, .node, .views-row, .view-content .item-list li"):
+    def _parse_page(self, soup: BeautifulSoup, base_url: str) -> list[dict]:
+        articles = []
+        seen_urls = set()
+
+        for card in soup.select("article, .card, .node, .views-row, .view-content .item-list li, .teaser"):
             a = card.find("a", href=True)
             if not a:
                 continue
 
             href = a["href"]
-            full_url = urljoin(url, href)
+            full_url = urljoin(base_url, href)
+            if full_url in seen_urls:
+                continue
 
             h = card.find(["h2", "h3", "h4"])
             title = h.get_text(strip=True) if h else a.get_text(strip=True)
-
             if not title or len(title) < 10:
                 continue
+
+            seen_urls.add(full_url)
 
             date_str = None
             date_el = card.find(class_=re.compile(r"date|time", re.I))
@@ -460,29 +547,70 @@ class UniformationCollector(BaseCollector):
             content = excerpt_el.get_text(strip=True) if excerpt_el else None
 
             articles.append({
-                "source": "opco",
-                "source_id": make_source_id(self.OPCO_NAME, full_url),
+                "source": self.SOURCE_NAME,
+                "source_id": make_source_id(self.SOURCE_NAME, full_url),
                 "title": title[:500],
                 "url": full_url,
                 "content": content,
                 "published_date": date_str,
-                "category": "financement",
+                "category": "ao",
                 "status": "new",
-                "acheteur": "Uniformation",
+                "acheteur": self.OPCO_NAME,
                 "region": None,
             })
 
-        self.logger.info(f"Uniformation: {len(articles)} items collectes")
         return articles
+
+
+class OPCOEPCollector(BaseCollector):
+    """Scraper for OPCO EP marches publics."""
+
+    SOURCE_NAME = "opco_ep"
+    OPCO_NAME = "OPCO EP"
+    BASE_URL = "https://www.opcoep.fr"
+    PAGES = ["/marches-publics"]
+
+    def collect(self) -> list[dict]:
+        articles = []
+        client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
+
+        try:
+            for page_path in self.PAGES:
+                url = self.BASE_URL + page_path
+                self.logger.info(f"OPCO EP: scraping {url}")
+
+                try:
+                    resp = client.get(url)
+                    resp.raise_for_status()
+                except httpx.HTTPError as e:
+                    self.logger.error(f"OPCO EP: erreur {url}: {e}")
+                    continue
+
+                soup = BeautifulSoup(resp.text, "lxml")
+                items = self._parse_page(soup, url)
+                articles.extend(items)
+                self.logger.info(f"OPCO EP: {len(items)} items collectes")
+        finally:
+            client.close()
+
+        return articles
+
+    def _parse_page(self, soup: BeautifulSoup, base_url: str) -> list[dict]:
+        content_area = soup.find("main") or soup.find(class_=re.compile(r"content|main", re.I)) or soup
+        return extract_articles_from_links(
+            content_area, base_url, self.SOURCE_NAME, self.OPCO_NAME,
+            url_patterns=["appel", "offre", "marche", "consultation", "ao", "aap", "dossier", "document"]
+        )
 
 
 # Registry of all OPCO collectors
 OPCO_COLLECTORS = {
     "opco_sante": OPCOSanteCollector,
-    "opco_commerce": OPCOmmerceCollector,
-    "akto": AKTOCollector,
+    "opcommerce": OPCOmmerceCollector,
+    "opco_akto": AKTOCollector,
     "opco_2i": OPCO2iCollector,
     "uniformation": UniformationCollector,
+    "opco_ep": OPCOEPCollector,
 }
 
 

@@ -24,6 +24,10 @@ from collectors.boamp import BOAMPCollector
 from collectors.legifrance import LegifranceCollector
 from collectors.legifrance_rss import LegifranceRSSCollector
 from collectors.opco import collect_all_opco
+from collectors.france_travail import collect_france_travail
+from collectors.regions import collect_regions
+from collectors.rss_feeds import collect_all_rss
+from collectors.playwright_collectors import collect_all_playwright
 from processors.pipeline import AIProcessor
 from storage.database import init_db, get_connection, get_stats
 from storage.logger import setup_logger
@@ -106,6 +110,48 @@ def cmd_collect(args):
             f"  [{status_icon}] {stats['source']:>16}: "
             f"{stats.get('inserted', 0)} nouveaux / {stats.get('collected', 0)} collectes"
         )
+
+    # RSS feeds (Uniformation, OPCO 2i)
+    print("\n  --- RSS Feeds ---")
+    rss_stats = collect_all_rss(db_path, logger)
+    for stats in rss_stats:
+        all_stats.append(stats)
+        status_icon = "OK" if not stats.get("errors") else "ERREUR"
+        print(
+            f"  [{status_icon}] {stats['source']:>16}: "
+            f"{stats.get('inserted', 0)} nouveaux / {stats.get('collected', 0)} collectes"
+        )
+
+    # Playwright scrapers (JS-rendered sites)
+    print("\n  --- Playwright (JS) ---")
+    pw_stats = collect_all_playwright(db_path, logger)
+    for stats in pw_stats:
+        all_stats.append(stats)
+        status_icon = "OK" if not stats.get("errors") else "ERREUR"
+        print(
+            f"  [{status_icon}] {stats['source']:>16}: "
+            f"{stats.get('inserted', 0)} nouveaux / {stats.get('collected', 0)} collectes"
+        )
+
+    # France Travail scrapers
+    print("\n  --- France Travail ---")
+    ft_stats = collect_france_travail(db_path, logger)
+    all_stats.append(ft_stats)
+    status_icon = "OK" if not ft_stats.get("errors") else "ERREUR"
+    print(
+        f"  [{status_icon}] {ft_stats['source']:>16}: "
+        f"{ft_stats.get('inserted', 0)} nouveaux / {ft_stats.get('collected', 0)} collectes"
+    )
+
+    # Regions scrapers
+    print("\n  --- Conseils Regionaux ---")
+    region_stats = collect_regions(db_path, logger)
+    all_stats.append(region_stats)
+    status_icon = "OK" if not region_stats.get("errors") else "ERREUR"
+    print(
+        f"  [{status_icon}] {region_stats['source']:>16}: "
+        f"{region_stats.get('inserted', 0)} nouveaux / {region_stats.get('collected', 0)} collectes"
+    )
 
     total_new = sum(s.get("inserted", 0) for s in all_stats)
     total_collected = sum(s.get("collected", 0) for s in all_stats)

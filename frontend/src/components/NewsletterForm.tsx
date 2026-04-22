@@ -69,7 +69,7 @@ export default function NewsletterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-amber-600 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-lg bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
           <Loader2 className="w-5 h-5 animate-spin" />

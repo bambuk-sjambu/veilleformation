@@ -1,0 +1,714 @@
+[
+  {
+    "id": 1,
+    "slug": "veille-reglementaire-organisme-de-formation",
+    "keyword_main": "veille réglementaire organisme de formation",
+    "keywords_secondary": [
+      "veille réglementaire formation professionnelle",
+      "outil de veille réglementaire gratuit",
+      "veille légale formation",
+      "indicateur 23 Qualiopi"
+    ],
+    "title_suggestion": "Veille réglementaire pour organismes de formation : le guide complet 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "pilier",
+    "word_count_target": 3500,
+    "plan": [
+      "Qu'est-ce que la veille réglementaire pour un OF ?",
+      "Pourquoi c'est une obligation Qualiopi (indicateurs 23, 24, 25, 26)",
+      "Quelles sources surveiller en priorité",
+      "Comment organiser votre veille en 5 étapes",
+      "Documenter la veille pour l'audit : les preuves qui comptent",
+      "Outils disponibles : manuel, newsletter, logiciel, IA",
+      "Les 5 erreurs qui coûtent des non-conformités"
+    ],
+    "internal_links_targets": [
+      "comment-faire-sa-veille-reglementaire-formation",
+      "sources-veille-reglementaire-formation-professionnelle",
+      "outils-veille-reglementaire-formation-comparatif"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 2,
+    "slug": "comment-faire-sa-veille-reglementaire-formation",
+    "keyword_main": "comment faire sa veille réglementaire formation",
+    "keywords_secondary": [
+      "méthode veille réglementaire",
+      "organisation veille OF",
+      "planifier veille formation"
+    ],
+    "title_suggestion": "Comment faire sa veille réglementaire en tant qu'organisme de formation : méthode pas-à-pas",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "how-to",
+    "word_count_target": 2000,
+    "plan": [
+      "Étape 1 — Cartographier vos obligations selon votre secteur",
+      "Étape 2 — Choisir vos sources prioritaires",
+      "Étape 3 — Définir votre fréquence de surveillance",
+      "Étape 4 — Documenter et tracer (preuves pour l'auditeur)",
+      "Étape 5 — Diffuser en interne et mettre à jour vos pratiques"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "preuves-veille-reglementaire-audit-qualiopi"
+    ],
+    "cta": "TOFU",
+    "generated": "failed",
+    "generated_at": null
+  },
+  {
+    "id": 3,
+    "slug": "sources-veille-reglementaire-formation-professionnelle",
+    "keyword_main": "sources veille réglementaire formation professionnelle",
+    "keywords_secondary": [
+      "sources officielles formation",
+      "sites veille réglementaire formation",
+      "où trouver réglementation formation"
+    ],
+    "title_suggestion": "15 sources incontournables pour votre veille réglementaire formation en 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "listicle",
+    "word_count_target": 1800,
+    "plan": [
+      "Sources officielles incontournables (Légifrance, JORF, Service-Public.fr, France Compétences)",
+      "Sources OPCO (Atlas, Akto, Opco EP, Uniformation, AFDAS...)",
+      "Sources France Travail et Conseils Régionaux",
+      "Sources sectorielles et fédérations professionnelles",
+      "Comment organiser ces sources sans se noyer"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "legifrance-formation-professionnelle-guide"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 4,
+    "slug": "veille-reglementaire-exemple-organisme-formation",
+    "keyword_main": "veille réglementaire exemple organisme de formation",
+    "keywords_secondary": [
+      "exemple plan de veille",
+      "cas pratique veille réglementaire",
+      "veille Qualiopi exemple"
+    ],
+    "title_suggestion": "Veille réglementaire : 3 exemples concrets pour un organisme de formation",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide avec exemples",
+    "word_count_target": 1700,
+    "plan": [
+      "Exemple 1 — Veille légale (indicateur 23) : suivre les décrets formation au JORF",
+      "Exemple 2 — Veille compétences (indicateur 24) : suivre les évolutions de métiers via France Travail",
+      "Exemple 3 — Veille pédagogique (indicateur 25) : suivre l'IA dans la formation",
+      "Comment transformer ces exemples en processus documenté"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "comment-faire-sa-veille-reglementaire-formation"
+    ],
+    "cta": "TOFU",
+    "generated": "failed",
+    "generated_at": null
+  },
+  {
+    "id": 5,
+    "slug": "outils-veille-reglementaire-formation-comparatif",
+    "keyword_main": "outils de veille réglementaire formation",
+    "keywords_secondary": [
+      "logiciel veille réglementaire",
+      "application veille formation",
+      "automatiser veille réglementaire",
+      "formalerte alternative",
+      "echoline comparatif"
+    ],
+    "title_suggestion": "Outils de veille réglementaire pour organismes de formation : comparatif complet 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "MOFU",
+    "format": "comparatif",
+    "word_count_target": 2200,
+    "plan": [
+      "Les 4 catégories d'outils de veille",
+      "Solutions gratuites (Google Alertes, RSS Légifrance) : limites réelles",
+      "Newsletters spécialisées formation : formalerte, echoline, VeilleFormation.fr — comparatif",
+      "Logiciels de veille généralistes (Mention, Feedly) : pertinents pour les OF ?",
+      "Solutions IA dédiées formation : nouvelle génération",
+      "Tableau comparatif : fonctionnalités × prix × couverture"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "newsletter-formation-professionnelle-comparatif"
+    ],
+    "cta": "BOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 6,
+    "slug": "modele-veille-reglementaire-excel-gratuit",
+    "keyword_main": "modèle veille réglementaire légale excel gratuit",
+    "keywords_secondary": [
+      "tableau veille réglementaire excel",
+      "template veille formation",
+      "procédure veille réglementaire pdf"
+    ],
+    "title_suggestion": "Modèle de veille réglementaire et légale Excel gratuit pour organismes de formation",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "template guide",
+    "word_count_target": 1500,
+    "plan": [
+      "Pourquoi utiliser un tableau Excel pour votre veille réglementaire ?",
+      "Structure du modèle : colonnes et onglets recommandés",
+      "Comment remplir le tableau (exemples concrets)",
+      "Limites de l'Excel et quand passer à un outil dédié"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "outils-veille-reglementaire-formation-comparatif"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 7,
+    "slug": "newsletter-formation-professionnelle-comparatif",
+    "keyword_main": "newsletter formation professionnelle",
+    "keywords_secondary": [
+      "newsletter veille formation",
+      "veille formation professionnelle gratuite",
+      "actualité formation professionnelle"
+    ],
+    "title_suggestion": "Newsletters formation professionnelle : les meilleures en 2026 (comparatif)",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "MOFU",
+    "format": "comparatif",
+    "word_count_target": 1600,
+    "plan": [
+      "Pourquoi s'abonner à une newsletter de veille formation ?",
+      "Les critères d'une bonne newsletter (couverture, fréquence, qualité IA)",
+      "Comparatif des newsletters disponibles en 2026",
+      "Notre recommandation selon votre profil"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "outils-veille-reglementaire-formation-comparatif"
+    ],
+    "cta": "BOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 8,
+    "slug": "preuves-veille-reglementaire-audit-qualiopi",
+    "keyword_main": "preuves veille réglementaire audit Qualiopi",
+    "keywords_secondary": [
+      "documents veille indicateur 23",
+      "preuves audit Qualiopi veille",
+      "que montrer à l'auditeur Qualiopi"
+    ],
+    "title_suggestion": "Preuves de veille réglementaire pour l'audit Qualiopi : ce que l'auditeur attend",
+    "category": "Qualiopi",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide",
+    "word_count_target": 1800,
+    "plan": [
+      "Qu'est-ce que l'auditeur Qualiopi vérifie sur la veille ?",
+      "Les 5 types de preuves acceptées pour l'indicateur 23",
+      "Les preuves pour les indicateurs 24, 25 et 26",
+      "Comment constituer votre dossier de preuves avant l'audit",
+      "Les erreurs qui coûtent des non-conformités"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "comment-faire-sa-veille-reglementaire-formation"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 9,
+    "slug": "legifrance-formation-professionnelle-guide",
+    "keyword_main": "Légifrance formation professionnelle guide",
+    "keywords_secondary": [
+      "chercher décret formation légifrance",
+      "JORF formation professionnelle",
+      "code du travail formation"
+    ],
+    "title_suggestion": "Légifrance et formation professionnelle : trouver les bons textes rapidement",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide pratique",
+    "word_count_target": 1700,
+    "plan": [
+      "Comment utiliser Légifrance pour la formation professionnelle",
+      "Les sections du Code du travail à surveiller (Livre VI, Art. L.6311-1 et suivants)",
+      "Comment configurer des alertes JORF gratuites",
+      "Les 10 textes réglementaires formation les plus importants de 2025-2026"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "sources-veille-reglementaire-formation-professionnelle"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 10,
+    "slug": "indicateur-23-qualiopi-veille-legale",
+    "keyword_main": "indicateur 23 Qualiopi veille légale",
+    "keywords_secondary": [
+      "indicateur 23 Qualiopi explication",
+      "veille légale réglementaire Qualiopi",
+      "preuves indicateur 23"
+    ],
+    "title_suggestion": "Indicateur 23 Qualiopi : la veille légale et réglementaire expliquée simplement",
+    "category": "Qualiopi",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "définition guide",
+    "word_count_target": 1600,
+    "plan": [
+      "Que dit exactement l'indicateur 23 du référentiel Qualiopi ?",
+      "Comment le satisfaire concrètement (méthode)",
+      "Les preuves à fournir lors de l'audit",
+      "Les erreurs courantes sur cet indicateur",
+      "FAQ : questions fréquentes sur l'indicateur 23"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "preuves-veille-reglementaire-audit-qualiopi"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 11,
+    "slug": "formalerte-alternative-comparatif",
+    "keyword_main": "formalerte alternative",
+    "keywords_secondary": [
+      "formalerte avis",
+      "alternative à formalerte",
+      "meilleur outil veille formation"
+    ],
+    "title_suggestion": "Formalerte : avis complet et meilleures alternatives en 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "BOFU",
+    "format": "review comparatif",
+    "word_count_target": 1800,
+    "plan": [
+      "Qu'est-ce que Formalerte ? Présentation rapide",
+      "Fonctionnalités et limites de Formalerte",
+      "Pourquoi chercher une alternative ?",
+      "Les meilleures alternatives à Formalerte en 2026",
+      "Tableau comparatif fonctionnalités / prix"
+    ],
+    "internal_links_targets": [
+      "outils-veille-reglementaire-formation-comparatif",
+      "veille-reglementaire-organisme-de-formation"
+    ],
+    "cta": "BOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 12,
+    "slug": "indicateur-24-qualiopi-competences-metiers",
+    "keyword_main": "indicateur 24 Qualiopi compétences métiers",
+    "keywords_secondary": [
+      "indicateur 24 Qualiopi",
+      "veille compétences emplois formation",
+      "veille métiers organismes de formation"
+    ],
+    "title_suggestion": "Indicateur 24 Qualiopi : la veille sur les compétences et métiers en pratique",
+    "category": "Qualiopi",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide pratique",
+    "word_count_target": 1600,
+    "plan": [
+      "Que demande exactement l'indicateur 24 ?",
+      "Sources pour la veille compétences et emplois",
+      "Méthode pour documenter cette veille",
+      "Exemples de preuves acceptées par les auditeurs"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "indicateur-23-qualiopi-veille-legale"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 13,
+    "slug": "indicateur-25-qualiopi-innovations-pedagogiques",
+    "keyword_main": "indicateur 25 Qualiopi innovations pédagogiques",
+    "keywords_secondary": [
+      "indicateur 25 Qualiopi",
+      "veille innovations pédagogiques",
+      "IA formation pédagogie Qualiopi"
+    ],
+    "title_suggestion": "Indicateur 25 Qualiopi : la veille sur les innovations pédagogiques et technologiques",
+    "category": "Qualiopi",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide pratique",
+    "word_count_target": 1600,
+    "plan": [
+      "Que demande l'indicateur 25 du référentiel Qualiopi ?",
+      "Les domaines à surveiller : IA, e-learning, classes inversées...",
+      "Sources et méthodes pour cette veille",
+      "Comment intégrer ces innovations dans votre pédagogie"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "indicateur-24-qualiopi-competences-metiers"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "id": 14,
+    "slug": "indicateur-26-qualiopi-handicap-accessibilite",
+    "keyword_main": "indicateur 26 Qualiopi handicap accessibilité",
+    "keywords_secondary": [
+      "indicateur 26 Qualiopi",
+      "accessibilité formation handicap",
+      "référent handicap OF"
+    ],
+    "title_suggestion": "Indicateur 26 Qualiopi : la veille sur le handicap et l'accessibilité",
+    "category": "Qualiopi",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide pratique",
+    "word_count_target": 1600,
+    "plan": [
+      "Ce que dit l'indicateur 26 du référentiel Qualiopi",
+      "Obligations du référent handicap en OF",
+      "Sources pour la veille handicap et accessibilité",
+      "Preuves à fournir à l'auditeur"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "indicateur-25-qualiopi-innovations-pedagogiques"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "slug": "qualiopi-pour-les-nuls-guide-debutant",
+    "keyword_main": "qualiopi pour les nuls",
+    "keywords_secondary": [
+      "certification qualiopi",
+      "qualiopi explication",
+      "qualiopi obligatoire"
+    ],
+    "title_suggestion": "Qualiopi pour les nuls : tout comprendre en 10 minutes",
+    "category": "Qualiopi",
+    "cluster": "Qualiopi",
+    "funnel": "TOFU",
+    "format": "guide débutant",
+    "word_count_target": 1800,
+    "plan": [
+      "H2: Qu'est-ce que Qualiopi exactement ?",
+      "H2: Qui est obligé d'obtenir la certification Qualiopi ?",
+      "H2: Comment se déroule un audit Qualiopi concrètement ?",
+      "H2: Combien coûte la certification Qualiopi en 2026 ?",
+      "H2: FAQ Qualiopi pour débutants"
+    ],
+    "internal_links_targets": [
+      "indicateur-23-qualiopi-veille-legale",
+      "preuves-veille-reglementaire-audit-qualiopi"
+    ],
+    "cta": "TOFU",
+    "generated": true,
+    "generated_at": "2026-03-21"
+  },
+  {
+    "slug": "audit-qualiopi-preparer-dossier-preuves",
+    "keyword_main": "audit qualiopi préparer",
+    "keywords_secondary": [
+      "dossier preuves qualiopi",
+      "audit qualiopi checklist",
+      "non-conformité qualiopi"
+    ],
+    "title_suggestion": "Comment préparer un audit Qualiopi sans stress : la checklist complète",
+    "category": "Audit",
+    "cluster": "Qualiopi",
+    "funnel": "MOFU",
+    "format": "checklist",
+    "word_count_target": 2000,
+    "plan": [
+      "H2: Qu'est-ce que l'auditeur Qualiopi vérifie réellement ?",
+      "H2: Quels documents faut-il avoir le jour de l'audit ?",
+      "H2: Comment constituer un dossier de preuves solide ?",
+      "H2: Que faire en cas de non-conformité ?",
+      "H2: FAQ audit Qualiopi"
+    ],
+    "internal_links_targets": [
+      "preuves-veille-reglementaire-audit-qualiopi",
+      "veille-reglementaire-organisme-de-formation"
+    ],
+    "cta": "MOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "certification-qualiopi-cout-prix-2026",
+    "keyword_main": "certification qualiopi coût",
+    "keywords_secondary": [
+      "prix certification qualiopi",
+      "organisme certificateur qualiopi",
+      "devis qualiopi"
+    ],
+    "title_suggestion": "Combien coûte la certification Qualiopi en 2026 ? Prix et comparatif",
+    "category": "Qualiopi",
+    "cluster": "Qualiopi",
+    "funnel": "MOFU",
+    "format": "comparatif prix",
+    "word_count_target": 1600,
+    "plan": [
+      "H2: Pourquoi le prix de la certification Qualiopi varie-t-il autant ?",
+      "H2: Combien facturent les principaux organismes certificateurs ?",
+      "H2: Quels sont les coûts cachés à anticiper ?",
+      "H2: Comment réduire le coût de sa certification Qualiopi ?",
+      "H2: FAQ prix certification Qualiopi"
+    ],
+    "internal_links_targets": [
+      "qualiopi-pour-les-nuls-guide-debutant",
+      "audit-qualiopi-preparer-dossier-preuves"
+    ],
+    "cta": "MOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "qualiopi-32-criteres-indicateurs-guide",
+    "keyword_main": "qualiopi 32 indicateurs",
+    "keywords_secondary": [
+      "référentiel qualiopi",
+      "critères qualiopi",
+      "7 critères qualiopi"
+    ],
+    "title_suggestion": "Les 32 indicateurs Qualiopi expliqués : guide pratique pour les OF",
+    "category": "Qualiopi",
+    "cluster": "Qualiopi",
+    "funnel": "TOFU",
+    "format": "guide référentiel",
+    "word_count_target": 2200,
+    "plan": [
+      "H2: Comment le référentiel Qualiopi est-il structuré ?",
+      "H2: Quels sont les 7 critères du référentiel national qualité ?",
+      "H2: Quels indicateurs sont les plus souvent non-conformes ?",
+      "H2: Comment satisfaire les indicateurs 23 à 26 sur la veille ?",
+      "H2: FAQ référentiel Qualiopi"
+    ],
+    "internal_links_targets": [
+      "indicateur-23-qualiopi-veille-legale",
+      "indicateur-24-qualiopi-competences-metiers",
+      "indicateur-25-qualiopi-innovations-pedagogiques",
+      "indicateur-26-qualiopi-handicap-accessibilite"
+    ],
+    "cta": "TOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "renouvellement-qualiopi-audit-surveillance",
+    "keyword_main": "renouvellement qualiopi",
+    "keywords_secondary": [
+      "audit de surveillance qualiopi",
+      "durée validité qualiopi",
+      "maintien qualiopi"
+    ],
+    "title_suggestion": "Renouvellement Qualiopi : audit de surveillance et maintien de la certification",
+    "category": "Audit",
+    "cluster": "Qualiopi",
+    "funnel": "MOFU",
+    "format": "guide pratique",
+    "word_count_target": 1700,
+    "plan": [
+      "H2: Combien de temps est valable la certification Qualiopi ?",
+      "H2: Qu'est-ce que l'audit de surveillance Qualiopi ?",
+      "H2: Comment préparer le renouvellement sans partir de zéro ?",
+      "H2: Quels écueils éviter pour ne pas perdre sa certification ?",
+      "H2: FAQ renouvellement Qualiopi"
+    ],
+    "internal_links_targets": [
+      "audit-qualiopi-preparer-dossier-preuves",
+      "qualiopi-pour-les-nuls-guide-debutant"
+    ],
+    "cta": "MOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "appels-offres-formation-professionnelle-guide",
+    "keyword_main": "appels d'offres formation professionnelle",
+    "keywords_secondary": [
+      "marchés publics formation",
+      "BOAMP formation",
+      "répondre appel d'offres formation"
+    ],
+    "title_suggestion": "Appels d'offres formation professionnelle : comment trouver et répondre en 2026",
+    "category": "Appels d'offres",
+    "cluster": "Appels d'offres",
+    "funnel": "TOFU",
+    "format": "guide pratique",
+    "word_count_target": 2000,
+    "plan": [
+      "H2: Qu'est-ce qu'un appel d'offres de formation professionnelle ?",
+      "H2: Où trouver les appels d'offres formation en France ?",
+      "H2: Comment rédiger une offre technique gagnante ?",
+      "H2: Quelles erreurs évitent les OF qui gagnent régulièrement ?",
+      "H2: FAQ appels d'offres formation"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "qualiopi-pour-les-nuls-guide-debutant"
+    ],
+    "cta": "TOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "boamp-formation-professionnelle-comment-veiller",
+    "keyword_main": "BOAMP formation professionnelle",
+    "keywords_secondary": [
+      "BOAMP marchés formation",
+      "veille BOAMP",
+      "appels d'offres BOAMP formation"
+    ],
+    "title_suggestion": "BOAMP et formation professionnelle : comment surveiller les marchés publics ?",
+    "category": "Appels d'offres",
+    "cluster": "Appels d'offres",
+    "funnel": "MOFU",
+    "format": "tutoriel",
+    "word_count_target": 1600,
+    "plan": [
+      "H2: Qu'est-ce que le BOAMP et que publie-t-il pour la formation ?",
+      "H2: Comment paramétrer des alertes BOAMP efficaces ?",
+      "H2: Quels codes CPV surveiller pour la formation professionnelle ?",
+      "H2: Comment automatiser sa veille BOAMP sans y passer 3h par semaine ?",
+      "H2: FAQ BOAMP formation"
+    ],
+    "internal_links_targets": [
+      "appels-offres-formation-professionnelle-guide",
+      "outils-veille-reglementaire-formation-comparatif"
+    ],
+    "cta": "MOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "cpf-formation-organismes-conditions-2026",
+    "keyword_main": "CPF organisme de formation",
+    "keywords_secondary": [
+      "formation CPF éligible",
+      "compte personnel formation",
+      "CPF financement formation"
+    ],
+    "title_suggestion": "CPF et organismes de formation : conditions, droits et évolutions 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide réglementaire",
+    "word_count_target": 1900,
+    "plan": [
+      "H2: Comment fonctionne le CPF pour les organismes de formation ?",
+      "H2: Quelles conditions pour qu'une formation soit éligible au CPF ?",
+      "H2: Quelles sont les dernières évolutions réglementaires du CPF en 2026 ?",
+      "H2: Comment un OF reste-t-il conforme aux règles CPF ?",
+      "H2: FAQ CPF et organismes de formation"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "indicateur-23-qualiopi-veille-legale"
+    ],
+    "cta": "TOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "france-competences-actualites-formation-2026",
+    "keyword_main": "France Compétences formation",
+    "keywords_secondary": [
+      "France Compétences RNCP",
+      "CPF plafond France Compétences",
+      "réforme formation France Compétences"
+    ],
+    "title_suggestion": "France Compétences et formation professionnelle : actualités et rôle en 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "dossier",
+    "word_count_target": 1800,
+    "plan": [
+      "H2: Quel est le rôle exact de France Compétences pour les organismes de formation ?",
+      "H2: Comment France Compétences impacte-t-il votre certification Qualiopi ?",
+      "H2: Quelles décisions récentes de France Compétences faut-il surveiller ?",
+      "H2: Comment intégrer France Compétences dans votre veille réglementaire ?",
+      "H2: FAQ France Compétences"
+    ],
+    "internal_links_targets": [
+      "cpf-formation-organismes-conditions-2026",
+      "sources-veille-reglementaire-formation-professionnelle"
+    ],
+    "cta": "TOFU",
+    "generated": false,
+    "generated_at": null
+  },
+  {
+    "slug": "opco-financement-formation-guide-complet",
+    "keyword_main": "OPCO financement formation",
+    "keywords_secondary": [
+      "OPCO prise en charge formation",
+      "OPCO organisme formation",
+      "financement OPCO 2026"
+    ],
+    "title_suggestion": "OPCO et financement formation : le guide complet pour les OF en 2026",
+    "category": "Veille",
+    "cluster": "Veille réglementaire",
+    "funnel": "TOFU",
+    "format": "guide complet",
+    "word_count_target": 2100,
+    "plan": [
+      "H2: Qu'est-ce qu'un OPCO et quel est son rôle pour les OF ?",
+      "H2: Quels sont les 11 OPCO et leurs secteurs d'activité ?",
+      "H2: Comment un OPCO finance-t-il la formation professionnelle ?",
+      "H2: Comment surveiller les actualités de votre OPCO ?",
+      "H2: FAQ OPCO et financement formation"
+    ],
+    "internal_links_targets": [
+      "veille-reglementaire-organisme-de-formation",
+      "france-competences-actualites-formation-2026"
+    ],
+    "cta": "TOFU",
+    "generated": false,
+    "generated_at": null
+  }
+]

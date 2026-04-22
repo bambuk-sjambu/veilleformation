@@ -1,6 +1,6 @@
 # Suivi des Fonctionnalites -- VeilleFormation.fr
 
-> Derniere mise a jour : 2026-03-13
+> Derniere mise a jour : 2026-03-18
 > Base sur le Cahier des Charges v1.2
 > Reference : /home/stef/SJA/Projets/Veille Reglementaire Formation/Cahier des Charges - VeilleFormation.md
 
@@ -16,19 +16,125 @@
 
 ---
 
-## Synthese par module
+## Synthese par Phase
 
+### Phase 1 -- MVP Newsletter (~75% complet)
 | Module | Nom | Completion estimee | Statut |
 |--------|-----|-------------------|--------|
-| 1 | Collecteur BOAMP | ~75% | PARTIEL -- API fonctionne, manque retry/backoff, cron 2x/jour, URL API differente du CDC |
-| 2 | Collecteur Legifrance | ~80% | OK -- LegifranceRSS collector (fallback sans OAuth2), collecte historique DILA, 713 textes sur 4 semaines |
-| 3 | Pipeline IA | ~70% | PARTIEL -- Fonctionne en mode synchrone, manque API Batch Anthropic, champs sortie incomplets |
-| 4 | Generateur Newsletter | ~90% | OK -- 4 sections, template Jinja2, tri par impact, newsletter #1 generee, tests complets |
-| 5 | Integration Brevo | ~85% | OK -- Campagnes, contacts, stats, sync desabonnements, tests complets |
-| 6 | Landing Page | ~75% | PARTIEL -- Dashboard connecte au backend SQLite (API routes), filtrage par indicateur, favoris, page AO avec urgence deadline |
-| 7 | Base de donnees SQLite | ~70% | PARTIEL -- 4 tables sur 6, manque collection_logs, processing_logs, alert_logs. Index partiels |
-| 8 | Orchestrateur | ~65% | PARTIEL -- CLI complet (init, collect, collect-history, process, retry, newsletter, status), manque cron, recovery auto |
-| 9 | Monitoring | ~20% | ENCOURS -- Logging JSON OK, manque check_health, alertes email, cleanup, dedup alertes |
+| 1 | Collecteur BOAMP | ~75% | PARTIEL |
+| 2 | Collecteur Legifrance | ~80% | OK |
+| 3 | Pipeline IA | ~70% | PARTIEL |
+| 4 | Generateur Newsletter | ~90% | OK |
+| 5 | Integration Brevo | ~85% | OK |
+| 6 | Landing Page | ~75% | PARTIEL |
+| 7 | Base de donnees SQLite | ~85% | OK |
+| 8 | Orchestrateur | ~65% | PARTIEL |
+| 9 | Monitoring | ~20% | ENCOURS |
+
+### Phase 1.5 -- Sources etendues (~70% complet)
+| Module | Nom | Completion estimee | Statut |
+|--------|-----|-------------------|--------|
+| 10 | Scrapers OPCO (6/11 fonctionnels) | ~55% | PARTIEL |
+| 10b | RSS Feeds (2 OPCO) | ~90% | OK |
+| 10c | Playwright Collectors | ~70% | OK |
+| 11 | France Travail | ~30% | PARTIEL |
+| 12 | Conseils Regionaux (13 sites) | ~40% | PARTIEL |
+| 13 | Agregateurs marches publics | ~20% | PARTIEL |
+
+### Phase 2 -- SaaS Freemium (~85% complet)
+| Module | Nom | Completion estimee | Statut |
+|--------|-----|-------------------|--------|
+| 10 | Authentification | ~100% | OK -- iron-session, login/register/logout, middleware |
+| 11 | Dashboard Next.js | ~100% | OK -- veille, AO, plan action, settings, export, import |
+| 12 | Systeme de plans | ~100% | OK -- colonne plan, restrictions export/alertes/equipes/import |
+| 13 | Stripe Integration | ~70% | PARTIEL -- checkout/webhook/portal routes, manque config env |
+| 14 | Export PDF Audit | ~100% | OK -- react-pdf, 4 pages, profil, indicateurs |
+| 15 | Alertes personnalisees | ~100% | OK -- table alerts, API CRUD, UI parametres |
+| 16 | Systeme equipes | ~100% | OK -- tables teams/members/invitations, API, UI |
+| 17 | Upload contenu externe | ~100% | OK -- table external_contents, API, UI, traitement IA |
+| 18 | Marquage articles | ~50% | PARTIEL -- API read_status, manque UI |
+
+---
+
+## Phase 2 -- Details par Module
+
+### Module 10 : Authentification (F2.1)
+
+| ID | Fonctionnalite | Statut | Fichier |
+|----|----------------|--------|---------|
+| F2.1-01 | Inscription email + mot de passe | OK | frontend/src/app/api/auth/register/route.ts |
+| F2.1-02 | Connexion email + mot de passe | OK | frontend/src/app/api/auth/login/route.ts |
+| F2.1-03 | Deconnexion | OK | frontend/src/app/api/auth/logout/route.ts |
+| F2.1-04 | Session iron-session | OK | frontend/src/lib/session.ts |
+| F2.1-05 | Roles (user, solo, team_admin, team_member, agency_admin) | PARTIEL | colonne plan seulement |
+| F2.1-06 | Verification email | NON | - |
+| F2.1-07 | Protection routes dashboard | OK | frontend/src/app/dashboard/layout.tsx |
+
+### Module 11 : Dashboard Next.js (F2.2)
+
+| ID | Fonctionnalite | Statut | Fichier |
+|----|----------------|--------|---------|
+| F2.2-01 | Feed veille avec filtres | OK | frontend/src/app/dashboard/veille/page.tsx |
+| F2.2-02 | Filtre par indicateur Qualiopi (23/24/25/26) | OK | frontend/src/app/dashboard/veille/page.tsx |
+| F2.2-03 | Filtre par impact (Fort/Moyen/Faible) | OK | frontend/src/app/dashboard/veille/page.tsx |
+| F2.2-04 | Filtre favoris | OK | frontend/src/app/dashboard/veille/page.tsx |
+| F2.2-05 | Feed AO avec scoring | OK | frontend/src/app/dashboard/appels-offres/page.tsx |
+| F2.2-06 | Plan d'action CRUD | OK | frontend/src/app/dashboard/plan-action/page.tsx |
+| F2.2-07 | Page parametres profil | OK | frontend/src/app/dashboard/settings/page.tsx |
+| F2.2-08 | Page export PDF | OK | frontend/src/app/dashboard/export/page.tsx |
+| F2.2-09 | Page abonnement | OK | frontend/src/app/dashboard/abonnement/page.tsx |
+| F2.2-10 | Navigation sidebar | OK | frontend/src/components/DashboardShell.tsx |
+
+### Module 12 : Systeme de plans
+
+| ID | Fonctionnalite | Statut | Fichier |
+|----|----------------|--------|---------|
+| F12-01 | Colonne plan dans users | OK | frontend/src/lib/db.ts |
+| F12-02 | 4 plans (free, solo, equipe, agence) | OK | frontend/src/lib/plan.ts |
+| F12-03 | Restriction exports (1/mois free) | OK | frontend/src/lib/plan.ts |
+| F12-04 | Log des exports | OK | frontend/src/lib/plan.ts |
+| F12-05 | UI upgrade/downgrade | PARTIEL | frontend/src/app/dashboard/abonnement/page.tsx |
+| F12-06 | Restrictions features par plan | PARTIEL | - |
+
+### Module 13 : Stripe Integration
+
+| ID | Fonctionnalite | Statut | Fichier |
+|----|----------------|--------|---------|
+| F13-01 | Route checkout | OK | frontend/src/app/api/stripe/checkout/route.ts |
+| F13-02 | Route webhook | OK | frontend/src/app/api/stripe/webhook/route.ts |
+| F13-03 | Route portal | OK | frontend/src/app/api/stripe/portal/route.ts |
+| F13-04 | Colonnes stripe_customer_id | OK | frontend/src/lib/db.ts |
+| F13-05 | Colonnes stripe_subscription_id | OK | frontend/src/lib/db.ts |
+| F13-06 | Price IDs configurables | OK | frontend/src/lib/stripe.ts |
+| F13-07 | Configuration .env | NON | Variables a definir |
+| F13-08 | Webhook signature verification | OK | frontend/src/app/api/stripe/webhook/route.ts |
+| F13-09 | Handling subscription events | OK | checkout.session.completed, subscription.updated/deleted |
+
+### Module 14 : Export PDF Audit Qualiopi
+
+| ID | Fonctionnalite | Statut | Fichier |
+|----|----------------|--------|---------|
+| F14-01 | Page de garde avec info entreprise | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-02 | Resume executif avec KPIs | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-03 | Detail par indicateur (23-26) | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-04 | Liste actions menees | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-05 | Repartition impact graphique | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-06 | Sources de veille | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-07 | Methodologie configurable | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-08 | Section signatures | OK | frontend/src/lib/audit-pdf.tsx |
+| F14-09 | Telechargement PDF | OK | frontend/src/app/api/export/audit/route.tsx |
+| F14-10 | Selection plage dates | OK | frontend/src/app/dashboard/export/page.tsx |
+
+### Module 18 : Marquage articles
+
+| ID | Fonctionnalite | Statut | Fichier |
+|----|----------------|--------|---------|
+| F18-01 | Colonne read_status | OK | frontend/src/lib/db.ts |
+| F18-02 | Statuts (a_lire, interessant, a_exploiter) | OK | frontend/src/lib/db.ts |
+| F18-03 | API read-status | OK | frontend/src/app/api/articles/read-status/route.ts |
+| F18-04 | UI dropdown marquage | NON | - |
+| F18-05 | Filtre par statut | NON | - |
+| F18-06 | Inclusion dans export PDF | NON | - |
 
 ---
 
@@ -381,33 +487,89 @@
 
 ## Phase 1.5 -- Sources etendues
 
-### F1.5.1 -- Scrapers OPCO (11 sources)
+> Derniere mise a jour : 2026-03-18
 
-| ID | Source | Statut | Fichier |
-|----|--------|--------|---------|
-| F1.5.1-01 | ATLAS (opco-atlas.fr) | NON | - |
-| F1.5.1-02 | AKTO (akto.fr) | NON | - |
-| F1.5.1-03 | OPCO EP (opcoep.fr) | NON | - |
-| F1.5.1-04 | Constructys | NON | - |
-| F1.5.1-05 | OPCOMMERCE | NON | - |
-| F1.5.1-06 | OCAPIAT | NON | - |
-| F1.5.1-07 | OPCO 2i | NON | - |
-| F1.5.1-08 | OPCO Mobilites | NON | - |
-| F1.5.1-09 | OPCO Sante | NON | - |
-| F1.5.1-10 | AFDAS | NON | - |
-| F1.5.1-11 | Uniformation | NON | - |
+### F1.5.1 -- Scrapers OPCO (11 sources cibles)
 
-Statut global : **NON** -- Aucun scraper OPCO implemente.
+| ID | Source | Statut | Fichier | Commentaire |
+|----|--------|--------|---------|-------------|
+| F1.5.1-01 | ATLAS (opco-atlas.fr) | BLOQUE | - | Site inaccessible (timeout/SSL) |
+| F1.5.1-02 | AKTO (akto.fr) | OK | collectors/opco.py | ~8 AO collectees par passe |
+| F1.5.1-03 | OPCO EP (opcoep.fr) | PARTIEL | collectors/opco.py | Page marches-publics accessible, 0 items detectes |
+| F1.5.1-04 | Constructys | BLOQUE | - | Site inaccessible (timeout) |
+| F1.5.1-05 | OPCOMMERCE (lopcommerce.com) | OK | collectors/opco.py | 1 item collecte |
+| F1.5.1-06 | OCAPIAT | BLOQUE | - | Site inaccessible (404) |
+| F1.5.1-07 | OPCO 2i (opco2i.fr) | OK | collectors/rss_feeds.py + playwright | 5 items via RSS, 0 via Playwright (pas d'AO en cours) |
+| F1.5.1-08 | OPCO Mobilites | BLOQUE | - | Site inaccessible (timeout) |
+| F1.5.1-09 | OPCO Sante (opco-sante.fr) | OK | collectors/opco.py | 0-5 AO par passe |
+| F1.5.1-10 | AFDAS | BLOQUE | - | Redirige vers externe, page 404 |
+| F1.5.1-11 | Uniformation | OK | collectors/opco.py + rss_feeds.py | 2-4 AO par passe + RSS |
+
+**Statut global : PARTIEL (6/11 OPCO fonctionnels)**
+
+- 6 OPCO collectent des AO : AKTO, OPCO Sante, Uniformation, OPCOMMERCE, OPCO 2i (RSS), OPCO EP
+- 5 OPCO bloques (sites inaccessibles) : ATLAS, Constructys, OCAPIAT, OPCO Mobilites, AFDAS
+
+### F1.5.1b -- RSS Feeds (nouveaux)
+
+| ID | Source | Statut | Fichier | Commentaire |
+|----|--------|--------|---------|-------------|
+| F1.5.1b-01 | Uniformation RSS | OK | collectors/rss_feeds.py | Flux https://www.uniformation.fr/rss.xml - 2 AAP items |
+| F1.5.1b-02 | OPCO 2i RSS | OK | collectors/rss_feeds.py | Flux https://www.opco2i.fr/feed/ - 5 items pertinents |
+
+**Statut global : OK (2/2 flux fonctionnels)**
+
+### F1.5.1c -- Playwright Collectors (nouveaux)
+
+| ID | Source | Statut | Fichier | Commentaire |
+|----|--------|--------|---------|-------------|
+| F1.5.1c-01 | OPCO 2i Playwright | OK | collectors/playwright_collectors.py | Fonctionne, 0 items (pas d'AO en cours sur le site) |
+| F1.5.1c-02 | Regions Playwright | OK | collectors/playwright_collectors.py | 5 regions, 60 articles Ile-de-France |
+| F1.5.1c-03 | France Travail Playwright | OK | collectors/playwright_collectors.py | Fonctionne, 0 items (recherche) |
+
+**Statut global : OK (3/3 collecteurs Playwright fonctionnels)**
 
 ### F1.5.2 -- Scrapers France Travail + Regions
 
-| ID | Source | Statut |
-|----|--------|--------|
-| F1.5.2-01 | France Travail (13 pages regionales) | NON |
-| F1.5.2-02 | Conseils Regionaux (13 sites) | NON |
-| F1.5.2-03 | Agregateurs (francemarches, e-marchespublics) | NON |
+| ID | Source | Statut | Fichier | Commentaire |
+|----|--------|--------|---------|-------------|
+| F1.5.2-01 | France Travail (recherche) | PARTIEL | collectors/france_travail.py | Pages regionales AAP n'existent plus, fallback via recherche globale |
+| F1.5.2-02 | Conseils Regionaux (13 sites) | PARTIEL | collectors/regions.py + playwright | Sites tres variables, Playwright pour JS-rendered |
+| F1.5.2-03 | Agregateurs (francemarches, e-marchespublics) | PARTIEL | collectors/regions.py | Integres, mais sites proteges (404/JS) |
 
-Statut global : **NON** -- Aucun scraper France Travail / Regional implemente.
+**Statut global : PARTIEL**
+
+- France Travail : pages regionales `/region/{region}/actualites/appels-a-projets.html` n'existent plus
+- Conseils Regionaux : 13 regions configurees, Playwright collecte 60+ articles depuis Ile-de-France
+- Agregateurs : ajoutes mais sites proteges ou JS-heavy
+
+### Ameliorations 2026-03-18
+
+1. **Refactoring opco.py** : Ajout de 6 collecteurs OPCO avec selecteurs ameliores
+2. **Refactoring regions.py** : URLs mises a jour, agregateurs ajoutes
+3. **Refactoring france_travail.py** : Fallback recherche globale au lieu de pages regionales 404
+4. **Integration main.py** : Tous les collecteurs Phase 1.5 appeles dans `cmd_collect()`
+5. **NOUVEAU : RSS Feeds** : Ajout de `collectors/rss_feeds.py` pour Uniformation et OPCO 2i (2 flux fonctionnels)
+6. **NOUVEAU : Playwright** : Ajout de `collectors/playwright_collectors.py` pour sites JS-rendered (3 collecteurs)
+
+### Resultats collecte complete (2026-03-18)
+
+| Source | Articles collectes |
+|--------|-------------------|
+| BOAMP | 88 |
+| Legifrance | 205 |
+| OPCO (6 sources) | 11 |
+| RSS Feeds | 7 |
+| Playwright (JS) | 60 |
+| **Total** | **371** |
+
+### Recommendations pour amelioration
+
+1. ~~**Utiliser Playwright** pour les sites JS-rendered (OPCO 2i, Regions, France Travail)~~ -- FAIT
+2. ~~**Flux RSS** : Verifier si les sites OPCO ont des flux RSS~~ -- FAIT (Uniformation + OPCO 2i)
+3. **APIs officielles** : Explorer les APIs marches publics (BOAMP deja utilise)
+4. **Monitoring** : Ajouter alertes si un scraper retourne 0 pendant 3 jours consecutifs
+5. **Regions supplementaires** : Ajouter plus de regions au Playwright collector
 
 ---
 
@@ -415,13 +577,16 @@ Statut global : **NON** -- Aucun scraper France Travail / Regional implemente.
 
 | Module | Statut | Commentaire |
 |--------|--------|-------------|
-| F2.1 Auth (inscription, connexion, session) | ENCOURS | frontend/src/app/api/auth/ contient 4 routes (register, login, logout, me). Pages connexion + inscription existent. Non teste. |
-| F2.2 Dashboard web | ENCOURS | frontend/src/app/dashboard/ contient 6 pages (accueil, veille, appels-offres, newsletter, plan-action, parametres). Contenu et fonctionnalite non verifies. |
-| F2.3 Export PDF audit Qualiopi | NON | Non implemente |
-| F2.4 Systeme de paiement Stripe | NON | Non implemente |
-| F2.5 Personnalisation par profil | NON | Non implemente |
+| F2.1 Auth (inscription, connexion, session) | OK | frontend/src/app/api/auth/ contient 4 routes (register, login, logout, me). Pages connexion + inscription existent. |
+| F2.2 Dashboard web | OK | frontend/src/app/dashboard/ contient 9 pages (accueil, veille, appels-offres, newsletter, plan-action, parametres, import, export, abonnement). |
+| F2.3 Export PDF audit Qualiopi | OK | frontend/src/lib/audit-pdf.tsx + /api/export/audit. Generation PDF avec profil entreprise. |
+| F2.4 Systeme de paiement Stripe | PARTIEL | /api/stripe/checkout, webhook, portal implementes. Manque configuration produits dans Stripe. |
+| F2.5 Personnalisation par profil | OK | Restrictions par plan dans API (alerts, teams, external, export). |
 | F2.6 Newsletter personnalisee | NON | Non implemente |
-| F2.7 Enrichissements concurrentiels | NON | Non implemente |
+| F2.7 Enrichissements concurrentiels | PARTIEL | Upload contenu externe OK. Systeme de marquage articles OK. Programme partenaires NON. |
+| F2.8 Alertes personnalisees | OK | Table alerts, API /api/alerts, UI dans Parametres. Mots-cles, regions, indicateurs. |
+| F2.9 Systeme equipes | OK | Tables teams/team_members/team_invitations, API /api/teams, UI dans Parametres. Roles owner/admin/member. |
+| F2.10 Import contenu externe | OK | Table external_contents, API /api/external, UI /dashboard/import. Traitement IA pour classification. |
 
 ---
 

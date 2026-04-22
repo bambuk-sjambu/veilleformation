@@ -16,7 +16,7 @@ SCHEMA_SQL = """
 -- Articles (articles collectes from all sources)
 CREATE TABLE IF NOT EXISTS articles (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  source TEXT NOT NULL CHECK(source IN ('boamp', 'legifrance', 'opco_atlas', 'opco_akto', 'opco_ep', 'opco_mobilites', 'constructys', 'opcommerce', 'ocapiat', 'france_travail', 'region')),
+  source TEXT NOT NULL CHECK(source IN ('boamp', 'legifrance', 'opco_atlas', 'opco_akto', 'opco_ep', 'opco_mobilites', 'constructys', 'opcommerce', 'ocapiat', 'opco_2i', 'opco_sante', 'uniformation', 'afdas', 'france_travail', 'region', 'france_competences', 'travail_gouv', 'education_gouv')),
   source_id TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   url TEXT,
@@ -107,7 +107,7 @@ CREATE INDEX IF NOT EXISTS idx_subscribers_active on subscribers(is_active);
 -- Collection logs(automated collection tracking)
 CREATE TABLE IF NOT EXISTS collection_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    source TEXT NOT NULL CHECK(source IN ('boamp', 'legifrance', 'opco_atlas', 'opco_akto', 'opco_ep', 'opco_mobilites', 'constructys', 'opcommerce', 'ocapiat', 'france_travail', 'region')),
+    source TEXT NOT NULL CHECK(source IN ('boamp', 'legifrance', 'opco_atlas', 'opco_akto', 'opco_ep', 'opco_mobilites', 'constructys', 'opcommerce', 'ocapiat', 'opco_2i', 'opco_sante', 'uniformation', 'afdas', 'france_travail', 'region', 'france_competences', 'travail_gouv', 'education_gouv')),
     started_at TEXT NOT NULL DEFAULT (datetime('now')),
     finished_at TEXT,
     status TEXT NOT null check(status IN ('success', 'failed', 'partial')),
@@ -168,6 +168,76 @@ CREATE TABLE IF NOT EXISTS logs (
     message TEXT NOT null,
     details TEXT
 );
+
+-- Actions (plan d'action per article for Qualiopi audit)
+CREATE TABLE IF NOT EXISTS actions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    article_id INTEGER NOT NULL,
+    action_description TEXT NOT NULL,
+    responsible TEXT,
+    status TEXT DEFAULT 'a_faire' CHECK(status IN ('a_faire', 'en_cours', 'fait', 'annule')),
+    priority TEXT DEFAULT 'moyenne' CHECK(priority IN ('basse', 'moyenne', 'haute')),
+    due_date DATE,
+    completed_at DATETIME,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_actions_article ON actions(article_id);
+CREATE INDEX IF NOT EXISTS idx_actions_status ON actions(status);
+CREATE INDEX IF NOT EXISTS idx_actions_priority ON actions(priority);
+CREATE INDEX IF NOT EXISTS idx_actions_due ON actions(due_date);
+
+-- User profiles (OF info for audit reports)
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL UNIQUE,
+    company_name TEXT NOT NULL,
+    siret TEXT,
+    nde TEXT,
+    address TEXT,
+    city TEXT,
+    phone TEXT,
+    email TEXT,
+    website TEXT,
+    logo_url TEXT,
+    responsible_name TEXT,
+    responsible_function TEXT,
+    methodology_notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Blog articles (generated SEO content)
+CREATE TABLE IF NOT EXISTS blog_articles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  h1 TEXT NOT NULL,
+  excerpt TEXT NOT NULL,
+  category TEXT NOT NULL,
+  cluster TEXT NOT NULL,
+  funnel TEXT NOT NULL CHECK(funnel IN ('TOFU', 'MOFU', 'BOFU')),
+  keyword_main TEXT NOT NULL,
+  keywords_secondary TEXT,
+  content_html TEXT NOT NULL,
+  meta_description TEXT NOT NULL,
+  word_count INTEGER DEFAULT 0,
+  read_time TEXT DEFAULT '10 min',
+  internal_links TEXT,
+  published_at DATE NOT NULL,
+  status TEXT DEFAULT 'published' CHECK(status IN ('published', 'draft', 'failed')),
+  verified_at DATETIME,
+  verified_status_code INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_blog_published ON blog_articles(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_blog_slug ON blog_articles(slug);
+CREATE INDEX IF NOT EXISTS idx_blog_status ON blog_articles(status);
 """
 
 # ------------------------------------------------------------

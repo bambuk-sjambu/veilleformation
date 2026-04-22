@@ -507,7 +507,7 @@ function Pricing() {
                 href="/inscription"
                 className={`block w-full text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
                   plan.highlighted
-                    ? "bg-primary text-white hover:bg-primary-dark"
+                    ? "bg-yellow-400 text-black font-bold hover:bg-yellow-300"
                     : "bg-gray-100 text-gray-900 hover:bg-gray-200"
                 }`}
               >
@@ -565,7 +565,7 @@ function FinalCTA() {
         </p>
         <Link
           href="/inscription"
-          className="inline-flex items-center px-8 py-4 rounded-lg bg-accent text-white font-bold text-lg hover:bg-amber-600 transition-colors"
+          className="inline-flex items-center px-8 py-4 rounded-lg bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-300 transition-colors"
         >
           Commencez gratuitement
         </Link>

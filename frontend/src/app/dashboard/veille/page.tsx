@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import {
   FileSearch,
   ExternalLink,
@@ -8,6 +9,10 @@ import {
   Filter,
   Star,
   BookmarkCheck,
+  Eye,
+  ThumbsUp,
+  Lightbulb,
+  Info,
 } from "lucide-react";
 
 interface Article {
@@ -22,6 +27,7 @@ interface Article {
   source: string;
   category: string | null;
   is_starred: number;
+  read_status: string | null;
 }
 
 function formatDateFr(dateStr: string | null): string {
@@ -39,6 +45,12 @@ const impactConfig: Record<string, { label: string; classes: string }> = {
   fort: { label: "Fort", classes: "bg-red-100 text-red-800" },
   moyen: { label: "Moyen", classes: "bg-amber-100 text-amber-800" },
   faible: { label: "Faible", classes: "bg-green-100 text-green-800" },
+};
+
+const readStatusConfig: Record<string, { label: string; icon: React.ElementType; classes: string }> = {
+  a_lire: { label: "A lire", icon: Eye, classes: "bg-gray-100 text-gray-700" },
+  interessant: { label: "Interessant", icon: ThumbsUp, classes: "bg-blue-100 text-blue-700" },
+  a_exploiter: { label: "A exploiter", icon: Lightbulb, classes: "bg-purple-100 text-purple-700" },
 };
 
 const indicatorConfig: Record<
@@ -105,6 +117,7 @@ export default function VeillePage() {
   const [loading, setLoading] = useState(true);
   const [filterImpact, setFilterImpact] = useState<string | null>(null);
   const [filterIndicator, setFilterIndicator] = useState<string | null>(null);
+  const [filterReadStatus, setFilterReadStatus] = useState<string | null>(null);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   const fetchArticles = useCallback(() => {
@@ -156,9 +169,27 @@ export default function VeillePage() {
     }
   };
 
-  const displayedArticles = showFavoritesOnly
-    ? articles.filter((a) => a.is_starred)
-    : articles;
+  const updateReadStatus = async (articleId: number, readStatus: string | null) => {
+    // Optimistic update
+    setArticles((prev) =>
+      prev.map((a) =>
+        a.id === articleId ? { ...a, read_status: readStatus } : a
+      )
+    );
+    try {
+      await fetch("/api/articles/read-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: articleId, readStatus }),
+      });
+    } catch {
+      // Revert on error - silent fail
+    }
+  };
+
+  const displayedArticles = articles
+    .filter((a) => !showFavoritesOnly || a.is_starred)
+    .filter((a) => !filterReadStatus || a.read_status === filterReadStatus);
 
   const favCount = articles.filter((a) => a.is_starred).length;
 
@@ -170,6 +201,13 @@ export default function VeillePage() {
         </h1>
         <p className="text-gray-600 mt-1">
           Articles et textes reglementaires analyses par l&apos;IA
+        </p>
+        <p className="text-sm text-gray-500 mt-2">
+          Donnees collectees depuis{" "}
+          <Link href="/sources" className="text-primary hover:underline font-medium">
+            17 sources officielles
+          </Link>{" "}
+          (BOAMP, Legifrance, OPCO, Regions...)
         </p>
       </div>
 
@@ -256,6 +294,42 @@ export default function VeillePage() {
               ))}
             </div>
           </div>
+          <div>
+            <label className="text-xs text-gray-500 block mb-1">Statut</label>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setFilterReadStatus(null)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  !filterReadStatus
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                Tous
+              </button>
+              {(["a_lire", "interessant", "a_exploiter"] as const).map((status) => {
+                const cfg = readStatusConfig[status];
+                const Icon = cfg.icon;
+                return (
+                  <button
+                    key={status}
+                    onClick={() =>
+                      setFilterReadStatus(filterReadStatus === status ? null : status)
+                    }
+                    className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                      filterReadStatus === status
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                    title={cfg.label}
+                  >
+                    <Icon className="w-3 h-3" />
+                    {cfg.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -264,6 +338,7 @@ export default function VeillePage() {
         {displayedArticles.length} article
         {displayedArticles.length !== 1 ? "s" : ""}{" "}
         {showFavoritesOnly ? "en favoris" : ""}
+        {filterReadStatus ? ` — ${readStatusConfig[filterReadStatus]?.label}` : ""}
         {filterIndicator
           ? ` — ${indicatorConfig[filterIndicator]?.label || ""}`
           : ""}
@@ -284,8 +359,8 @@ export default function VeillePage() {
           </h2>
           <p className="text-gray-500">
             {showFavoritesOnly
-              ? "Cliquez sur l'etoile d'un article pour l'ajouter en favori."
-              : "Les articles apparaitront ici apres la premiere collecte."}
+              ? "Cliquez sur l'étoile d'un article pour l'ajouter en favori."
+              : "Les articles apparaîtront ici après la première collecte."}
           </p>
         </div>
       ) : (
@@ -335,7 +410,15 @@ export default function VeillePage() {
                           ? "Legifrance"
                           : article.source === "boamp"
                             ? "BOAMP"
-                            : article.source}
+                            : article.source === "france_competences"
+                              ? "France Compétences"
+                              : article.source === "opco_akto"
+                                ? "OPCO Akto"
+                                : article.source === "opcommerce"
+                                  ? "OPCommerce"
+                                  : article.source === "region"
+                                    ? "Région"
+                                    : article.source}
                       </span>
                     </div>
 
@@ -360,6 +443,18 @@ export default function VeillePage() {
                   </div>
 
                   <div className="flex flex-col items-center gap-2 shrink-0">
+                    {/* Read status dropdown */}
+                    <select
+                      value={article.read_status || ""}
+                      onChange={(e) => updateReadStatus(article.id, e.target.value || null)}
+                      className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary bg-white"
+                      title="Marquer cet article"
+                    >
+                      <option value="">Marquer...</option>
+                      <option value="a_lire">A lire</option>
+                      <option value="interessant">Interessant</option>
+                      <option value="a_exploiter">A exploiter</option>
+                    </select>
                     <button
                       onClick={() => toggleStar(article.id, article.is_starred)}
                       className="p-2 transition-colors rounded-lg hover:bg-amber-50"

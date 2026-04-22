@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Megaphone,
   ExternalLink,
@@ -104,12 +105,31 @@ export default function AppelsOffresPage() {
   const [articles, setArticles] = useState<AoArticle[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [preferredRegions, setPreferredRegions] = useState<string[]>([]);
 
+  // Fetch user préférences
+  useEffect(() => {
+    fetch("/api/user")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.preferred_regions) {
+          try {
+            const regions = JSON.parse(data.user.preferred_regions);
+            setPreferredRegions(Array.isArray(regions) ? regions : []);
+          } catch {
+            setPreferredRegions([]);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch AO articles
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("category", "ao");
     params.set("status", "done");
-    params.set("sort", "deadline");
+    params.set("sort", "relevance");
     params.set("limit", "100");
 
     fetch(`/api/articles?${params.toString()}`)
@@ -122,6 +142,45 @@ export default function AppelsOffresPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Region name variations for matching
+  const regionVariations: Record<string, string[]> = {
+    "ile-de-france": ["ile de france", "idf", "paris", "75", "77", "78", "91", "92", "93", "94", "95"],
+    "auvergne-rhone-alpes": ["auvergne", "rhone alpes", "rhne alpes", "aura", "lyon", "69", "38", "63"],
+    "hauts-de-france": ["hauts de france", "haut de france", "hdf", "lille", "59", "62", "80", "60", "02", "nord", "pas de calais"],
+    "nouvelle-aquitaine": ["nouvelle aquitaine", "aquitaine", "bordeaux", "33", "limousin", "poitou"],
+    "occitanie": ["occitanie", "toulouse", "31", "languedoc", "roussillon", "34", "marseille"],
+    "grand-est": ["grand est", "alsace", "lorraine", "champagne", "strasbourg", "67", "68", "54", "55", "57"],
+    "provence-alpes-cote-dazur": ["paca", "provence", "alpes", "cote d'azur", "azur", "13", "06", "83", "84"],
+    "pays-de-la-loire": ["pays de la loire", "nantes", "44", "loire atlantique", "bretagne"],
+    "bretagne": ["bretagne", "rennes", "35", "22", "29", "56"],
+    "normandie": ["normandie", "caen", "rouen", "14", "50", "61", "27", "76"],
+    "bourgogne-franche-comte": ["bourgogne", "franche comte", "dijon", "21", "besancon"],
+    "centre-val-de-loire": ["centre", "val de loire", "orleans", "37", "41", "18", "36"],
+    "corse": ["corse", "ajaccio", "2a", "2b"],
+    "guadeloupe": ["guadeloupe", "971"],
+    "martinique": ["martinique", "972"],
+    "guyane": ["guyane", "973"],
+    "reunion": ["reunion", "974"],
+    "mayotte": ["mayotte", "976"],
+  };
+
+  // Filter articles by preferred regions (search in acheteur + region fields)
+  const filteredArticles = preferredRegions.length === 0
+    ? articles
+    : articles.filter((ao) => {
+        // Combine acheteur and region for searching
+        const searchText = `${ao.acheteur || ""} ${ao.region || ""}`.toLowerCase();
+
+        // Check if any preferred region matches
+        return preferredRegions.some((pref) => {
+          const variations = regionVariations[pref] || [pref.replace(/-/g, " ")];
+          return variations.some((variant) => searchText.includes(variant));
+        });
+      });
+
+  const filteredCount = filteredArticles.length;
+  const isFiltered = preferredRegions.length > 0;
+
   return (
     <div>
       <div className="mb-6">
@@ -131,31 +190,59 @@ export default function AppelsOffresPage() {
         <p className="text-gray-600 mt-1">
           Marches publics de formation detectes par l&apos;IA
         </p>
+        <p className="text-sm text-gray-500 mt-2">
+          Donnees collectees depuis{" "}
+          <Link href="/sources" className="text-primary hover:underline font-medium">
+            17 sources officielles
+          </Link>{" "}
+          (BOAMP, BOAMP, OPCO, Regions...)
+        </p>
       </div>
 
-      <p className="text-sm text-gray-500 mb-4">
-        {total} appel{total !== 1 ? "s" : ""} d&apos;offres trouve
-        {total !== 1 ? "s" : ""}
-      </p>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-sm text-gray-500">
+          {isFiltered ? (
+            <>
+              <span className="font-medium text-blue-600">{filteredCount} AO</span>
+              <span className="mx-1">sur</span>
+              <span>{total}</span>
+              <span className="ml-1">(filtre par region actif)</span>
+            </>
+          ) : (
+            <>
+              {total} appel{total !== 1 ? "s" : ""} d&apos;offres trouve
+              {total !== 1 ? "s" : ""}
+            </>
+          )}
+        </div>
+        <a
+          href="/dashboard/paramètres?tab=préférences"
+          className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+        >
+          <MapPin className="w-4 h-4" />
+          {isFiltered ? "Modifier les régions" : "Filtrer par région"}
+        </a>
+      </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
         </div>
-      ) : articles.length === 0 ? (
+      ) : filteredArticles.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
           <Megaphone className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h2 className="text-lg font-semibold text-gray-900 mb-2">
-            Aucun appel d&apos;offres
+            {isFiltered ? "Aucun résultat pour vos régions" : "Aucun appel d'offres"}
           </h2>
           <p className="text-gray-500">
-            Les appels d&apos;offres apparaitront ici apres la premiere collecte
-            BOAMP.
+            {isFiltered
+              ? "Essayez d'élargir vos régions dans les paramètres."
+              : "Les appels d'offres apparaîtront ici après la première collecte."}
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {articles.map((ao) => (
+          {filteredArticles.map((ao) => (
             <div
               key={ao.id}
               className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow"
@@ -164,10 +251,15 @@ export default function AppelsOffresPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center flex-wrap gap-2 mb-2">
                     <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
-                      AO
+                      AO {ao.source?.toUpperCase()}
                     </span>
+                    {(ao.region || ao.acheteur) && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700 flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {ao.region || ao.acheteur}
+                      </span>
+                    )}
                     <DeadlineBadge dateStr={ao.date_limite} />
-                    <span className="text-xs text-gray-400">{ao.source}</span>
                   </div>
 
                   <h3 className="font-semibold text-gray-900 mb-1">

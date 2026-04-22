@@ -13,6 +13,10 @@ import {
   LogOut,
   ChevronDown,
   User,
+  CreditCard,
+  Upload,
+  BookOpen,
+  Workflow,
 } from "lucide-react";
 
 const navItems = [
@@ -24,12 +28,17 @@ const navItems = [
     icon: Megaphone,
   },
   { href: "/dashboard/newsletter", label: "Newsletter", icon: Mail },
+  { href: "/blog", label: "Blog", icon: BookOpen },
   {
     href: "/dashboard/plan-action",
     label: "Plan d'action",
     icon: ClipboardList,
   },
-  { href: "/dashboard/parametres", label: "Paramètres", icon: Settings },
+  { href: "/dashboard/import", label: "Importer", icon: Upload },
+  { href: "/dashboard/export", label: "Export PDF", icon: FileSearch },
+  { href: "/dashboard/abonnement", label: "Abonnement", icon: CreditCard },
+  { href: "/dashboard/parametres", label: "Parametres", icon: Settings },
+  { href: "/dashboard/pipeline", label: "Pipeline ContentVibe", icon: Workflow },
 ];
 
 export default function DashboardShell({

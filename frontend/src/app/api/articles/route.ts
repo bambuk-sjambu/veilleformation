@@ -66,7 +66,8 @@ export async function GET(request: NextRequest) {
     if (sort === "deadline") {
       orderBy = "date_limite ASC";
     } else if (sort === "relevance") {
-      orderBy = "relevance_score DESC";
+      // Show most recent first (collected_at), then by relevance
+      orderBy = "collected_at DESC, relevance_score DESC";
     }
 
     const stmt = db.prepare(

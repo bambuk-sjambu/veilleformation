@@ -52,19 +52,21 @@ class TestHelpers:
 
 SAMPLE_HTML_WITH_ARTICLES = """
 <html><body>
+<main>
 <article>
-  <a href="/ao/formation-2025">
+  <a href="/appel-formation-2025">
     <h3>Appel a projets formation professionnelle 2025</h3>
   </a>
   <time datetime="2025-03-01">1 mars 2025</time>
   <div class="description">Formation pour les entreprises du secteur sante</div>
 </article>
 <article>
-  <a href="/ao/bilan-competences">
+  <a href="/appel-bilan-competences">
     <h3>Marche prestations bilan de competences</h3>
   </a>
   <time datetime="2025-02-15">15 fevrier 2025</time>
 </article>
+</main>
 </body></html>
 """
 
@@ -80,8 +82,8 @@ SAMPLE_HTML_EMPTY = """
 class TestOPCOSanteCollector:
     def test_source_name(self):
         c = OPCOSanteCollector("test.db")
-        assert c.SOURCE_NAME == "opco"
-        assert c.OPCO_NAME == "opco_sante"
+        assert c.SOURCE_NAME == "opco_sante"
+        assert c.OPCO_NAME == "OPCO Sante"
 
     @patch("collectors.opco.httpx.Client")
     def test_collect_parses_articles(self, mock_client_cls):
@@ -97,8 +99,8 @@ class TestOPCOSanteCollector:
 
         assert len(articles) >= 1
         for a in articles:
-            assert a["source"] == "opco"
-            assert a["category"] == "financement"
+            assert a["source"] == "opco_sante"
+            assert a["category"] == "ao"
             assert a["acheteur"] == "OPCO Sante"
 
     @patch("collectors.opco.httpx.Client")
@@ -129,7 +131,8 @@ class TestOPCOSanteCollector:
 class TestAKTOCollector:
     def test_source_name(self):
         c = AKTOCollector("test.db")
-        assert c.OPCO_NAME == "akto"
+        assert c.SOURCE_NAME == "opco_akto"
+        assert c.OPCO_NAME == "AKTO"
 
     @patch("collectors.opco.httpx.Client")
     def test_collect_parses_cards(self, mock_client_cls):
@@ -145,14 +148,15 @@ class TestAKTOCollector:
 
         for a in articles:
             assert a["acheteur"] == "AKTO"
-            assert a["category"] == "financement"
-            assert a["source_id"].startswith("akto-")
+            assert a["category"] == "ao"
+            assert a["source_id"].startswith("opco_akto-")
 
 
 class TestUniformationCollector:
     def test_source_name(self):
         c = UniformationCollector("test.db")
-        assert c.OPCO_NAME == "uniformation"
+        assert c.SOURCE_NAME == "uniformation"
+        assert c.OPCO_NAME == "Uniformation"
 
     @patch("collectors.opco.httpx.Client")
     def test_collect_handles_error(self, mock_client_cls):
@@ -211,6 +215,6 @@ class TestArticleFormat:
         for a in articles:
             for field in required_fields:
                 assert field in a, f"Missing field: {field}"
-            assert a["source"] == "opco"
+            assert a["source"] == "opco_akto"
             assert a["status"] == "new"
-            assert a["category"] == "financement"
+            assert a["category"] == "ao"

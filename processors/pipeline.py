@@ -209,9 +209,17 @@ class AIProcessor:
                 data["qualiopi_indicators"], ensure_ascii=False
             )
 
+            mots_cles_raw = data.get("mots_cles")
+            mots_cles = (
+                json.dumps(mots_cles_raw, ensure_ascii=False)
+                if isinstance(mots_cles_raw, list)
+                else None
+            )
+
             update_sql = """
                 UPDATE articles SET
                     summary = ?,
+                    titre_reformule = ?,
                     impact_level = ?,
                     impact_justification = ?,
                     qualiopi_indicators = ?,
@@ -219,6 +227,9 @@ class AIProcessor:
                     relevance_score = ?,
                     category = ?,
                     typologie_ao = ?,
+                    mots_cles = ?,
+                    date_entree_vigueur = ?,
+                    theme_formation = ?,
                     status = 'done',
                     processed_at = ?
                 WHERE id = ?
@@ -227,6 +238,7 @@ class AIProcessor:
                 update_sql,
                 (
                     data["summary"],
+                    data.get("titre_reformule"),
                     data["impact_level"],
                     data["impact_justification"],
                     qualiopi_indicators,
@@ -234,6 +246,9 @@ class AIProcessor:
                     int(data["relevance_score"]),
                     data["category"],
                     data.get("typologie_ao"),
+                    mots_cles,
+                    data.get("date_entree_vigueur"),
+                    data.get("theme_formation"),
                     datetime.now().isoformat(),
                     article_id,
                 ),

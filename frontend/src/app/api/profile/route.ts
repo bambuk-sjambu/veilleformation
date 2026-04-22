@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists, DbUserProfile } from "@/lib/db";
-
-// For now, use user_id = 1 (single user mode)
-// TODO: Get from session/auth when fully implemented
-const DEFAULT_USER_ID = 1;
+import { getSession } from "@/lib/auth";
 
 export async function GET() {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
 
     const db = getDb();
 
-    // Check if user_profiles table exists
     const tableCheck = db
       .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='user_profiles'")
       .get();
@@ -24,7 +25,7 @@ export async function GET() {
 
     const profile = db
       .prepare("SELECT * FROM user_profiles WHERE user_id = ?")
-      .get(DEFAULT_USER_ID) as DbUserProfile | undefined;
+      .get(session.userId) as DbUserProfile | undefined;
 
     return NextResponse.json({ profile: profile || null });
   } catch (error) {
@@ -38,6 +39,11 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
@@ -70,7 +76,7 @@ export async function PUT(request: NextRequest) {
     // Check if profile exists
     const existing = db
       .prepare("SELECT id FROM user_profiles WHERE user_id = ?")
-      .get(DEFAULT_USER_ID);
+      .get(session.userId);
 
     if (existing) {
       // Update existing profile
@@ -103,7 +109,7 @@ export async function PUT(request: NextRequest) {
         responsible_name || null,
         responsible_function || null,
         methodology_notes || null,
-        DEFAULT_USER_ID
+        session.userId
       );
     } else {
       // Create new profile
@@ -113,7 +119,7 @@ export async function PUT(request: NextRequest) {
           website, logo_url, responsible_name, responsible_function, methodology_notes
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
-        DEFAULT_USER_ID,
+        session.userId,
         company_name,
         siret || null,
         nde || null,
@@ -131,7 +137,7 @@ export async function PUT(request: NextRequest) {
 
     const updatedProfile = db
       .prepare("SELECT * FROM user_profiles WHERE user_id = ?")
-      .get(DEFAULT_USER_ID) as DbUserProfile;
+      .get(session.userId) as DbUserProfile;
 
     return NextResponse.json({ profile: updatedProfile });
   } catch (error) {

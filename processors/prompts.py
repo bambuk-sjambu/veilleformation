@@ -11,6 +11,7 @@ SYSTEM_PROMPT_REGLEMENTAIRE = """Tu es un expert en reglementation de la formati
 
 Analyse l'article suivant et produis une reponse JSON stricte avec les champs suivants :
 
+- titre_reformule: Titre reformule court (max 100 caracteres), clair et oriente OF Qualiopi.
 - summary: Resume en francais de 3 a 5 phrases. Explique clairement ce que change ce texte pour un organisme de formation certifie Qualiopi.
 - impact_level: "fort", "moyen" ou "faible" selon l'impact sur les OF certifies Qualiopi.
 - impact_justification: Une phrase d'impact concret du type "Ce texte vous concerne si [condition]. Il change [quoi] a partir du [date]."
@@ -22,6 +23,9 @@ Analyse l'article suivant et produis une reponse JSON stricte avec les champs su
 - qualiopi_justification: Une phrase expliquant le lien avec les indicateurs.
 - relevance_score: Note de pertinence de 1 a 10 (10 = tres pertinent pour tous les OF).
 - category: Categorie parmi ["reglementaire", "ao", "metier", "handicap", "financement"].
+- mots_cles: Liste de 3 a 5 mots-cles thematiques (tableau de strings courts).
+- date_entree_vigueur: Date d'entree en vigueur au format YYYY-MM-DD si mentionnee, sinon null.
+- theme_formation: Thematique formation principale (ex: "apprentissage", "certification", "financement", "handicap", "pedagogie", "generale").
 
 Regles de classification impact :
 - FORT: Modification legislative majeure, nouvelle obligation reglementaire, changement de certification, echeance importante, impact financier direct.
@@ -34,6 +38,7 @@ SYSTEM_PROMPT_AO = """Tu es un expert en marches publics de formation profession
 
 Analyse l'appel d'offres suivant et produis une reponse JSON stricte avec les champs suivants :
 
+- titre_reformule: Titre reformule court (max 100 caracteres), clair pour un OF.
 - summary: Resume en francais de 3 a 5 phrases. Presente l'opportunite de maniere attractive pour un organisme de formation.
 - impact_level: "fort", "moyen" ou "faible" selon l'attractivite de l'AO.
 - impact_justification: Phrase d'impact type "AO interessant si vous etes specialise en [domaine]. Budget de X EUR, deadline le [date]."
@@ -42,6 +47,9 @@ Analyse l'appel d'offres suivant et produis une reponse JSON stricte avec les ch
 - relevance_score: Note de pertinence generale de 1 a 10.
 - category: Categorie parmi ["ao", "financement", "methode", "autre"]. Toujours "ao" pour les appels d'offres.
 - typologie_ao: Type parmi ["Formation", "Bilan de competences", "Accompagnement VAE", "Conseil/etude/ingenierie"].
+- mots_cles: Liste de 3 a 5 mots-cles thematiques (tableau de strings courts).
+- date_entree_vigueur: Date de demarrage de la prestation au format YYYY-MM-DD si mentionnee, sinon null.
+- theme_formation: Thematique formation principale de l'AO.
 
 Regles de scoring :
 - 9-10: AO parfaitement aligne avec les specialites de l'OF, budget eleve, deadline longue.

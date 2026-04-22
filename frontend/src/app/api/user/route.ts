@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists, DbUser } from "@/lib/db";
 import * as bcrypt from "bcryptjs";
-
-const DEFAULT_USER_ID = 1;
+import { getSession } from "@/lib/auth";
 
 export async function GET() {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
@@ -32,7 +36,7 @@ export async function GET() {
 
     const user = db
       .prepare(`SELECT ${selectFields.join(", ")} FROM users WHERE id = ?`)
-      .get(DEFAULT_USER_ID) as Partial<DbUser> | undefined;
+      .get(session.userId) as Partial<DbUser> | undefined;
 
     if (!user) {
       return NextResponse.json({ user: null });
@@ -50,6 +54,11 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
@@ -62,7 +71,7 @@ export async function PUT(request: NextRequest) {
     // Check if user exists
     const existing = db
       .prepare("SELECT id FROM users WHERE id = ?")
-      .get(DEFAULT_USER_ID);
+      .get(session.userId);
 
     if (!existing) {
       return NextResponse.json({ error: "Utilisateur non trouve" }, { status: 404 });
@@ -98,7 +107,7 @@ export async function PUT(request: NextRequest) {
     }
 
     if (updates.length > 0) {
-      values.push(String(DEFAULT_USER_ID));
+      values.push(String(session.userId));
       db.prepare(`UPDATE users SET ${updates.join(", ")} WHERE id = ?`).run(...values);
     }
 
@@ -113,7 +122,7 @@ export async function PUT(request: NextRequest) {
 
     const updatedUser = db
       .prepare(`SELECT ${selectFields.join(", ")} FROM users WHERE id = ?`)
-      .get(DEFAULT_USER_ID) as Partial<DbUser>;
+      .get(session.userId) as Partial<DbUser>;
 
     return NextResponse.json({ user: updatedUser });
   } catch (error) {
@@ -128,6 +137,11 @@ export async function PUT(request: NextRequest) {
 export async function POST(request: NextRequest) {
   // Change password
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
@@ -153,7 +167,7 @@ export async function POST(request: NextRequest) {
     // Get current user
     const user = db
       .prepare("SELECT * FROM users WHERE id = ?")
-      .get(DEFAULT_USER_ID) as DbUser | undefined;
+      .get(session.userId) as DbUser | undefined;
 
     if (!user) {
       return NextResponse.json({ error: "Utilisateur non trouve" }, { status: 404 });
@@ -172,7 +186,7 @@ export async function POST(request: NextRequest) {
     const newPasswordHash = await bcrypt.hash(new_password, 10);
 
     // Update password
-    db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(newPasswordHash, DEFAULT_USER_ID);
+    db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(newPasswordHash, session.userId);
 
     return NextResponse.json({ success: true, message: "Mot de passe mis a jour" });
   } catch (error) {

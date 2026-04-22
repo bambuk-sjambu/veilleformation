@@ -3,17 +3,21 @@ import { renderToStream } from "@react-pdf/renderer";
 import { getDb, dbExists, DbArticle, DbAction, DbUserProfile } from "@/lib/db";
 import { AuditPDF } from "@/lib/audit-pdf";
 import { canExport, logExport } from "@/lib/plan";
-
-const DEFAULT_USER_ID = 1;
+import { getSession } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
 
     // Check export limits
-    const exportCheck = canExport(DEFAULT_USER_ID);
+    const exportCheck = canExport(session.userId);
     if (!exportCheck.allowed) {
       return NextResponse.json(
         { error: exportCheck.reason || "Limite d'exports atteinte" },
@@ -32,7 +36,7 @@ export async function GET(request: NextRequest) {
     try {
       profile = db
         .prepare("SELECT * FROM user_profiles WHERE user_id = ?")
-        .get(DEFAULT_USER_ID) as DbUserProfile | undefined || null;
+        .get(session.userId) as DbUserProfile | undefined || null;
     } catch {
       // Table doesn't exist yet
     }
@@ -83,7 +87,7 @@ export async function GET(request: NextRequest) {
     const pdfBuffer = Buffer.concat(chunks);
 
     // Log the export
-    logExport(DEFAULT_USER_ID, articles.length);
+    logExport(session.userId, articles.length);
 
     // Return PDF
     return new NextResponse(pdfBuffer, {

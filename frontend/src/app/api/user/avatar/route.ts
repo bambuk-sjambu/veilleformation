@@ -3,11 +3,15 @@ import { getDb, dbExists } from "@/lib/db";
 import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
-
-const DEFAULT_USER_ID = 1;
+import { getSession } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisée" }, { status: 500 });
     }
@@ -37,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     // Generate unique filename
     const ext = file.name.split(".").pop() || "png";
-    const filename = `user-${DEFAULT_USER_ID}-${Date.now()}.${ext}`;
+    const filename = `user-${session.userId}-${Date.now()}.${ext}`;
     const filepath = path.join(uploadsDir, filename);
 
     // Write file
@@ -56,7 +60,7 @@ export async function POST(request: NextRequest) {
     const columnNames = columns.map(c => c.name);
 
     if (columnNames.includes("avatar_url")) {
-      db.prepare("UPDATE users SET avatar_url = ? WHERE id = ?").run(avatarUrl, DEFAULT_USER_ID);
+      db.prepare("UPDATE users SET avatar_url = ? WHERE id = ?").run(avatarUrl, session.userId);
     }
 
     return NextResponse.json({ avatar_url: avatarUrl });

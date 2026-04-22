@@ -68,14 +68,16 @@ class BOAMPCollector(BaseCollector):
         """Build API query parameters."""
         date_from = (datetime.now() - timedelta(days=self.days_back)).strftime("%Y-%m-%d")
 
-        # Build keyword search clause
         keyword_clauses = " OR ".join(
             [f'search(objet, "{kw}")' for kw in KEYWORDS]
         )
 
+        # CPV 805xxxxx = famille services de formation professionnelle
+        cpv_clause = f'startswith(codecpv, "{CPV_CODE[:3]}")'
+
         where_clause = (
             f"dateparution >= '{date_from}' AND "
-            f"({keyword_clauses})"
+            f"({cpv_clause} OR {keyword_clauses})"
         )
 
         return {

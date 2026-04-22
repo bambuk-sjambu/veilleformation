@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists } from "@/lib/db";
+import { getSession } from "@/lib/auth";
 
 interface DbAction {
   id: number;
@@ -50,6 +51,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }
@@ -128,6 +134,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }

@@ -8,6 +8,7 @@ an empty result set without raising an error.
 """
 
 import os
+import time
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -18,6 +19,9 @@ from collectors.base import BaseCollector
 
 TOKEN_URL = "https://oauth.piste.gouv.fr/api/oauth/token"
 API_BASE = "https://api.piste.gouv.fr/dila/legifrance/lf-engine-app"
+
+RATE_LIMIT_DELAY = 2.0  # Secondes entre chaque requete de recherche
+RETRY_DELAYS = [5, 15, 45]  # Backoff exponentiel en cas d'erreur reseau
 
 SEARCH_KEYWORDS = [
     "décret formation professionnelle",
@@ -58,10 +62,18 @@ class LegifranceCollector(BaseCollector):
         """Check if API credentials are configured."""
         return bool(self.client_id and self.client_secret)
 
-    def _get_token(self) -> Optional[str]:
-        """Acquire an OAuth2 access token via client credentials flow."""
-        if self._access_token:
+    def _get_token(self, force_refresh: bool = False) -> Optional[str]:
+        """Acquire an OAuth2 access token via client credentials flow.
+
+        Args:
+            force_refresh: Si True, invalide le token en cache et en demande un nouveau
+                (utilise apres un 401).
+        """
+        if self._access_token and not force_refresh:
             return self._access_token
+
+        if force_refresh:
+            self._access_token = None
 
         try:
             response = requests.post(
@@ -93,11 +105,6 @@ class LegifranceCollector(BaseCollector):
             List of raw result dicts from the API.
         """
         date_from = (datetime.now() - timedelta(days=self.days_back)).strftime("%Y-%m-%d")
-
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-        }
 
         payload = {
             "recherche": {
@@ -135,19 +142,43 @@ class LegifranceCollector(BaseCollector):
             "fond": "JORF",
         }
 
-        try:
-            response = requests.post(
-                f"{API_BASE}/search",
-                headers=headers,
-                json=payload,
-                timeout=30,
-            )
-            response.raise_for_status()
-            data = response.json()
-            return data.get("results", [])
-        except requests.RequestException as e:
-            self.logger.warning(f"Legifrance: erreur recherche '{keyword}': {e}")
-            return []
+        current_token = token
+        token_refreshed = False
+
+        for attempt, delay in enumerate([0] + RETRY_DELAYS):
+            if delay:
+                self.logger.info(f"Legifrance: retry dans {delay}s...")
+                time.sleep(delay)
+
+            headers = {
+                "Authorization": f"Bearer {current_token}",
+                "Content-Type": "application/json",
+            }
+
+            try:
+                response = requests.post(
+                    f"{API_BASE}/search",
+                    headers=headers,
+                    json=payload,
+                    timeout=30,
+                )
+                # Token expire : renouveler une fois
+                if response.status_code == 401 and not token_refreshed:
+                    self.logger.info("Legifrance: token expire, renouvellement")
+                    refreshed = self._get_token(force_refresh=True)
+                    if refreshed:
+                        current_token = refreshed
+                        token_refreshed = True
+                        continue
+                response.raise_for_status()
+                return response.json().get("results", [])
+            except requests.RequestException as e:
+                self.logger.warning(
+                    f"Legifrance: tentative {attempt + 1} pour '{keyword}' echouee: {e}"
+                )
+
+        self.logger.error(f"Legifrance: toutes tentatives echouees pour '{keyword}'")
+        return []
 
     def _parse_result(self, result: dict) -> Optional[dict]:
         """Convert a Legifrance API result to an article dict."""
@@ -212,7 +243,9 @@ class LegifranceCollector(BaseCollector):
         seen_ids = set()
         articles = []
 
-        for keyword in SEARCH_KEYWORDS:
+        for i, keyword in enumerate(SEARCH_KEYWORDS):
+            if i > 0:
+                time.sleep(RATE_LIMIT_DELAY)
             self.logger.info(f"Legifrance: recherche '{keyword}'")
             results = self._search(keyword, token)
 

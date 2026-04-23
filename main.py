@@ -27,7 +27,15 @@ from collectors.opco import collect_all_opco
 from collectors.france_travail import collect_france_travail
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
-from collectors.playwright_collectors import collect_all_playwright
+
+try:
+    from collectors.playwright_collectors import collect_all_playwright
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
+
+    def collect_all_playwright(*_args, **_kwargs):
+        return []
 from processors.pipeline import AIProcessor
 from storage.database import init_db, get_connection, get_stats
 from storage.logger import setup_logger

@@ -7,31 +7,64 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const siteUrl = "https://cipia.fr";
+
 export const metadata: Metadata = {
-  title: "Cipia — La veille Qualiopi automatisée par IA",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Cipia · Veille Qualiopi IA livrée chaque mardi à 8h",
+    template: "%s · Cipia",
+  },
   description:
-    "Veille réglementaire automatisée pour les organismes de formation certifiés Qualiopi. Résumés IA, classification par indicateur, newsletter hebdomadaire, export PDF audit.",
-  keywords:
-    "veille qualiopi, veille réglementaire formation, organisme de formation, certification qualiopi, indicateurs qualiopi, audit qualiopi",
+    "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA selon les indicateurs Qualiopi 23-26. Export PDF prêt pour l'audit.",
+  applicationName: "Cipia",
+  authors: [{ name: "Stéphane Jambu", url: "https://www.linkedin.com/in/stephane-jambu/" }],
+  creator: "Stéphane Jambu",
+  publisher: "Cipia",
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
-    title: "Cipia — La veille Qualiopi automatisée par IA",
+    title: "Cipia · Veille Qualiopi IA livrée chaque mardi à 8h",
     description:
-      "Veille réglementaire automatisée pour les organismes de formation certifiés Qualiopi.",
-    url: "https://cipia.fr",
+      "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA selon les indicateurs Qualiopi 23-26. Export PDF prêt pour l'audit.",
+    url: siteUrl,
     siteName: "Cipia",
     locale: "fr_FR",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Cipia — veille Qualiopi automatisée par IA",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cipia — La veille Qualiopi automatisée par IA",
+    title: "Cipia · Veille Qualiopi IA livrée chaque mardi à 8h",
     description:
-      "Veille réglementaire automatisée pour les organismes de formation certifiés Qualiopi.",
+      "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA pour organismes de formation Qualiopi.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+    ],
+  },
+  category: "business",
 };
 
 export default function RootLayout({

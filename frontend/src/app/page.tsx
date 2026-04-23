@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  Search,
   Brain,
   FileText,
   Clock,
@@ -14,7 +13,6 @@ import {
   Shield,
   Zap,
   BarChart3,
-  AlertTriangle,
 } from "lucide-react";
 import NewsletterForm from "@/components/NewsletterForm";
 
@@ -122,7 +120,7 @@ function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">VF</span>
+              <span className="text-white font-bold text-sm">C</span>
             </div>
             <span className="font-bold text-lg text-gray-900">
               Cipia
@@ -147,20 +145,37 @@ function Hero() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <Zap className="w-4 h-4" />
-            Propulsé par l&apos;intelligence artificielle
+            IA · Indicateurs 23-26 · Preuves prêtes pour l&apos;audit
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            La veille Qualiopi,{" "}
-            <span className="text-primary">enfin automatisée.</span>
+            Votre veille Qualiopi,{" "}
+            <span className="text-primary">livrée chaque mardi à 8h.</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Résumés IA · Classification auto · Newsletter hebdo · Export audit
-            PDF
+            Textes réglementaires, appels d&apos;offres et innovations pédagogiques
+            classés par IA. Gagnez 3h par semaine et présentez votre veille
+            en 1 clic lors de l&apos;audit.
           </p>
           <NewsletterForm />
           <p className="text-sm text-gray-500 mt-3">
-            Gratuit, sans carte bancaire. 45 000 OF concernés.
+            Gratuit, sans carte bancaire. Désinscription en un clic.
           </p>
+          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-primary" />
+              <span><strong className="text-gray-900">45 000</strong> OF concernés</span>
+            </div>
+            <span className="text-gray-300">·</span>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-primary" />
+              <span><strong className="text-gray-900">462+</strong> textes analysés</span>
+            </div>
+            <span className="text-gray-300">·</span>
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-primary" />
+              <span>Hébergé en France</span>
+            </div>
+          </div>
         </div>
 
         <div className="mt-16 max-w-4xl mx-auto">
@@ -236,24 +251,24 @@ function Hero() {
 }
 
 function PainPoints() {
-  const pains = [
+  const benefits = [
     {
-      icon: <Search className="w-8 h-8" />,
-      title: "Vous passez des heures à chercher les textes",
+      icon: <Clock className="w-8 h-8" />,
+      title: "3 heures gagnées chaque semaine",
       description:
-        "Légifrance, BOAMP, OPCO, France Travail... Les sources sont multiples, dispersées et changent sans prévenir.",
+        "Légifrance, BOAMP, 11 OPCO, France Travail, 13 Régions : toutes les sources collectées et synthétisées pour vous.",
     },
     {
-      icon: <AlertTriangle className="w-8 h-8" />,
-      title: "Vous ne savez pas quels indicateurs sont impactés",
+      icon: <Brain className="w-8 h-8" />,
+      title: "Classification IA instantanée",
       description:
-        "Un nouveau décret sort : concerne-t-il l'indicateur 23, 24, 25 ou 26 ? Difficile à déterminer sans expertise juridique.",
+        "Chaque texte est automatiquement rattaché aux indicateurs 23, 24, 25 ou 26 par l'IA Claude, avec justification claire.",
     },
     {
       icon: <ClipboardCheck className="w-8 h-8" />,
-      title: "L'audit Qualiopi vous stresse",
+      title: "Audit préparé en 1 clic",
       description:
-        "Comment prouver que vous faites de la veille régulière ? Où sont vos preuves ? L'auditeur arrive dans 3 mois...",
+        "Exportez un PDF daté et structuré qui prouve votre veille régulière aux auditeurs Qualiopi.",
     },
   ];
 
@@ -262,23 +277,24 @@ function PainPoints() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            La veille Qualiopi, un casse-tête quotidien
+            La veille Qualiopi sans effort
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            45 000 organismes de formation font face aux mêmes difficultés.
+            45 000 organismes de formation ont le même besoin. Cipia le résout
+            en une newsletter hebdomadaire.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
-          {pains.map((pain, i) => (
+          {benefits.map((b, i) => (
             <div
               key={i}
-              className="p-6 rounded-2xl bg-red-50 border border-red-100"
+              className="p-6 rounded-2xl bg-blue-50 border border-blue-100"
             >
-              <div className="text-red-500 mb-4">{pain.icon}</div>
+              <div className="text-primary mb-4">{b.icon}</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">
-                {pain.title}
+                {b.title}
               </h3>
-              <p className="text-gray-600">{pain.description}</p>
+              <p className="text-gray-600">{b.description}</p>
             </div>
           ))}
         </div>

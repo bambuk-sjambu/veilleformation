@@ -291,12 +291,17 @@ export default function AppelsOffresPage() {
                         {formatMontant(ao.montant_estime)}
                       </span>
                     )}
-                    {ao.date_limite && (
+                    {ao.date_limite ? (
                       <span className="flex items-center gap-1 text-gray-500">
                         <Calendar className="w-3.5 h-3.5" />
                         Limite : {formatDateFr(ao.date_limite)}
                       </span>
-                    )}
+                    ) : ao.published_date ? (
+                      <span className="flex items-center gap-1 text-gray-500">
+                        <Calendar className="w-3.5 h-3.5" />
+                        Publié : {formatDateFr(ao.published_date)}
+                      </span>
+                    ) : null}
                     <RelevanceStars score={ao.relevance_score} />
                   </div>
                 </div>

@@ -87,30 +87,16 @@ cd "${APP_DIR}/frontend"
 pm2 start npm --name "cipia-frontend" -- start -- -p ${NEXT_PORT}
 pm2 save
 
-# ── 7. Nginx vhost ────────────────────────────────────────────────────────────
-log "[7/9] Config nginx vhost..."
+# ── 7. Nginx vhost (HTTP only initial — certbot --nginx ajoutera HTTPS) ─────
+log "[7/9] Config nginx vhost HTTP..."
 cat > /etc/nginx/sites-available/cipia << NGINX
 server {
     listen 80;
     server_name ${DOMAIN} www.${DOMAIN};
 
-    # Let's Encrypt challenge
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
     }
-
-    location / {
-        return 301 https://\$host\$request_uri;
-    }
-}
-
-server {
-    listen 443 ssl http2;
-    server_name ${DOMAIN} www.${DOMAIN};
-
-    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
-    ssl_protocols TLSv1.2 TLSv1.3;
 
     client_max_body_size 10M;
 
@@ -130,20 +116,22 @@ NGINX
 
 ln -sf /etc/nginx/sites-available/cipia /etc/nginx/sites-enabled/cipia
 mkdir -p /var/www/certbot
-
-# ── 8. Certbot SSL ────────────────────────────────────────────────────────────
-log "[8/9] SSL Let's Encrypt..."
-if [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
-  # Mode HTTP-01 : il faut que cipia.fr pointe deja vers 5.223.72.40
-  certbot certonly --webroot -w /var/www/certbot \
-    -d ${DOMAIN} -d www.${DOMAIN} \
-    --non-interactive --agree-tos -m stephane@hi-commerce.fr \
-    || warn "Certbot a echoue — verifier que le DNS pointe bien vers ce serveur"
-else
-  log "Certificat existant pour ${DOMAIN}, renouvellement auto via cron certbot"
-fi
-
 nginx -t && systemctl reload nginx
+
+# ── 8. Certbot SSL (seulement si DNS pointe vers nous) ────────────────────────
+log "[8/9] SSL Let's Encrypt..."
+resolved_ip=$(dig +short ${DOMAIN} @8.8.8.8 | head -1)
+this_ip=$(curl -s --max-time 5 ifconfig.me || echo "")
+if [ -z "${resolved_ip}" ] || [ "${resolved_ip}" != "${this_ip}" ]; then
+  warn "DNS ${DOMAIN} -> ${resolved_ip:-<rien>} != ${this_ip}. SSL skippe — relancer ce script plus tard."
+elif [ -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
+  log "Certificat existant pour ${DOMAIN}, renouvellement auto via cron certbot"
+else
+  certbot --nginx \
+    -d ${DOMAIN} -d www.${DOMAIN} \
+    --non-interactive --agree-tos -m stephane@hi-commerce.fr --redirect \
+    || warn "Certbot a echoue — verifier logs et relancer : certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}"
+fi
 
 # ── 9. Cron (collecte quotidienne + newsletter hebdo) ─────────────────────────
 log "[9/9] Cron jobs..."

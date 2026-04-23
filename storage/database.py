@@ -1,4 +1,4 @@
-"""SQLite database layer for VeilleFormation.fr.
+"""SQLite database layer for Cipia.
 
 Aligned with Cahier des Charges v1.2.
 """

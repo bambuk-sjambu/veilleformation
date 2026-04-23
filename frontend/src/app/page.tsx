@@ -20,9 +20,9 @@ import NewsletterForm from "@/components/NewsletterForm";
 
 const faqItems = [
   {
-    question: "Qu'est-ce que VeilleFormation.fr ?",
+    question: "Qu'est-ce que Cipia ?",
     answer:
-      "VeilleFormation.fr est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les organismes de formation certifiés Qualiopi. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.",
+      "Cipia est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les organismes de formation certifiés Qualiopi. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.",
   },
   {
     question: "Comment fonctionne la veille automatique ?",
@@ -65,15 +65,15 @@ function JsonLd() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "VeilleFormation.fr",
-    url: "https://veilleformation.fr",
+    name: "Cipia",
+    url: "https://cipia.fr",
     description:
       "Veille réglementaire automatisée par IA pour les organismes de formation certifiés Qualiopi.",
   };
   const softwareSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "VeilleFormation.fr",
+    name: "Cipia",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: [
@@ -125,7 +125,7 @@ function Header() {
               <span className="text-white font-bold text-sm">VF</span>
             </div>
             <span className="font-bold text-lg text-gray-900">
-              VeilleFormation.fr
+              Cipia
             </span>
           </Link>
           <Link
@@ -173,7 +173,7 @@ function Hero() {
             </div>
             <div className="p-6 sm:p-8 space-y-4">
               <div className="flex items-center gap-3 text-sm text-gray-500">
-                <span>De : VeilleFormation.fr</span>
+                <span>De : Cipia</span>
                 <span>|</span>
                 <span>Mardi 8h00</span>
               </div>
@@ -314,7 +314,7 @@ function Solution() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            VeilleFormation.fr automatise tout
+            Cipia automatise tout
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Concentrez-vous sur votre coeur de métier. On s&apos;occupe de la
@@ -587,7 +587,7 @@ function Footer() {
               <span className="text-white font-bold text-xs">VF</span>
             </div>
             <span className="font-semibold text-gray-300">
-              VeilleFormation.fr
+              Cipia
             </span>
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -596,7 +596,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>&copy; 2026 VeilleFormation.fr &mdash; SJA Digital</p>
+          <p>&copy; 2026 Cipia &mdash; SJA Digital</p>
           <div className="flex items-center gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales

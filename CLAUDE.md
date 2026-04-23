@@ -1,4 +1,4 @@
-# VeilleFormation.fr
+# Cipia
 
 ## Projet
 Veille reglementaire automatisee par IA pour les organismes de formation certifies Qualiopi (45 000 OF en France).
@@ -54,7 +54,7 @@ Veille reglementaire automatisee par IA pour les organismes de formation certifi
 - Agence 79EUR/mois : 20 users, multi-sites, API, white-label
 
 ## Documentation
-- Cahier des charges : /home/stef/SJA/Projets/Veille Reglementaire Formation/Cahier des Charges - VeilleFormation.md
+- Cahier des charges : /home/stef/SJA/Projets/Veille Reglementaire Formation/Cahier des Charges - Cipia.md
 - Suivi fonctionnalites : ./SUIVI-FONCTIONNALITES.md
 - Progress Phase 2 : ./PHASE2-PROGRESS.md
 - **Index projets DEV** : `/home/stef/SJA/Projets/Projets DEV - Index.md`

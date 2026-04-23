@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-VeilleFormation.fr - Verificateur d'articles de blog
+Cipia - Verificateur d'articles de blog
 Verifie que les articles generes aujourd'hui sont accessibles en ligne.
 
 Usage: python scripts/verify_blog.py
@@ -27,7 +27,7 @@ DB_PATH = PROJECT_ROOT / "data" / "veille.db"
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-BASE_URL = "https://veilleformation.fr/blog"
+BASE_URL = "https://cipia.fr/blog"
 MAX_RETRIES = 3
 RETRY_INTERVAL_SECONDS = 60
 MIN_CONTENT_LENGTH = 5000
@@ -95,8 +95,8 @@ def check_url(url: str, expected_title: str) -> dict:
     """
     headers = {
         "User-Agent": (
-            "Mozilla/5.0 (VeilleFormation.fr blog verifier; "
-            "contact: contact@veilleformation.fr)"
+            "Mozilla/5.0 (Cipia blog verifier; "
+            "contact: contact@cipia.fr)"
         )
     }
     req = Request(url, headers=headers)

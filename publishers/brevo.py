@@ -1,4 +1,4 @@
-"""Brevo (ex-Sendinblue) email integration for VeilleFormation.fr.
+"""Brevo (ex-Sendinblue) email integration for Cipia.
 
 Handles subscriber management, campaign creation/sending, transactional
 emails, and statistics synchronization via the Brevo v3 REST API.
@@ -54,9 +54,9 @@ class BrevoClient:
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.environ.get("BREVO_API_KEY", "")
         self.list_id = int(os.environ.get("BREVO_LIST_ID", "3"))
-        self.sender_name = os.environ.get("BREVO_SENDER_NAME", "VeilleFormation.fr")
-        self.sender_email = os.environ.get("BREVO_SENDER_EMAIL", "newsletter@veilleformation.fr")
-        self.reply_to = os.environ.get("BREVO_REPLY_TO", "contact@veilleformation.fr")
+        self.sender_name = os.environ.get("BREVO_SENDER_NAME", "Cipia")
+        self.sender_email = os.environ.get("BREVO_SENDER_EMAIL", "newsletter@cipia.fr")
+        self.reply_to = os.environ.get("BREVO_REPLY_TO", "contact@cipia.fr")
 
         self._headers = {
             "api-key": self.api_key,
@@ -212,7 +212,7 @@ class BrevoClient:
             The Brevo campaign ID on success, None on failure.
         """
         body: dict = {
-            "name": f"VeilleFormation #{subject}",
+            "name": f"Cipia #{subject}",
             "subject": subject,
             "sender": {"name": self.sender_name, "email": self.sender_email},
             "replyTo": {"email": self.reply_to},

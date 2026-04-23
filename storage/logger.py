@@ -1,4 +1,4 @@
-"""Structured logging for VeilleFormation.fr."""
+"""Structured logging for Cipia."""
 
 import json
 import logging

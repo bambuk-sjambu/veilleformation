@@ -1,4 +1,4 @@
-"""RSS feed collectors for VeilleFormation.fr.
+"""RSS feed collectors for Cipia.
 
 Collects calls for proposals (appels a projets) from RSS feeds
 of OPCOs and other sources that provide RSS.

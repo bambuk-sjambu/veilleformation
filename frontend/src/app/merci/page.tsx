@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 
 export const metadata = {
-  title: "Merci pour votre inscription | VeilleFormation.fr",
+  title: "Merci pour votre inscription | Cipia",
   robots: "noindex, nofollow", // Don't index this page
 };
 
@@ -20,14 +20,14 @@ export default function MerciPage() {
           </h1>
 
           <p className="text-gray-600 mb-6">
-            Vous recevrez votre premiere newsletter VeilleFormation.fr
+            Vous recevrez votre premiere newsletter Cipia
             chaque mardi a 8h00.
           </p>
 
           <div className="bg-blue-50 rounded-lg p-4 mb-6">
             <p className="text-sm text-blue-800">
               <strong>Important :</strong> Verifiez votre boite de reception et
-              ajoutez <span className="font-mono">@veilleformation.fr</span> a
+              ajoutez <span className="font-mono">@cipia.fr</span> a
               vos contacts pour ne pas manquer nos emails.
             </p>
           </div>
@@ -43,10 +43,10 @@ export default function MerciPage() {
         <p className="text-sm text-gray-500 mt-6">
           Des questions ? Contactez-nous a{" "}
           <a
-            href="mailto:contact@veilleformation.fr"
+            href="mailto:contact@cipia.fr"
             className="text-primary hover:underline"
           >
-            contact@veilleformation.fr
+            contact@cipia.fr
           </a>
         </p>
       </div>

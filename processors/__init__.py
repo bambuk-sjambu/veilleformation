@@ -1,4 +1,4 @@
-"""AI processing pipeline for VeilleFormation.fr."""
+"""AI processing pipeline for Cipia."""
 
 from processors.pipeline import AIProcessor
 

@@ -1,4 +1,4 @@
-"""Gmail newsletter parser for VeilleFormation.fr.
+"""Gmail newsletter parser for Cipia.
 
 Reads newsletters from Travail.gouv, Education.gouv and other government sources
 via Gmail IMAP and extracts article information.
@@ -357,7 +357,7 @@ if __name__ == "__main__":
         print("\nTo create an app password:")
         print("1. Go to https://myaccount.google.com/apppasswords")
         print("2. Sign in with your Google account")
-        print("3. Create a new app password named 'VeilleFormation'")
+        print("3. Create a new app password named 'Cipia'")
         print("4. Use the 16-character password shown")
         sys.exit(1)
 

@@ -1,4 +1,4 @@
-"""OPCO scrapers for VeilleFormation.fr.
+"""OPCO scrapers for Cipia.
 
 Collects calls for proposals (appels a projets) and news from
 the 11 French OPCO websites relevant to training organizations.

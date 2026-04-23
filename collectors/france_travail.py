@@ -1,4 +1,4 @@
-"""France Travail AAP scraper for VeilleFormation.fr.
+"""France Travail AAP scraper for Cipia.
 
 Collects calls for proposals (appels a projets) from France Travail
 focused on training and employment initiatives.

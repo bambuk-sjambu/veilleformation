@@ -250,7 +250,7 @@ class TestGenerateHTML:
         articles = self._minimal_articles()
         html = generate_newsletter_html(articles, WEEK_START, WEEK_END, edition_number=5)
 
-        assert "VeilleFormation" in html
+        assert "Cipia" in html
         assert "#5" in html or "Edition #5" in html
         assert "02/03/2026" in html
         assert "08/03/2026" in html
@@ -305,7 +305,7 @@ class TestGenerateHTML:
             articles, "2026-03-02", "2026-03-08", edition_number=3
         )
 
-        assert "VeilleFormation" in html
+        assert "Cipia" in html
         assert "#3" in html or "Edition #3" in html
         assert "02/03/2026" in html
         assert "08/03/2026" in html
@@ -320,7 +320,7 @@ class TestGenerateSubject:
     """Tests for subject-line generation."""
 
     def test_generate_newsletter_subject_normal(self):
-        """Normal subject format: 'VeilleFormation #N -- X textes, Y appels d'offres'."""
+        """Normal subject format: 'Cipia #N -- X textes, Y appels d'offres'."""
         stats = {"reglementaire": 3, "ao": 5, "metier": 1, "handicap": 0}
         subject = generate_newsletter_subject(
             edition_number=7,
@@ -330,7 +330,7 @@ class TestGenerateSubject:
             has_high_impact=False,
         )
 
-        assert "VeilleFormation #7" in subject
+        assert "Cipia #7" in subject
         assert "4 textes" in subject       # 3 reg + 1 metier + 0 handicap = 4
         assert "5 appels d'offres" in subject
 
@@ -347,7 +347,7 @@ class TestGenerateSubject:
 
         assert "\u26a0\ufe0f" in subject  # warning emoji
         assert "Impact fort" in subject
-        assert "VeilleFormation #10" in subject
+        assert "Cipia #10" in subject
 
     def test_generate_newsletter_subject_singular(self):
         """Singular forms when counts are 1."""
@@ -437,7 +437,7 @@ class TestCreateNewsletter:
         assert result["stats"]["total"] == 2
         assert result["has_high_impact"] is True
         assert "\u26a0\ufe0f" in result["subject"]
-        assert "VeilleFormation" in result["html"]
+        assert "Cipia" in result["html"]
         assert len(result["article_ids"]) == 2
         assert result["html_size_kb"] > 0
 

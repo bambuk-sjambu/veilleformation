@@ -74,7 +74,7 @@ export default function DashboardShell({
                   <span className="text-white font-bold text-sm">VF</span>
                 </div>
                 <span className="font-bold text-lg text-gray-900 hidden sm:inline">
-                  VeilleFormation.fr
+                  Cipia
                 </span>
               </Link>
             </div>

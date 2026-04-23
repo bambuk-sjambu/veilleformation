@@ -1,4 +1,4 @@
-"""Monitoring module for VeilleFormation.fr.
+"""Monitoring module for Cipia.
 
 Provides health checks, alert sending, and data cleanup functions.
 Aligned with Cahier des Charges v1.2 - Module 9.
@@ -177,7 +177,7 @@ def send_monitoring_alert(
         if ALERT_ENABLED:
             brevo = BrevoClient()
             if brevo.api_key:
-                subject = f"[VeilleFormation] {severity.upper()}: {alert_type}"
+                subject = f"[Cipia] {severity.upper()}: {alert_type}"
                 # Build details HTML first
                 if details:
                     details_html = f"<p><strong>Details:</strong></p><pre>{json.dumps(details, indent=2)}</pre>"
@@ -185,7 +185,7 @@ def send_monitoring_alert(
                     details_html = ""
 
                 html = f"""
-                <h2>Alerte VeilleFormation.fr</h2>
+                <h2>Alerte Cipia</h2>
                 <p><strong>Severite:</strong> {severity}</p>
                 <p><strong>Source:</strong> {source}</p>
                 <p><strong>Message:</strong> {message}</p>
@@ -331,7 +331,7 @@ def print_status(db_path: Optional[str] = None) -> None:
     health = check_health(db_path)
 
     print("\n" + "=" * 60)
-    print("  VeilleFormation.fr Status")
+    print("  Cipia Status")
     print("=" * 60)
     print(f"Status: {health['status'].upper()}")
     print(f"Total articles: {health['stats']['total_articles']}")

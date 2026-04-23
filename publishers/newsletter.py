@@ -1,4 +1,4 @@
-"""Newsletter generator for VeilleFormation.fr.
+"""Newsletter generator for Cipia.
 
 Selects processed articles, renders a responsive HTML email,
 and marks articles as sent once the newsletter is dispatched.
@@ -165,13 +165,13 @@ def generate_newsletter_subject(
 ) -> str:
     """Generate the email subject line.
 
-    Format: 'VeilleFormation #N -- X textes, Y appels d'offres'
+    Format: 'Cipia #N -- X textes, Y appels d'offres'
     Prefixed with a warning emoji when a high-impact text is present.
     """
     nb_textes = stats.get("reglementaire", 0) + stats.get("metier", 0) + stats.get("handicap", 0)
     nb_ao = stats.get("ao", 0)
 
-    subject = f"VeilleFormation #{edition_number} \u2014 {nb_textes} texte{'s' if nb_textes != 1 else ''}, {nb_ao} appel{'s' if nb_ao != 1 else ''} d'offres"
+    subject = f"Cipia #{edition_number} \u2014 {nb_textes} texte{'s' if nb_textes != 1 else ''}, {nb_ao} appel{'s' if nb_ao != 1 else ''} d'offres"
 
     if has_high_impact:
         subject = f"\u26a0\ufe0f Impact fort \u2014 {subject}"
@@ -192,7 +192,7 @@ NEWSLETTER_TEMPLATE = """\
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>VeilleFormation #{{ edition_number }}</title>
+<title>Cipia #{{ edition_number }}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F3F4F6;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 
@@ -206,7 +206,7 @@ NEWSLETTER_TEMPLATE = """\
 <!-- ===== HEADER ===== -->
 <tr>
 <td style="background-color:#1E40AF;padding:28px 32px;text-align:center;">
-  <h1 style="margin:0;font-size:24px;color:#FFFFFF;font-weight:700;">VeilleFormation.fr</h1>
+  <h1 style="margin:0;font-size:24px;color:#FFFFFF;font-weight:700;">Cipia</h1>
   <p style="margin:8px 0 0;font-size:14px;color:#BFDBFE;">
     Edition #{{ edition_number }} &mdash; {{ date_debut_fmt }} au {{ date_fin_fmt }}
   </p>
@@ -388,7 +388,7 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td style="background-color:#1E40AF;border-radius:6px;">
-      <a href="https://veilleformation.fr" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">Decouvrir tous les articles</a>
+      <a href="https://cipia.fr" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">Decouvrir tous les articles</a>
     </td>
   </tr>
   </table>
@@ -405,9 +405,9 @@ NEWSLETTER_TEMPLATE = """\
   <p style="margin:8px 0 0;font-size:12px;color:#9CA3AF;text-align:center;">
     <a href="{{ unsubscribe_url }}" style="color:#6B7280;text-decoration:underline;">Se desabonner</a>
     &nbsp;&bull;&nbsp;
-    <a href="mailto:contact@veilleformation.fr" style="color:#6B7280;text-decoration:underline;">Contact</a>
+    <a href="mailto:contact@cipia.fr" style="color:#6B7280;text-decoration:underline;">Contact</a>
     &nbsp;&bull;&nbsp;
-    <a href="https://veilleformation.fr" style="color:#6B7280;text-decoration:underline;">VeilleFormation.fr</a>
+    <a href="https://cipia.fr" style="color:#6B7280;text-decoration:underline;">Cipia</a>
   </p>
 </td>
 </tr>

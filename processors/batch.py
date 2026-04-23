@@ -1,4 +1,4 @@
-"""Anthropic Batch API integration for VeilleFormation.fr.
+"""Anthropic Batch API integration for Cipia.
 
 Provides 50% cost reduction compared to synchronous API calls.
 Handles batch creation, polling, and result retrieval.

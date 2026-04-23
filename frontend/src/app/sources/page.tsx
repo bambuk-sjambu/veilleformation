@@ -41,7 +41,7 @@ function Header() {
               <span className="text-white font-bold text-sm">VF</span>
             </div>
             <span className="font-bold text-lg text-gray-900">
-              VeilleFormation.fr
+              Cipia
             </span>
           </Link>
           <Link
@@ -346,12 +346,12 @@ function Footer() {
               <span className="text-white font-bold text-xs">VF</span>
             </div>
             <span className="font-semibold text-gray-300">
-              VeilleFormation.fr
+              Cipia
             </span>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>&copy; 2026 VeilleFormation.fr &mdash; SJA Digital</p>
+          <p>&copy; 2026 Cipia &mdash; SJA Digital</p>
           <div className="flex items-center gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales

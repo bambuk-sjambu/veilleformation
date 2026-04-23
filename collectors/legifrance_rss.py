@@ -169,7 +169,7 @@ class LegifranceRSSCollector(BaseCollector):
         self.days_back = days_back
         self._session = requests.Session()
         self._session.headers.update({
-            "User-Agent": "VeilleFormation/1.0 (veille reglementaire formation professionnelle)",
+            "User-Agent": "Cipia/1.0 (veille reglementaire formation professionnelle)",
         })
 
     # ------------------------------------------------------------------

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-VeilleFormation.fr - Generateur d'articles de blog autonome
+Cipia - Generateur d'articles de blog autonome
 Lit la file editoriale, genere 5 articles via Claude et les enregistre en SQLite.
 
 Usage: python scripts/generate_blog.py
@@ -64,14 +64,14 @@ CTA_BLOCKS = {
 """,
     "MOFU": """
 <div class="cta-block bg-green-50 border border-green-200 rounded-lg p-6 mt-8">
-  <h3 class="text-lg font-bold text-green-900 mb-2">Voir VeilleFormation.fr en action</h3>
+  <h3 class="text-lg font-bold text-green-900 mb-2">Voir Cipia en action</h3>
   <p class="text-green-800 mb-4">Découvrez comment notre dashboard automatise votre veille réglementaire, classe les textes par indicateur Qualiopi et génère vos preuves pour l'audit. Démonstration gratuite, sans carte bancaire.</p>
   <a href="/inscription" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">Démarrer l'essai gratuit</a>
 </div>
 """,
     "BOFU": """
 <div class="cta-block bg-orange-50 border border-orange-200 rounded-lg p-6 mt-8">
-  <h3 class="text-lg font-bold text-orange-900 mb-2">Essayez VeilleFormation.fr gratuitement</h3>
+  <h3 class="text-lg font-bold text-orange-900 mb-2">Essayez Cipia gratuitement</h3>
   <p class="text-orange-800 mb-4">14 jours d'accès complet au plan Solo : veille automatisée, alertes personnalisées, export PDF Qualiopi. Aucune carte bancaire requise. Résiliable en un clic.</p>
   <a href="/inscription" class="inline-block bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">Commencer l'essai gratuit</a>
 </div>
@@ -179,7 +179,7 @@ def build_prompt(article: dict) -> str:
     cta_funnel = article.get("cta", article.get("funnel", "TOFU"))
     cta_block = CTA_BLOCKS.get(cta_funnel, CTA_BLOCKS["TOFU"])
 
-    return f"""Tu es Sophie Marchand (ou Marc Dubois selon le sujet), experte en formation professionnelle et certification Qualiopi, rédactrice SEO senior pour VeilleFormation.fr.
+    return f"""Tu es Sophie Marchand (ou Marc Dubois selon le sujet), experte en formation professionnelle et certification Qualiopi, rédactrice SEO senior pour Cipia.
 
 Ton article sera publié sur un blog spécialisé lu par des responsables de formation, directeurs d'OF et auditeurs Qualiopi.
 

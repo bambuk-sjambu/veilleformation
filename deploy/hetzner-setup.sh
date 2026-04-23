@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Hetzner VPS Setup — ContentVibe Pipeline + VeilleFormation
+# Hetzner VPS Setup — ContentVibe Pipeline + Cipia
 # Ubuntu 22.04 LTS
 # =============================================================================
 set -e

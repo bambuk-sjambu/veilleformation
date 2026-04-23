@@ -5,8 +5,8 @@
 1. Creer un compte PythonAnywhere (gratuit ou payant)
 2. Cloner le repository:
    ```bash
-   git clone https://github.com/bambuk-sjambu/veilleformation.git
-   cd veilleformation
+   git clone https://github.com/bambuk-sjambu/cipia.git
+   cd cipia
    ```
 
 3. Creer un virtualenv et installer les dependances:
@@ -36,12 +36,12 @@ Aller dans **Tasks** tab sur PythonAnywhere et ajouter:
 
 ## 3. Scripts Cron
 
-Creer les scripts suivants dans `/home/username/veilleformation/cron/`:
+Creer les scripts suivants dans `/home/username/cipia/cron/`:
 
 ### cron_collect.sh
 ```bash
 #!/bin/bash
-cd /home/username/veilleformation
+cd /home/username/cipia
 source .venv/bin/activate
 python main.py collect >> logs/cron_collect.log 2>&1
 ```
@@ -49,7 +49,7 @@ python main.py collect >> logs/cron_collect.log 2>&1
 ### cron_newsletter.sh
 ```bash
 #!/bin/bash
-cd /home/username/veilleformation
+cd /home/username/cipia
 source .venv/bin/activate
 python main.py newsletter >> logs/cron_newsletter.log 2>&1
 ```
@@ -57,7 +57,7 @@ python main.py newsletter >> logs/cron_newsletter.log 2>&1
 ### cron_stats.sh
 ```bash
 #!/bin/bash
-cd /home/username/veilleformation
+cd /home/username/cipia
 source .venv/bin/activate
 python main.py status >> logs/cron_stats.log 2>&1
 ```
@@ -68,14 +68,14 @@ Dans le champ "Command" des Scheduled Tasks:
 
 | Task | Command |
 |------|---------|
-| Collecte matin (05:00 UTC) | `/home/username/veilleformation/cron/cron_collect.sh` |
-| Collecte soir (17:00 UTC) | `/home/username/veilleformation/cron/cron_collect.sh` |
-| Newsletter (07:00 UTC mardi) | `/home/username/veilleformation/cron/cron_newsletter.sh` |
-| Stats (17:00 UTC jeudi) | `/home/username/veilleformation/cron/cron_stats.sh` |
+| Collecte matin (05:00 UTC) | `/home/username/cipia/cron/cron_collect.sh` |
+| Collecte soir (17:00 UTC) | `/home/username/cipia/cron/cron_collect.sh` |
+| Newsletter (07:00 UTC mardi) | `/home/username/cipia/cron/cron_newsletter.sh` |
+| Stats (17:00 UTC jeudi) | `/home/username/cipia/cron/cron_stats.sh` |
 
 ## 5. Monitoring
 
-- Consulter les logs dans `/home/username/veilleformation/logs/`
+- Consulter les logs dans `/home/username/cipia/logs/`
 - Configurer les alertes email via le module monitoring
 - Verifier la sante du systeme: `python main.py status`
 

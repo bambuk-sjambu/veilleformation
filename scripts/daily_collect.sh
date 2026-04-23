@@ -1,5 +1,5 @@
 #!/bin/bash
-# VeilleFormation.fr - Script de collecte quotidienne
+# Cipia - Script de collecte quotidienne
 # A executer via cron tous les jours a 6h00
 #
 # Installation cron:
@@ -23,7 +23,7 @@ mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "=========================================="
-echo "VeilleFormation.fr - Collecte quotidienne"
+echo "Cipia - Collecte quotidienne"
 echo "Date: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "=========================================="
 

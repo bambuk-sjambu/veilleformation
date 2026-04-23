@@ -1,4 +1,4 @@
-"""Data classes for VeilleFormation.fr entities."""
+"""Data classes for Cipia entities."""
 
 from dataclasses import dataclass, field
 from datetime import datetime, date

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VeilleFormation.fr — CLI entry point.
+"""Cipia — CLI entry point.
 
 Usage:
     python main.py init        Initialize the database
@@ -83,7 +83,7 @@ def cmd_collect(args):
         legifrance_collector,
     ]
 
-    print("=== VeilleFormation.fr -- Collecte ===\n")
+    print("=== Cipia -- Collecte ===\n")
 
     all_stats = []
     for collector in collectors:
@@ -171,7 +171,7 @@ def cmd_process(args):
     limit = args.limit if hasattr(args, "limit") and args.limit else 50
     processor = AIProcessor(db_path=db_path, logger=logger)
 
-    print(f"=== VeilleFormation.fr -- Traitement IA ===\n")
+    print(f"=== Cipia -- Traitement IA ===\n")
     print(f"Modele: {processor.model}")
 
     articles = processor.get_pending_articles(limit=limit)
@@ -243,7 +243,7 @@ def cmd_retry(args):
     limit = args.limit if hasattr(args, "limit") and args.limit else 50
     processor = AIProcessor(db_path=db_path, logger=logger)
 
-    print("=== VeilleFormation.fr -- Relance articles en erreur ===\n")
+    print("=== Cipia -- Relance articles en erreur ===\n")
 
     stats = processor.retry_failed(limit=limit)
 
@@ -282,7 +282,7 @@ def cmd_newsletter(args):
     week_start_str = week_start.strftime("%Y-%m-%d")
     week_end_str = week_end.strftime("%Y-%m-%d")
 
-    print("=== VeilleFormation.fr -- Newsletter ===\n")
+    print("=== Cipia -- Newsletter ===\n")
     print(f"Periode: {week_start_str} -> {week_end_str}")
 
     # Determine edition number
@@ -401,7 +401,7 @@ def cmd_collect_history(args):
 
     weeks = args.weeks if hasattr(args, "weeks") and args.weeks else 4
 
-    print(f"=== VeilleFormation.fr -- Collecte historique JORF ===\n")
+    print(f"=== Cipia -- Collecte historique JORF ===\n")
     print(f"Periode: {weeks} dernieres semaines\n")
 
     collector = LegifranceRSSCollector(db_path, logger)
@@ -443,7 +443,7 @@ def cmd_status(args):
     else:
         size_str = f"{db_size} octets"
 
-    print("=== VeilleFormation.fr -- Statut ===")
+    print("=== Cipia -- Statut ===")
     print(f"Base: {db_path} ({size_str})")
     print(f"Articles: {stats['total']} total")
 
@@ -480,7 +480,7 @@ def cmd_status(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="VeilleFormation.fr -- Veille reglementaire pour organismes de formation",
+        description="Cipia -- Veille reglementaire pour organismes de formation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Commandes:

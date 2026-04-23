@@ -33,7 +33,7 @@ const DEFAULT: Config = {
   db_user: "contentvibe",
   db_password: "",
   spreadsheet_id: "",
-  sheet_name: "veilleformation",
+  sheet_name: "cipia",
   n8n_webhook_url: "",
   n8n_delay_ms: "60000",
   n8n_timeout_ms: "7200000",
@@ -283,7 +283,7 @@ MAX_SUBJECTS_PER_DAY=${config.max_subjects_per_day}
                 name="sheet_name"
                 value={config.sheet_name}
                 onChange={set}
-                placeholder="veilleformation"
+                placeholder="cipia"
                 hint="Nom exact de l'onglet utilisé par n8n (sensible à la casse)"
               />
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">

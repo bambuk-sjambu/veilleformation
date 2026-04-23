@@ -49,7 +49,7 @@ export default function ConnexionPage() {
               <span className="text-white font-bold">VF</span>
             </div>
             <span className="font-bold text-xl text-gray-900">
-              VeilleFormation.fr
+              Cipia
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">

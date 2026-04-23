@@ -1,4 +1,4 @@
-"""Main AI processing pipeline for VeilleFormation.fr.
+"""Main AI processing pipeline for Cipia.
 
 Processes collected articles through Claude to generate summaries,
 impact assessments, and Qualiopi indicator classifications.

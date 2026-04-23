@@ -1,4 +1,4 @@
-"""Base collector class for VeilleFormation.fr."""
+"""Base collector class for Cipia."""
 
 import logging
 from datetime import datetime

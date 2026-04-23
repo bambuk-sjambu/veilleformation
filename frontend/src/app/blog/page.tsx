@@ -5,17 +5,17 @@ import path from "path";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Blog Veille Formation Qualiopi | Guides et Conseils Experts",
+  title: "Blog Cipia — Veille Qualiopi | Guides et Conseils Experts",
   description: "Guides pratiques, conseils d'experts et actualites sur la certification Qualiopi, la veille reglementaire et les appels d'offres formation professionnelle.",
   alternates: {
-    canonical: "https://veilleformation.fr/blog/",
+    canonical: "https://cipia.fr/blog/",
   },
   openGraph: {
-    title: "Blog Veille Formation Qualiopi | Guides et Conseils Experts",
+    title: "Blog Cipia — Veille Qualiopi | Guides et Conseils Experts",
     description: "Guides pratiques, conseils d'experts et actualites sur la certification Qualiopi, la veille reglementaire et les appels d'offres formation professionnelle.",
-    url: "https://veilleformation.fr/blog/",
+    url: "https://cipia.fr/blog/",
     type: "website",
-    images: [{ url: "https://veilleformation.fr/og-blog.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://cipia.fr/og-blog.jpg", width: 1200, height: 630 }],
   },
 };
 
@@ -160,13 +160,13 @@ export default async function BlogPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Blog",
-            name: "Blog VeilleFormation.fr",
+            name: "Blog Cipia",
             description: "Guides et conseils pour les organismes de formation certifies Qualiopi",
-            url: "https://veilleformation.fr/blog/",
+            url: "https://cipia.fr/blog/",
             publisher: {
               "@type": "Organization",
-              name: "VeilleFormation.fr",
-              url: "https://veilleformation.fr",
+              name: "Cipia",
+              url: "https://cipia.fr",
             },
           }),
         }}
@@ -177,7 +177,7 @@ export default async function BlogPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-2xl font-bold text-blue-600">
-              VeilleFormation.fr
+              Cipia
             </Link>
             <div className="flex items-center space-x-4">
               <Link href="/connexion" className="text-gray-600 hover:text-gray-900">
@@ -209,7 +209,7 @@ export default async function BlogPage() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">
-            Blog Veille Formation Qualiopi
+            Blog Cipia — Veille Qualiopi
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
             Guides pratiques, conseils d&apos;experts et actualites pour les 45 000 organismes de formation certifies Qualiopi
@@ -290,7 +290,7 @@ export default async function BlogPage() {
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>2026 VeilleFormation.fr - Tous droits reserves</p>
+            <p>2026 Cipia - Tous droits reserves</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/mentions-legales" className="hover:text-white">Mentions legales</Link>
               <Link href="/confidentialite" className="hover:text-white">Confidentialite</Link>

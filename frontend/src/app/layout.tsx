@@ -8,23 +8,23 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "VeilleFormation.fr — La veille Qualiopi automatisée par IA",
+  title: "Cipia — La veille Qualiopi automatisée par IA",
   description:
     "Veille réglementaire automatisée pour les organismes de formation certifiés Qualiopi. Résumés IA, classification par indicateur, newsletter hebdomadaire, export PDF audit.",
   keywords:
     "veille qualiopi, veille réglementaire formation, organisme de formation, certification qualiopi, indicateurs qualiopi, audit qualiopi",
   openGraph: {
-    title: "VeilleFormation.fr — La veille Qualiopi automatisée par IA",
+    title: "Cipia — La veille Qualiopi automatisée par IA",
     description:
       "Veille réglementaire automatisée pour les organismes de formation certifiés Qualiopi.",
-    url: "https://veilleformation.fr",
-    siteName: "VeilleFormation.fr",
+    url: "https://cipia.fr",
+    siteName: "Cipia",
     locale: "fr_FR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VeilleFormation.fr — La veille Qualiopi automatisée par IA",
+    title: "Cipia — La veille Qualiopi automatisée par IA",
     description:
       "Veille réglementaire automatisée pour les organismes de formation certifiés Qualiopi.",
   },

@@ -1,6 +1,6 @@
 """System and user prompts for the Claude AI processing pipeline.
 
-Aligned with VeilleFormation.fr Cahier des Charges v1.2.
+Aligned with Cipia Cahier des Charges v1.2.
 """
 
 from typing import Optional

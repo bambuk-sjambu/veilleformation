@@ -1,5 +1,5 @@
 #!/bin/bash
-# VeilleFormation.fr - Orchestrateur quotidien de generation de blog
+# Cipia - Orchestrateur quotidien de generation de blog
 # Genere 5 articles SEO via Claude, verifie leur publication et envoie un rapport Telegram.
 #
 # Installation cron PythonAnywhere (Mon-Fri a 8h00 Paris):
@@ -31,7 +31,7 @@ mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "=========================================="
-echo "VeilleFormation.fr - Generation blog quotidienne"
+echo "Cipia - Generation blog quotidienne"
 echo "Date: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "=========================================="
 

@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Politique de confidentialité | VeilleFormation.fr",
-  description: "Politique de confidentialité et protection des données de VeilleFormation.fr",
+  title: "Politique de confidentialité | Cipia",
+  description: "Politique de confidentialité et protection des données de Cipia",
 };
 
 export default function ConfidentialitePage() {
@@ -20,7 +20,7 @@ export default function ConfidentialitePage() {
                 1. Introduction
               </h2>
               <p>
-                SJA Digital, éditeur du service VeilleFormation.fr, s&apos;engage à protéger la vie privée
+                SJA Digital, éditeur du service Cipia, s&apos;engage à protéger la vie privée
                 des utilisateurs de son service. Cette politique de confidentialité explique comment nous
                 collectons, utilisons et protégeons vos données personnelles.
               </p>
@@ -33,7 +33,7 @@ export default function ConfidentialitePage() {
               <p>
                 Le responsable du traitement des données personnelles est SJA Digital, représenté par
                 Stéphane Jambu. Pour toute question relative à vos données personnelles, vous pouvez
-                nous contacter à : contact@veilleformation.fr
+                nous contacter à : contact@cipia.fr
               </p>
             </div>
 
@@ -114,7 +114,7 @@ export default function ConfidentialitePage() {
                 <li>Droit d&apos;opposition</li>
               </ul>
               <p className="mt-2">
-                Pour exercer ces droits, contactez-nous à : contact@veilleformation.fr
+                Pour exercer ces droits, contactez-nous à : contact@cipia.fr
               </p>
             </div>
 

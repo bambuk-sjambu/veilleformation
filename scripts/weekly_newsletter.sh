@@ -1,5 +1,5 @@
 #!/bin/bash
-# VeilleFormation.fr - Envoi newsletter hebdomadaire
+# Cipia - Envoi newsletter hebdomadaire
 # A executer via cron chaque mardi a 8h00
 #
 # Installation cron:
@@ -18,7 +18,7 @@ mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "=========================================="
-echo "VeilleFormation.fr - Newsletter hebdo"
+echo "Cipia - Newsletter hebdo"
 echo "Date: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "=========================================="
 

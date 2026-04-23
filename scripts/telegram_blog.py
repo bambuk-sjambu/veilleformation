@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-VeilleFormation.fr - Notificateur Telegram pour le blog
+Cipia - Notificateur Telegram pour le blog
 Envoie un rapport Telegram apres la generation des articles.
 
 Usage: python scripts/telegram_blog.py [--generate-json '...' --verify-json '...']
@@ -103,7 +103,7 @@ def build_message(generate_summary: dict, verify_summary: dict) -> str:
         header_icon = "Attention"
 
     lines = [
-        f"<b>{header_icon} VeilleFormation.fr — Blog du {today_str}</b>",
+        f"<b>{header_icon} Cipia — Blog du {today_str}</b>",
         "",
     ]
 
@@ -111,7 +111,7 @@ def build_message(generate_summary: dict, verify_summary: dict) -> str:
     if verified:
         lines.append(f"<b>Articles publiés et vérifiés ({total_ok}) :</b>")
         for i, art in enumerate(verified, 1):
-            url_display = f"veilleformation.fr/blog/{art['slug']}"
+            url_display = f"cipia.fr/blog/{art['slug']}"
             words = art.get("word_count", 0)
             read_time = art.get("read_time", "?")
             funnel = art.get("funnel", "")

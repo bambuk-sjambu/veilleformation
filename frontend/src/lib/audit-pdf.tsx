@@ -455,7 +455,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
-        <Text style={styles.coverLogo}>VeilleFormation.fr</Text>
+        <Text style={styles.coverLogo}>Cipia</Text>
         <Text style={styles.coverTitle}>Rapport de Veille Reglementaire</Text>
         <Text style={styles.coverSubtitle}>Preuve de conformite Qualiopi - Indicateurs 23 a 26</Text>
 
@@ -492,7 +492,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
           )}
         </View>
 
-        <Text style={styles.coverFooter}>Document genere automatiquement par VeilleFormation.fr</Text>
+        <Text style={styles.coverFooter}>Document genere automatiquement par Cipia</Text>
       </Page>
 
       {/* Content Page */}
@@ -591,7 +591,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text>Rapport genere par VeilleFormation.fr - Certification Qualiopi</Text>
+          <Text>Rapport genere par Cipia - Certification Qualiopi</Text>
           <Text>Page 2</Text>
         </View>
       </Page>
@@ -669,7 +669,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         </View>
 
         <View style={styles.footer} fixed>
-          <Text>Rapport genere par VeilleFormation.fr</Text>
+          <Text>Rapport genere par Cipia</Text>
           <Text>Page 3</Text>
         </View>
       </Page>
@@ -709,7 +709,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         ))}
 
         <View style={styles.footer} fixed>
-          <Text>Rapport genere par VeilleFormation.fr</Text>
+          <Text>Rapport genere par Cipia</Text>
           <Text>Page 4</Text>
         </View>
       </Page>

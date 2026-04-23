@@ -145,7 +145,7 @@ class TestGetSubscriberCount:
     def test_get_subscriber_count(self, mock_request, client):
         """Should extract subscribersCount from the API response."""
         mock_request.return_value = _mock_response(
-            200, {"subscribersCount": 42, "name": "VeilleFormation"}
+            200, {"subscribersCount": 42, "name": "Cipia"}
         )
 
         count = client.get_subscriber_count()
@@ -189,7 +189,7 @@ class TestCreateAndSendCampaign:
 
         campaign_id = client.create_and_send_campaign(
             html_content="<h1>Newsletter</h1>",
-            subject="VeilleFormation #1",
+            subject="Cipia #1",
         )
 
         assert campaign_id == 101
@@ -200,7 +200,7 @@ class TestCreateAndSendCampaign:
         assert create_call.args[0] == "POST"
         assert "/emailCampaigns" in create_call.args[1]
         body = create_call.kwargs["json"]
-        assert body["subject"] == "VeilleFormation #1"
+        assert body["subject"] == "Cipia #1"
         assert body["htmlContent"] == "<h1>Newsletter</h1>"
 
         # Verify send call

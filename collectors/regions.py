@@ -1,4 +1,4 @@
-"""Conseils Regionaux AAP scraper for VeilleFormation.fr.
+"""Conseils Regionaux AAP scraper for Cipia.
 
 Collects calls for proposals (appels a projets) from French regional councils
 focused on training, employment, and professional development initiatives.

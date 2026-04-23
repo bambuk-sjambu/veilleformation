@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Mentions légales | VeilleFormation.fr",
-  description: "Mentions légales du service VeilleFormation.fr",
+  title: "Mentions légales | Cipia",
+  description: "Mentions légales du service Cipia",
 };
 
 export default function MentionsLegalesPage() {
@@ -20,14 +20,14 @@ export default function MentionsLegalesPage() {
                 1. Éditeur du service
               </h2>
               <p>
-                Le service VeilleFormation.fr est édité par :
+                Le service Cipia est édité par :
               </p>
               <ul className="mt-2 space-y-1">
                 <li><strong>Raison sociale :</strong> SJA Digital</li>
                 <li><strong>Forme juridique :</strong> Entreprise individuelle</li>
                 <li><strong>Siège social :</strong> France</li>
                 <li><strong>SIRET :</strong> [à compléter]</li>
-                <li><strong>Email :</strong> contact@veilleformation.fr</li>
+                <li><strong>Email :</strong> contact@cipia.fr</li>
               </ul>
             </div>
 
@@ -56,7 +56,7 @@ export default function MentionsLegalesPage() {
                 4. Propriété intellectuelle
               </h2>
               <p>
-                L&apos;ensemble des contenus présents sur VeilleFormation.fr (textes, images, graphismes, logo, icônes, etc.)
+                L&apos;ensemble des contenus présents sur Cipia (textes, images, graphismes, logo, icônes, etc.)
                 sont la propriété exclusive de SJA Digital, à l&apos;exception des marques, logos ou contenus appartenant
                 à d&apos;autres sociétés partenaires ou auteurs.
               </p>
@@ -97,7 +97,7 @@ export default function MentionsLegalesPage() {
                 Pour toute question concernant ces mentions légales, vous pouvez nous contacter à :
               </p>
               <ul className="mt-2 space-y-1">
-                <li><strong>Email :</strong> contact@veilleformation.fr</li>
+                <li><strong>Email :</strong> contact@cipia.fr</li>
                 <li><strong>Formulaire :</strong> Via notre page de contact</li>
               </ul>
             </div>

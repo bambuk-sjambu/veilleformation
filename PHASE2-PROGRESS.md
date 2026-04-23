@@ -290,7 +290,7 @@ STRIPE_PRICE_AGENCE_YEARLY=price_...
 SESSION_SECRET=your-secret-key-min-32-chars
 
 # Site
-NEXT_PUBLIC_SITE_URL=https://veilleformation.fr
+NEXT_PUBLIC_SITE_URL=https://cipia.fr
 
 # Anthropic (pour traitement contenu externe)
 ANTHROPIC_API_KEY=sk-ant-api03-...

@@ -93,13 +93,13 @@ ARTICLES = [
             "<li><strong>Solutions IA dédiées formation</strong> : génération et classification automatique</li></ul>"
             "<h2>Comparatif des solutions</h2>"
             "<table><tr><th>Outil</th><th>Couverture</th><th>IA</th><th>Export Qualiopi</th><th>Prix</th></tr>"
-            "<tr><td>VeilleFormation.fr</td><td>JORF + OPCO + AO</td><td>Oui</td><td>Oui</td><td>Gratuit → 79€/mois</td></tr>"
+            "<tr><td>Cipia</td><td>JORF + OPCO + AO</td><td>Oui</td><td>Oui</td><td>Gratuit → 79€/mois</td></tr>"
             "<tr><td>Formalerte</td><td>JORF uniquement</td><td>Non</td><td>Non</td><td>~30€/mois</td></tr>"
             "<tr><td>Google Alertes</td><td>Web général</td><td>Non</td><td>Non</td><td>Gratuit</td></tr></table>"
             "<h2>FAQ</h2>"
             "<h3>Un outil de veille suffit-il pour l'audit Qualiopi ?</h3>"
             "<p>L'outil couvre la collecte. Vous devez aussi documenter que vous avez exploité l'information (réunions, mises à jour de programmes).</p>"
-            "<p><strong>Essayez VeilleFormation.fr sans CB. <a href='/inscription'>Je m'inscris</a></strong></p>"
+            "<p><strong>Essayez Cipia sans CB. <a href='/inscription'>Je m'inscris</a></strong></p>"
         ),
         "word_count": 720,
         "read_time": "7 min",
@@ -162,12 +162,12 @@ ARTICLES = [
             "<li>Indicateurs 24, 25 et 26 non couverts</li></ul>"
             "<h2>Alternatives comparées</h2>"
             "<table><tr><th>Solution</th><th>IA</th><th>Indicateurs couverts</th><th>Prix</th></tr>"
-            "<tr><td>VeilleFormation.fr</td><td>Oui</td><td>23 + 24 + 25 + 26</td><td>Gratuit → 79€/mois</td></tr>"
+            "<tr><td>Cipia</td><td>Oui</td><td>23 + 24 + 25 + 26</td><td>Gratuit → 79€/mois</td></tr>"
             "<tr><td>Formalerte</td><td>Non</td><td>23 uniquement</td><td>~30€/mois</td></tr></table>"
             "<h2>FAQ</h2>"
             "<h3>Formalerte est-il suffisant pour l'audit Qualiopi ?</h3>"
             "<p>Non. Il couvre l'indicateur 23 mais pas les indicateurs 24, 25 et 26. Vous aurez besoin de sources complémentaires.</p>"
-            "<p><strong>Couvre les 4 indicateurs Qualiopi. <a href='/inscription'>Essayer VeilleFormation.fr gratuitement</a></strong></p>"
+            "<p><strong>Couvre les 4 indicateurs Qualiopi. <a href='/inscription'>Essayer Cipia gratuitement</a></strong></p>"
         ),
         "word_count": 610,
         "read_time": "6 min",

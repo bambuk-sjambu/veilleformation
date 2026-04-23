@@ -72,12 +72,11 @@ class BOAMPCollector(BaseCollector):
             [f'search(objet, "{kw}")' for kw in KEYWORDS]
         )
 
-        # CPV 805xxxxx = famille services de formation professionnelle
-        cpv_clause = f'startswith(codecpv, "{CPV_CODE[:3]}")'
-
+        # Note : l'API OpenDataSoft BOAMP n'expose pas directement le code CPV.
+        # Le filtrage se fait via keywords uniquement (descripteur_code non indexe en where).
         where_clause = (
             f"dateparution >= '{date_from}' AND "
-            f"({cpv_clause} OR {keyword_clauses})"
+            f"({keyword_clauses})"
         )
 
         return {
@@ -121,8 +120,13 @@ class BOAMPCollector(BaseCollector):
         content = record.get("descripteurs") or record.get("objet") or ""
         published_date = record.get("dateparution")
         acheteur = record.get("nomacheteur") or record.get("denomination")
-        date_limite = record.get("datelimiteremiseoffres") or record.get("date_limite")
-        cpv = record.get("codecpv") or CPV_CODE
+        # Le champ officiel OpenDataSoft est datelimitereponse (verifie via l'API)
+        date_limite = (
+            record.get("datelimitereponse")
+            or record.get("datelimiteremiseoffres")
+            or record.get("date_limite")
+        )
+        cpv = record.get("descripteur_code") or CPV_CODE
 
         return {
             "source": "boamp",

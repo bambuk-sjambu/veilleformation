@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { sendEmail, teamInvitationEmail } from "@/lib/resend";
 import crypto from "crypto";
 
 // POST /api/teams/[id]/invite - Invite a member to team
@@ -82,12 +83,30 @@ export async function POST(
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(id, email.toLowerCase(), role, token, session.userId, expiresAt);
 
-    // TODO: Send invitation email via Brevo
+    const inviter = db.prepare("SELECT first_name, last_name FROM users WHERE id = ?")
+      .get(session.userId) as { first_name: string; last_name: string } | undefined;
+    const inviterName = inviter
+      ? `${inviter.first_name} ${inviter.last_name}`.trim()
+      : "Un collègue";
+
+    let emailSent = false;
+    try {
+      const mail = teamInvitationEmail({
+        teamName: team.name,
+        inviterName,
+        token,
+        role,
+      });
+      await sendEmail({ to: email.toLowerCase(), ...mail });
+      emailSent = true;
+    } catch (e) {
+      console.error("Resend email failed:", e);
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Invitation envoyee",
-      token // In production, don't return this
+      message: emailSent ? "Invitation envoyee par email" : "Invitation creee (email non envoye)",
+      emailSent,
     });
   } catch (error) {
     console.error("Error inviting member:", error);

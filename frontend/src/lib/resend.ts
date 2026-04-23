@@ -1,5 +1,5 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Cipia <noreply@send.cipia.fr>";
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Cipia <noreply@cipia.fr>";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cipia.fr";
 
 export interface SendEmailOptions {

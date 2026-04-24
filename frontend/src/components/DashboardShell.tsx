@@ -43,10 +43,12 @@ export default function DashboardShell({
   children,
   firstName,
   lastName,
+  avatarUrl,
 }: {
   children: React.ReactNode;
   firstName: string;
   lastName: string;
+  avatarUrl?: string | null;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -96,9 +98,18 @@ export default function DashboardShell({
                 onClick={() => setUserOpen(!userOpen)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
-                  {initials || <User className="w-4 h-4" />}
-                </div>
+                {avatarUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={avatarUrl}
+                    alt={`${firstName} ${lastName}`}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
+                    {initials || <User className="w-4 h-4" />}
+                  </div>
+                )}
                 <span className="hidden sm:inline text-sm font-medium text-gray-700">
                   {firstName} {lastName}
                 </span>

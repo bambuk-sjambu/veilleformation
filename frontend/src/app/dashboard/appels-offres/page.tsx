@@ -216,7 +216,7 @@ export default function AppelsOffresPage() {
           )}
         </div>
         <a
-          href="/dashboard/paramètres?tab=préférences"
+          href="/dashboard/parametres?tab=pr%C3%A9f%C3%A9rences"
           className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
         >
           <MapPin className="w-4 h-4" />

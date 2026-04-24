@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Mentions légales | Cipia",
-  description: "Mentions légales du service Cipia",
+  description: "Mentions légales du service Cipia édité par Haruna SARL.",
 };
 
 export default function MentionsLegalesPage() {
@@ -19,14 +19,15 @@ export default function MentionsLegalesPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 1. Éditeur du service
               </h2>
-              <p>
-                Le service Cipia est édité par :
-              </p>
+              <p>Le service Cipia est édité par :</p>
               <ul className="mt-2 space-y-1">
-                <li><strong>Raison sociale :</strong> SJA Digital</li>
-                <li><strong>Forme juridique :</strong> Entreprise individuelle</li>
-                <li><strong>Siège social :</strong> France</li>
+                <li><strong>Raison sociale :</strong> Haruna SARL</li>
+                <li><strong>Forme juridique :</strong> Société à responsabilité limitée (SARL) de droit français</li>
+                <li><strong>Capital social :</strong> [à compléter] €</li>
+                <li><strong>Siège social :</strong> [adresse à compléter], France</li>
+                <li><strong>RCS :</strong> [Ville + numéro à compléter]</li>
                 <li><strong>SIRET :</strong> [à compléter]</li>
+                <li><strong>N° TVA intracommunautaire :</strong> [à compléter]</li>
                 <li><strong>Email :</strong> contact@cipia.fr</li>
               </ul>
             </div>
@@ -36,7 +37,7 @@ export default function MentionsLegalesPage() {
                 2. Directeur de la publication
               </h2>
               <p>
-                Stéphane Jambu, en qualité de gérant de SJA Digital.
+                Stéphane Jambu, en qualité de gérant de Haruna SARL.
               </p>
             </div>
 
@@ -45,9 +46,23 @@ export default function MentionsLegalesPage() {
                 3. Hébergement
               </h2>
               <ul className="space-y-1">
-                <li><strong>Frontend :</strong> Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA</li>
-                <li><strong>Backend :</strong> PythonAnywhere, UK</li>
-                <li><strong>Base de données :</strong> SQLite (hébergement PythonAnywhere)</li>
+                <li>
+                  <strong>Serveur applicatif (frontend + backend + base de données) :</strong>{" "}
+                  Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Allemagne —{" "}
+                  <a href="https://www.hetzner.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">www.hetzner.com</a>
+                </li>
+                <li>
+                  <strong>Nom de domaine :</strong> OVH SAS, 2 rue Kellermann, 59100 Roubaix, France
+                </li>
+                <li>
+                  <strong>Emails transactionnels :</strong> Resend, Inc. (Delaware, USA) — conformément au transfert de données encadré par les Clauses Contractuelles Types (CCT) de la Commission européenne
+                </li>
+                <li>
+                  <strong>Newsletters :</strong> Sendinblue SAS (marque Brevo), 7 rue de Madrid, 75008 Paris, France
+                </li>
+                <li>
+                  <strong>Paiements :</strong> Stripe Payments Europe Ltd., 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Irlande
+                </li>
               </ul>
             </div>
 
@@ -56,13 +71,14 @@ export default function MentionsLegalesPage() {
                 4. Propriété intellectuelle
               </h2>
               <p>
-                L&apos;ensemble des contenus présents sur Cipia (textes, images, graphismes, logo, icônes, etc.)
-                sont la propriété exclusive de SJA Digital, à l&apos;exception des marques, logos ou contenus appartenant
-                à d&apos;autres sociétés partenaires ou auteurs.
+                L&apos;ensemble des contenus présents sur Cipia (textes, résumés générés par IA, interfaces,
+                graphismes, logo, icônes, code source) sont la propriété exclusive de Haruna SARL, à l&apos;exception
+                des contenus provenant de sources officielles (BOAMP, Légifrance, OPCO, Régions) qui restent soumis
+                à leurs licences respectives (Licence Ouverte Etalab v2.0 pour les données publiques françaises).
               </p>
               <p className="mt-2">
                 Toute reproduction, distribution, modification, adaptation, retransmission ou publication,
-                même partielle, de ces différents éléments est strictement interdite sans l&apos;accord exprès par écrit de SJA Digital.
+                même partielle, de ces éléments est soumise à l&apos;accord écrit préalable de Haruna SARL.
               </p>
             </div>
 
@@ -71,7 +87,7 @@ export default function MentionsLegalesPage() {
                 5. Données personnelles
               </h2>
               <p>
-                Le traitement des données personnelles est décrit dans notre{" "}
+                Le traitement des données personnelles est détaillé dans notre{" "}
                 <Link href="/confidentialite" className="text-primary hover:underline">
                   Politique de confidentialité
                 </Link>.
@@ -80,41 +96,47 @@ export default function MentionsLegalesPage() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                6. Cookies
+                6. Conditions d&apos;utilisation et de vente
               </h2>
               <p>
-                Ce site utilise des cookies à des fins de statistiques anonymes via Plausible.
-                Aucun cookie publicitaire ou de tracking tiers n&apos;est utilisé.
-                Vous pouvez refuser les cookies en modifiant les paramètres de votre navigateur.
+                L&apos;accès et l&apos;utilisation du service sont régis par nos{" "}
+                <Link href="/cgu" className="text-primary hover:underline">Conditions Générales d&apos;Utilisation</Link>.
+                Les abonnements payants sont régis par nos{" "}
+                <Link href="/cgv" className="text-primary hover:underline">Conditions Générales de Vente</Link>.
               </p>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                7. Contact
+                7. Cookies
               </h2>
               <p>
-                Pour toute question concernant ces mentions légales, vous pouvez nous contacter à :
+                Cipia utilise uniquement des cookies strictement nécessaires au fonctionnement du service
+                (session d&apos;authentification, sécurité CSRF). Aucun cookie publicitaire ni de tracking tiers
+                n&apos;est déposé sans votre consentement.
               </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                8. Contact
+              </h2>
               <ul className="mt-2 space-y-1">
                 <li><strong>Email :</strong> contact@cipia.fr</li>
-                <li><strong>Formulaire :</strong> Via notre page de contact</li>
+                <li><strong>Support :</strong> support@cipia.fr</li>
               </ul>
             </div>
           </section>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              Dernière mise à jour : Mars 2026
+              Dernière mise à jour : 24 avril 2026
             </p>
           </div>
         </div>
 
         <div className="mt-6 text-center">
-          <Link
-            href="/"
-            className="text-primary hover:underline"
-          >
+          <Link href="/" className="text-primary hover:underline">
             ← Retour à l&apos;accueil
           </Link>
         </div>

@@ -257,10 +257,13 @@ export default function PricingPage() {
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>2026 Cipia - Tous droits reserves</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/mentions-legales" className="hover:text-white">Mentions legales</Link>
-              <Link href="/confidentialite" className="hover:text-white">Confidentialite</Link>
+            <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-4 md:mt-0">
+              <Link href="/mentions-legales" className="hover:text-white">Mentions légales</Link>
+              <Link href="/confidentialite" className="hover:text-white">Confidentialité</Link>
+              <Link href="/politique-donnees" className="hover:text-white">Politique données</Link>
+              <Link href="/cgu" className="hover:text-white">CGU</Link>
+              <Link href="/cgv" className="hover:text-white">CGV</Link>
             </div>
           </div>
         </div>

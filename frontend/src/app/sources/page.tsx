@@ -351,13 +351,22 @@ function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>&copy; 2026 Cipia &mdash; SJA Digital</p>
-          <div className="flex items-center gap-6">
+          <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+          <div className="flex flex-wrap items-center gap-4 md:gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales
             </Link>
             <Link href="/confidentialite" className="hover:text-white transition-colors">
               Confidentialité
+            </Link>
+            <Link href="/politique-donnees" className="hover:text-white transition-colors">
+              Politique données
+            </Link>
+            <Link href="/cgu" className="hover:text-white transition-colors">
+              CGU
+            </Link>
+            <Link href="/cgv" className="hover:text-white transition-colors">
+              CGV
             </Link>
             <Link href="/sources" className="text-white font-medium">
               Sources

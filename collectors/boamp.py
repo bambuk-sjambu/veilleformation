@@ -55,6 +55,67 @@ EXCLUSION_TERMS = [
 CPV_CODE = "80500000"
 
 
+# Mapping departement -> region (INSEE)
+DEPT_TO_REGION = {
+    # Ile-de-France
+    "75": "Ile-de-France", "77": "Ile-de-France", "78": "Ile-de-France",
+    "91": "Ile-de-France", "92": "Ile-de-France", "93": "Ile-de-France",
+    "94": "Ile-de-France", "95": "Ile-de-France",
+    # Auvergne-Rhone-Alpes
+    "01": "Auvergne-Rhone-Alpes", "03": "Auvergne-Rhone-Alpes",
+    "07": "Auvergne-Rhone-Alpes", "15": "Auvergne-Rhone-Alpes",
+    "26": "Auvergne-Rhone-Alpes", "38": "Auvergne-Rhone-Alpes",
+    "42": "Auvergne-Rhone-Alpes", "43": "Auvergne-Rhone-Alpes",
+    "63": "Auvergne-Rhone-Alpes", "69": "Auvergne-Rhone-Alpes",
+    "73": "Auvergne-Rhone-Alpes", "74": "Auvergne-Rhone-Alpes",
+    # Hauts-de-France
+    "02": "Hauts-de-France", "59": "Hauts-de-France",
+    "60": "Hauts-de-France", "62": "Hauts-de-France", "80": "Hauts-de-France",
+    # Nouvelle-Aquitaine
+    "16": "Nouvelle-Aquitaine", "17": "Nouvelle-Aquitaine",
+    "19": "Nouvelle-Aquitaine", "23": "Nouvelle-Aquitaine",
+    "24": "Nouvelle-Aquitaine", "33": "Nouvelle-Aquitaine",
+    "40": "Nouvelle-Aquitaine", "47": "Nouvelle-Aquitaine",
+    "64": "Nouvelle-Aquitaine", "79": "Nouvelle-Aquitaine",
+    "86": "Nouvelle-Aquitaine", "87": "Nouvelle-Aquitaine",
+    # Occitanie
+    "09": "Occitanie", "11": "Occitanie", "12": "Occitanie", "30": "Occitanie",
+    "31": "Occitanie", "32": "Occitanie", "34": "Occitanie", "46": "Occitanie",
+    "48": "Occitanie", "65": "Occitanie", "66": "Occitanie", "81": "Occitanie",
+    "82": "Occitanie",
+    # Grand Est
+    "08": "Grand Est", "10": "Grand Est", "51": "Grand Est", "52": "Grand Est",
+    "54": "Grand Est", "55": "Grand Est", "57": "Grand Est", "67": "Grand Est",
+    "68": "Grand Est", "88": "Grand Est",
+    # Provence-Alpes-Cote-d'Azur
+    "04": "Provence-Alpes-Cote-d'Azur", "05": "Provence-Alpes-Cote-d'Azur",
+    "06": "Provence-Alpes-Cote-d'Azur", "13": "Provence-Alpes-Cote-d'Azur",
+    "83": "Provence-Alpes-Cote-d'Azur", "84": "Provence-Alpes-Cote-d'Azur",
+    # Pays de la Loire
+    "44": "Pays de la Loire", "49": "Pays de la Loire",
+    "53": "Pays de la Loire", "72": "Pays de la Loire", "85": "Pays de la Loire",
+    # Bretagne
+    "22": "Bretagne", "29": "Bretagne", "35": "Bretagne", "56": "Bretagne",
+    # Normandie
+    "14": "Normandie", "27": "Normandie", "50": "Normandie",
+    "61": "Normandie", "76": "Normandie",
+    # Bourgogne-Franche-Comte
+    "21": "Bourgogne-Franche-Comte", "25": "Bourgogne-Franche-Comte",
+    "39": "Bourgogne-Franche-Comte", "58": "Bourgogne-Franche-Comte",
+    "70": "Bourgogne-Franche-Comte", "71": "Bourgogne-Franche-Comte",
+    "89": "Bourgogne-Franche-Comte", "90": "Bourgogne-Franche-Comte",
+    # Centre-Val de Loire
+    "18": "Centre-Val de Loire", "28": "Centre-Val de Loire",
+    "36": "Centre-Val de Loire", "37": "Centre-Val de Loire",
+    "41": "Centre-Val de Loire", "45": "Centre-Val de Loire",
+    # Corse
+    "2A": "Corse", "2B": "Corse", "20": "Corse",
+    # DOM-TOM
+    "971": "Guadeloupe", "972": "Martinique", "973": "Guyane",
+    "974": "Reunion", "976": "Mayotte",
+}
+
+
 class BOAMPCollector(BaseCollector):
     """Collector for BOAMP public procurement announcements related to training."""
 
@@ -99,8 +160,22 @@ class BOAMPCollector(BaseCollector):
         return True
 
     def _extract_region(self, record: dict) -> Optional[str]:
-        """Extract region from the record's department or location fields."""
-        return record.get("lieu_exec_nom") or record.get("dept") or None
+        """Derive region name from department code (BOAMP donne le dept, pas la region).
+
+        Priorite :
+        1. code_departement_prestation (lieu d'execution)
+        2. code_departement (acheteur)
+        3. legacy fields lieu_exec_nom / dept
+        """
+        dept = (
+            record.get("code_departement_prestation")
+            or record.get("code_departement")
+            or record.get("dept")
+        )
+        if dept:
+            dept_str = str(dept).zfill(2)[:3]
+            return DEPT_TO_REGION.get(dept_str) or DEPT_TO_REGION.get(dept_str[:2])
+        return record.get("lieu_exec_nom")
 
     def _extract_montant(self, record: dict) -> Optional[float]:
         """Extract estimated amount if available."""

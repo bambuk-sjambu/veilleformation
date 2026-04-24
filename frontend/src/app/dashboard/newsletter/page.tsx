@@ -168,7 +168,7 @@ export default function NewsletterPage() {
                   className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Apercu
+                  Aperçu
                 </button>
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function NewsletterPage() {
                 <iframe
                   srcDoc={previewHtml || ""}
                   className="w-full h-full min-h-[60vh] border-0"
-                  title="Apercu newsletter"
+                  title="Aperçu newsletter"
                   sandbox="allow-same-origin"
                 />
               )}

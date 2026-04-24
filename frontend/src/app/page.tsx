@@ -25,7 +25,7 @@ const faqItems = [
   {
     question: "Comment fonctionne la veille automatique ?",
     answer:
-      "Notre système collecte quotidiennement les publications du BOAMP, de Légifrance, des 11 OPCO, de France Travail et des Conseils Régionaux. L'IA Claude analyse chaque texte, en produit un résumé et le classifie automatiquement selon les indicateurs Qualiopi concernés.",
+      "Notre système collecté quotidiennement les publications du BOAMP, de Légifrance, des 11 OPCO, de France Travail et des Conseils Régionaux. L'IA Claude analysé chaque texte, en produit un résumé et le classifie automatiquement selon les indicateurs Qualiopi concernés.",
   },
   {
     question: "Quels indicateurs Qualiopi sont couverts ?",
@@ -315,7 +315,7 @@ function Solution() {
       icon: <Brain className="w-8 h-8" />,
       title: "Classification IA par indicateur Qualiopi",
       description:
-        "L'IA analyse chaque texte et le classe selon les indicateurs 23, 24, 25 et 26 du référentiel Qualiopi.",
+        "L'IA analysé chaque texte et le classe selon les indicateurs 23, 24, 25 et 26 du référentiel Qualiopi.",
     },
     {
       icon: <FileText className="w-8 h-8" />,
@@ -600,7 +600,7 @@ function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">VF</span>
+              <span className="text-white font-bold text-xs">C</span>
             </div>
             <span className="font-semibold text-gray-300">
               Cipia

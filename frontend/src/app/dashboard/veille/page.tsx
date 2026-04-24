@@ -58,7 +58,7 @@ const indicatorConfig: Record<
   { label: string; short: string; classes: string }
 > = {
   "23": {
-    label: "Veille legale et reglementaire",
+    label: "Veille légale et réglementaire",
     short: "Legal",
     classes: "bg-blue-100 text-blue-800",
   },
@@ -197,13 +197,13 @@ export default function VeillePage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          Veille reglementaire
+          Veille réglementaire
         </h1>
         <p className="text-gray-600 mt-1">
-          Articles et textes reglementaires analyses par l&apos;IA
+          Articles et textes réglementaires analysés par l&apos;IA
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          Donnees collectees depuis{" "}
+          Données collectées depuis{" "}
           <Link href="/sources" className="text-primary hover:underline font-medium">
             17 sources officielles
           </Link>{" "}
@@ -360,7 +360,7 @@ export default function VeillePage() {
           <p className="text-gray-500">
             {showFavoritesOnly
               ? "Cliquez sur l'étoile d'un article pour l'ajouter en favori."
-              : "Les articles apparaîtront ici après la première collecte."}
+              : "Les articles apparaîtront ici après la première collecté."}
           </p>
         </div>
       ) : (

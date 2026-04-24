@@ -6,13 +6,13 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blog Cipia — Veille Qualiopi | Guides et Conseils Experts",
-  description: "Guides pratiques, conseils d'experts et actualites sur la certification Qualiopi, la veille reglementaire et les appels d'offres formation professionnelle.",
+  description: "Guides pratiques, conseils d'experts et actualités sur la certification Qualiopi, la veille réglementaire et les appels d'offres formation professionnelle.",
   alternates: {
     canonical: "https://cipia.fr/blog/",
   },
   openGraph: {
     title: "Blog Cipia — Veille Qualiopi | Guides et Conseils Experts",
-    description: "Guides pratiques, conseils d'experts et actualites sur la certification Qualiopi, la veille reglementaire et les appels d'offres formation professionnelle.",
+    description: "Guides pratiques, conseils d'experts et actualités sur la certification Qualiopi, la veille réglementaire et les appels d'offres formation professionnelle.",
     url: "https://cipia.fr/blog/",
     type: "website",
     images: [{ url: "https://cipia.fr/og-blog.jpg", width: 1200, height: 630 }],
@@ -75,7 +75,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   {
     slug: "guide-qualiopi-2026",
     title: "Comment obtenir la certification Qualiopi en 2026 ?",
-    excerpt: "Guide complet pour comprendre le referentiel Qualiopi, preparer les 32 indicateurs et reussir votre audit de certification du premier coup.",
+    excerpt: "Guide complet pour comprendre le référentiel Qualiopi, preparer les 32 indicateurs et reussir votre audit de certification du premier coup.",
     category: "Qualiopi",
     readTime: "15 min",
     date: "2026-03-15",
@@ -83,7 +83,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   },
   {
     slug: "veille-reglementaire-qualiopi-indicateur-23",
-    title: "Comment mettre en place une veille reglementaire efficace pour Qualiopi ?",
+    title: "Comment mettre en place une veille réglementaire efficace pour Qualiopi ?",
     excerpt: "Methodologie complete pour satisfaire l'indicateur 23 : sources a surveiller, outils d'automatisation et preuves a fournir lors de l'audit.",
     category: "Veille",
     readTime: "12 min",
@@ -111,7 +111,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   {
     slug: "indicateurs-24-25-26-veille-qualiopi",
     title: "Comment structurer sa veille sur les indicateurs 24, 25 et 26 ?",
-    excerpt: "Guide pratique pour la veille competences, innovations pedagogiques et handicap - 3 indicateurs souvent negliges du referentiel Qualiopi.",
+    excerpt: "Guide pratique pour la veille competences, innovations pedagogiques et handicap - 3 indicateurs souvent negliges du référentiel Qualiopi.",
     category: "Veille",
     readTime: "11 min",
     date: "2026-02-20",
@@ -119,8 +119,8 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   },
   {
     slug: "sources-veille-formation",
-    title: "Quelles sources surveiller pour sa veille reglementaire formation ?",
-    excerpt: "Panorama complet des sources nationales, OPCO et regionales a integrer dans votre strategie de veille reglementaire.",
+    title: "Quelles sources surveiller pour sa veille réglementaire formation ?",
+    excerpt: "Panorama complet des sources nationales, OPCO et régionales a intégrer dans votre strategie de veille réglementaire.",
     category: "Sources",
     readTime: "10 min",
     date: "2026-02-15",
@@ -161,7 +161,7 @@ export default async function BlogPage() {
             "@context": "https://schema.org",
             "@type": "Blog",
             name: "Blog Cipia",
-            description: "Guides et conseils pour les organismes de formation certifies Qualiopi",
+            description: "Guides et conseils pour les organismes de formation certifiés Qualiopi",
             url: "https://cipia.fr/blog/",
             publisher: {
               "@type": "Organization",
@@ -172,39 +172,6 @@ export default async function BlogPage() {
         }}
       />
 
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              Cipia
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/connexion" className="text-gray-600 hover:text-gray-900">
-                Connexion
-              </Link>
-              <Link
-                href="/inscription"
-                className="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition"
-              >
-                Inscription
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Breadcrumb */}
-      <nav className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500">
-            <li><Link href="/" className="hover:text-blue-600">Accueil</Link></li>
-            <li><span>/</span></li>
-            <li className="text-gray-900 font-medium">Blog</li>
-          </ol>
-        </div>
-      </nav>
-
       {/* Hero */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -212,7 +179,7 @@ export default async function BlogPage() {
             Blog Cipia — Veille Qualiopi
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            Guides pratiques, conseils d&apos;experts et actualites pour les 45 000 organismes de formation certifies Qualiopi
+            Guides pratiques, conseils d&apos;experts et actualités pour les 45 000 organismes de formation certifiés Qualiopi
           </p>
         </div>
       </div>
@@ -271,7 +238,7 @@ export default async function BlogPage() {
       <div className="bg-blue-600 py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl font-bold text-white mb-4">
-            Restez informe des evolutions reglementaires
+            Restez informe des evolutions réglementaires
           </h2>
           <p className="text-blue-100 mb-6">
             Recevez notre newsletter hebdomadaire avec les dernieres publications

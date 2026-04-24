@@ -123,7 +123,7 @@ export default function AbonnementPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Abonnement</h1>
-        <p className="text-gray-500 mt-1">Gerez votre plan et vos options de facturation</p>
+        <p className="text-gray-500 mt-1">Gérez votre plan et vos options de facturation</p>
       </div>
 
       {/* Current Plan */}

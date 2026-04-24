@@ -231,7 +231,7 @@ export default function PlanActionPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Plan d&apos;action</h1>
           <p className="text-gray-500 mt-1">
-            Gerez vos actions suite a la veille reglementaire
+            Gérez vos actions suite a la veille réglementaire
           </p>
         </div>
         <button

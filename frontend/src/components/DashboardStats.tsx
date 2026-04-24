@@ -115,7 +115,7 @@ export default function DashboardStats({ firstName }: { firstName: string }) {
   ];
 
   const indicatorLabels: Record<string, string> = {
-    "23": "Veille legale et reglementaire",
+    "23": "Veille légale et réglementaire",
     "24": "Competences, metiers, emplois",
     "25": "Innovations pedagogiques",
     "26": "Handicap et compensations",
@@ -144,8 +144,8 @@ export default function DashboardStats({ firstName }: { firstName: string }) {
           <DatabaseZap className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h2 className="text-lg font-semibold text-gray-900 mb-2">
             {stats.db_initialized === false
-              ? "Base de donnees non initialisee"
-              : "La collecte demarre bientot"}
+              ? "Base de données non initialisee"
+              : "La collecté demarre bientot"}
           </h2>
           <p className="text-gray-500 max-w-md mx-auto">
             Vos premiers contenus arriveront sous 24h. Vous recevrez votre
@@ -279,7 +279,7 @@ export default function DashboardStats({ firstName }: { firstName: string }) {
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-5 h-5 text-gray-400" />
             <span className="text-sm font-medium text-gray-500">
-              Derniere collecte
+              Derniere collecté
             </span>
           </div>
           <p className="text-sm font-semibold text-gray-900">

@@ -114,7 +114,7 @@ export default function PricingPage() {
             Conformite Qualiopi simplifiee
           </h1>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            La veille reglementaire automatisee pour les 45 000 organismes de formation certifies Qualiopi
+            La veille réglementaire automatisée pour les 45 000 organismes de formation certifiés Qualiopi
           </p>
           <div className="flex justify-center space-x-4">
             <button
@@ -218,7 +218,7 @@ export default function PricingPage() {
                 Comment fonctionne l&apos;export PDF pour l&apos;audit Qualiopi ?
               </h3>
               <p className="mt-2 text-gray-600">
-                En un clic, vous genereez un document PDF complet pret a presenter a votre auditeur Qualiopi,
+                En un clic, vous genereez un document PDF complet prêt a présenter a votre auditeur Qualiopi,
                 incluant tous les articles surveilles, les actions menees et votre methodologie de veille.
               </p>
             </div>
@@ -228,7 +228,7 @@ export default function PricingPage() {
               </h3>
               <p className="mt-2 text-gray-600">
                 Nous collectons automatiquement les articles de BOAMP, Legifrance, 11 OPCO, France Travail
-                et les 13 Conseils Regionaux. Tout est analyse par IA pour ne vous presenter que le pertinent.
+                et les 13 Conseils Regionaux. Tout est analysé par IA pour ne vous présenter que le pertinent.
               </p>
             </div>
           </div>
@@ -239,7 +239,7 @@ export default function PricingPage() {
       <div className="bg-blue-600 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Pret a simplifier votre veille reglementaire ?
+            Prêt a simplifier votre veille réglementaire ?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
             Rejoignez les organismes de formation qui font confiance a Cipia

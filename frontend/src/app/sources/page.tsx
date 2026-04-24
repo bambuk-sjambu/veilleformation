@@ -299,7 +299,7 @@ const sourceCategories = [
         articles: "Variable",
       },
       {
-        name: "E-Marches Publics",
+        name: "E-Marchés Publics",
         url: "https://www.e-marchespublics.com",
         type: "Scraper HTML",
         status: "PARTIEL",
@@ -488,7 +488,7 @@ export default function SourcesPage() {
         <section className="py-16 bg-primary">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-2xl font-bold text-white mb-4">
-              Méthodologie de collecte
+              Méthodologie de collecté
             </h2>
             <div className="text-blue-100 space-y-4 text-left">
               <p>

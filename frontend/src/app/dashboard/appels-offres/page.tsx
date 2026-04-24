@@ -196,14 +196,14 @@ export default function AppelsOffresPage() {
           Appels d&apos;offres
         </h1>
         <p className="text-gray-600 mt-1">
-          Marches publics de formation detectes par l&apos;IA
+          Marchés publics de formation détectés par l&apos;IA
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          Donnees collectees depuis{" "}
+          Données collectées depuis{" "}
           <Link href="/sources" className="text-primary hover:underline font-medium">
             17 sources officielles
           </Link>{" "}
-          (BOAMP, BOAMP, OPCO, Regions...)
+          (BOAMP, OPCO, Régions, France Travail...)
         </p>
       </div>
 
@@ -214,11 +214,11 @@ export default function AppelsOffresPage() {
               <span className="font-medium text-blue-600">{filteredCount} AO</span>
               <span className="mx-1">sur</span>
               <span>{total}</span>
-              <span className="ml-1">(filtre par region actif)</span>
+              <span className="ml-1">(filtre par région actif)</span>
             </>
           ) : (
             <>
-              {total} appel{total !== 1 ? "s" : ""} d&apos;offres trouve
+              {total} appel{total !== 1 ? "s" : ""} d&apos;offres trouvé
               {total !== 1 ? "s" : ""}
             </>
           )}
@@ -245,7 +245,7 @@ export default function AppelsOffresPage() {
           <p className="text-gray-500">
             {isFiltered
               ? "Essayez d'élargir vos régions dans les paramètres."
-              : "Les appels d'offres apparaîtront ici après la première collecte."}
+              : "Les appels d'offres apparaîtront ici après la première collecté."}
           </p>
         </div>
       ) : (

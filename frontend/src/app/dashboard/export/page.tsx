@@ -161,7 +161,7 @@ export default function ExportPage() {
         {/* Stats Summary */}
         {stats && (
           <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Apercu des donnees</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Aperçu des données</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="text-center p-3 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">{stats.totalArticles}</div>
@@ -261,7 +261,7 @@ export default function ExportPage() {
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Telecharger le PDF
+                Télécharger le PDF
               </>
             )}
           </button>
@@ -272,7 +272,7 @@ export default function ExportPage() {
           <h3 className="text-sm font-medium text-blue-900 mb-2">Conseil pour l&apos;audit Qualiopi</h3>
           <p className="text-sm text-blue-700">
             Ce rapport sert de preuve de veille pour les indicateurs 23 à 26 du référentiel Qualiopi.
-            Imprimez-le et conservez-le dans vos documents qualite. Il est recommande de generer un
+            Imprimez-le et conservez-le dans vos documents qualité. Il est recommandé de générer un
             rapport mensuel ou trimestriel selon votre frequence d&apos;audit.
           </p>
         </div>

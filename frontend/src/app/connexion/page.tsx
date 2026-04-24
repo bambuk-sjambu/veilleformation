@@ -46,7 +46,7 @@ export default function ConnexionPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">VF</span>
+              <span className="text-white font-bold">C</span>
             </div>
             <span className="font-bold text-xl text-gray-900">
               Cipia

@@ -203,6 +203,11 @@ class BOAMPCollector(BaseCollector):
         url = f"https://www.boamp.fr/avis/detail/{source_id}" if source_id else None
         content = record.get("descripteurs") or record.get("objet") or ""
         published_date = record.get("dateparution")
+        def _first(val):
+            if isinstance(val, list):
+                return val[0] if val else None
+            return val
+
         acheteur = record.get("nomacheteur") or record.get("denomination")
         # Le champ officiel OpenDataSoft est datelimitereponse (verifie via l'API)
         date_limite = (
@@ -210,7 +215,8 @@ class BOAMPCollector(BaseCollector):
             or record.get("datelimiteremiseoffres")
             or record.get("date_limite")
         )
-        cpv = record.get("descripteur_code") or CPV_CODE
+        # descripteur_code est une liste (ex: ["80500000"]). Extraire le premier.
+        cpv = _first(record.get("descripteur_code")) or CPV_CODE
 
         return {
             "source": "boamp",

@@ -186,6 +186,12 @@ export function getDb(): Database.Database {
       if (!columnNames.includes('preferred_regions')) {
         db.exec(`ALTER TABLE users ADD COLUMN preferred_regions TEXT`);
       }
+      if (!columnNames.includes('avatar_url')) {
+        db.exec(`ALTER TABLE users ADD COLUMN avatar_url TEXT`);
+      }
+      if (!columnNames.includes('phone')) {
+        db.exec(`ALTER TABLE users ADD COLUMN phone TEXT`);
+      }
     } catch {
       // Migration failed, table might not exist yet
     }

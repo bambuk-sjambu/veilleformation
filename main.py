@@ -86,8 +86,12 @@ def cmd_collect(args):
         legifrance_collector = LegifranceRSSCollector(db_path, logger)
         logger.info("Legifrance: utilisation LegifranceRSS (pas de credentials PISTE)")
 
+    # days_back configurable via env (default 30 pour runs quotidiens, plus haut pour backfill)
+    days_back = int(os.environ.get("COLLECT_DAYS_BACK", "30"))
+    logger.info(f"Collecte : days_back={days_back}")
+
     collectors = [
-        BOAMPCollector(db_path, logger),
+        BOAMPCollector(db_path, logger, days_back=days_back),
         legifrance_collector,
     ]
 

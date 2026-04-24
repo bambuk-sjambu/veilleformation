@@ -124,13 +124,13 @@ export default function AppelsOffresPage() {
       .catch(() => {});
   }, []);
 
-  // Fetch AO articles
+  // Fetch AO articles (limite haute pour permettre filtrage client-side sur tous les AO)
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("category", "ao");
     params.set("status", "done");
     params.set("sort", "relevance");
-    params.set("limit", "100");
+    params.set("limit", "1000");
 
     fetch(`/api/articles?${params.toString()}`)
       .then((res) => res.json())

@@ -235,10 +235,10 @@ export default function ExportPage() {
             <h3 className="text-sm font-medium text-gray-900 mb-2">Le rapport contiendra :</h3>
             <ul className="text-sm text-gray-600 space-y-1">
               <li>• Page de garde avec informations entreprise</li>
-              <li>• Resume executif avec KPIs</li>
+              <li>• Résumé exécutif avec KPIs</li>
               <li>• Détail par indicateur Qualiopi (23, 24, 25, 26)</li>
               <li>• Liste des actions menées avec statuts</li>
-              <li>• Methodologie de veille (si configuree)</li>
+              <li>• Méthodologie de veille (si configurée)</li>
             </ul>
           </div>
 

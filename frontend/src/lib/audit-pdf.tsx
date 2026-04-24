@@ -434,7 +434,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
   });
 
   // Count by category
-  const categoryCounts: Record<string, number> = { reglementaire: 0, ao: 0, metier: 0, handicap: 0 };
+  const categoryCounts: Record<string, number> = { réglementaire: 0, ao: 0, metier: 0, handicap: 0 };
   articles.forEach((a) => {
     if (a.category && categoryCounts[a.category] !== undefined) {
       categoryCounts[a.category]++;
@@ -442,9 +442,9 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
   });
 
   const indicatorLabels: Record<string, string> = {
-    "23": "Indicateur 23 - Veille legale et reglementaire",
-    "24": "Indicateur 24 - Metiers, competences et emplois",
-    "25": "Indicateur 25 - Innovations pedagogiques et technologiques",
+    "23": "Indicateur 23 - Veille légale et réglementaire",
+    "24": "Indicateur 24 - Métiers, compétences et emplois",
+    "25": "Indicateur 25 - Innovations pédagogiques et technologiques",
     "26": "Indicateur 26 - Handicap et compensations",
   };
 
@@ -456,13 +456,13 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
         <Text style={styles.coverLogo}>Cipia</Text>
-        <Text style={styles.coverTitle}>Rapport de Veille Reglementaire</Text>
-        <Text style={styles.coverSubtitle}>Preuve de conformite Qualiopi - Indicateurs 23 a 26</Text>
+        <Text style={styles.coverTitle}>Rapport de Veille Réglementaire</Text>
+        <Text style={styles.coverSubtitle}>Preuve de conformité Qualiopi - Indicateurs 23 à 26</Text>
 
         <View style={styles.coverInfo}>
           <View style={styles.coverInfoRow}>
             <Text style={styles.coverInfoLabel}>Organisme :</Text>
-            <Text style={styles.coverInfoValue}>{profile?.company_name || "Non renseigne"}</Text>
+            <Text style={styles.coverInfoValue}>{profile?.company_name || "Non renseigné"}</Text>
           </View>
           {profile?.siret && (
             <View style={styles.coverInfoRow}>
@@ -477,7 +477,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             </View>
           )}
           <View style={styles.coverInfoRow}>
-            <Text style={styles.coverInfoLabel}>Periode couverte :</Text>
+            <Text style={styles.coverInfoLabel}>Période couverte :</Text>
             <Text style={styles.coverInfoValue}>{formatDate(dateStart)} - {formatDate(dateEnd)}</Text>
           </View>
           <View style={styles.coverInfoRow}>
@@ -492,7 +492,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
           )}
         </View>
 
-        <Text style={styles.coverFooter}>Document genere automatiquement par Cipia</Text>
+        <Text style={styles.coverFooter}>Document généré automatiquement par Cipia</Text>
       </Page>
 
       {/* Content Page */}
@@ -506,22 +506,22 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
           </View>
           <View style={styles.headerRight}>
             <Text style={styles.reportTitle}>Rapport de Veille Qualiopi</Text>
-            <Text style={styles.reportDate}>Periode: {formatDate(dateStart)} - {formatDate(dateEnd)}</Text>
-            <Text style={styles.reportDate}>Genere le: {formatDate(new Date().toISOString())}</Text>
+            <Text style={styles.reportDate}>Période : {formatDate(dateStart)} - {formatDate(dateEnd)}</Text>
+            <Text style={styles.reportDate}>Généré le : {formatDate(new Date().toISOString())}</Text>
           </View>
         </View>
 
         {/* Summary */}
         <View style={styles.summaryBox}>
-          <Text style={styles.summaryTitle}>Resume Executif</Text>
+          <Text style={styles.summaryTitle}>Résumé Exécutif</Text>
           <View style={styles.summaryGrid}>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{totalArticles}</Text>
-              <Text style={styles.summaryLabel}>Articles surveilles</Text>
+              <Text style={styles.summaryLabel}>Articles surveillés</Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{actionsDone.length}</Text>
-              <Text style={styles.summaryLabel}>Actions completees</Text>
+              <Text style={styles.summaryLabel}>Actions complétées</Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{actionsInProgress.length}</Text>
@@ -529,7 +529,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{actionsTodo.length}</Text>
-              <Text style={styles.summaryLabel}>A faire</Text>
+              <Text style={styles.summaryLabel}>À faire</Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{articlesByIndicator["23"].length}</Text>
@@ -540,7 +540,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Impact Distribution */}
         <View style={styles.impactBox}>
-          <Text style={{ fontSize: 10, fontWeight: "bold", color: "#374151", marginBottom: 8 }}>Repartition par niveau d'impact</Text>
+          <Text style={{ fontSize: 10, fontWeight: "bold", color: "#374151", marginBottom: 8 }}>Répartition par niveau d'impact</Text>
           <View style={styles.impactRow}>
             <Text style={styles.impactLabel}>Fort</Text>
             <View style={styles.impactBar}>
@@ -584,14 +584,14 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         {/* Methodology */}
         {profile?.methodology_notes && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Methodologie de Veille</Text>
+            <Text style={styles.sectionTitle}>Méthodologie de Veille</Text>
             <Text style={{ fontSize: 9, color: "#4b5563", lineHeight: 1.4 }}>{profile.methodology_notes}</Text>
           </View>
         )}
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text>Rapport genere par Cipia - Certification Qualiopi</Text>
+          <Text>Rapport généré par Cipia - Certification Qualiopi</Text>
           <Text>Page 2</Text>
         </View>
       </Page>
@@ -603,19 +603,19 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             <Text style={styles.companyName}>{profile?.company_name || "Organisme de Formation"}</Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.reportTitle}>Actions Menees</Text>
+            <Text style={styles.reportTitle}>Actions Menées</Text>
           </View>
         </View>
 
         <View style={styles.section}>
           {actionsDone.length > 0 && (
             <View style={styles.actionSection}>
-              <Text style={[styles.actionGroupTitle, { color: "#059669" }]}>Actions completees ({actionsDone.length})</Text>
+              <Text style={[styles.actionGroupTitle, { color: "#059669" }]}>Actions complétées ({actionsDone.length})</Text>
               {actionsDone.slice(0, 8).map((action) => (
                 <View key={action.id} style={styles.action}>
                   <Text style={styles.actionDescription}>{action.action_description}</Text>
                   <Text style={styles.actionMeta}>
-                    Responsable: {action.responsible || "Non defini"} | Complete le: {formatDate(action.completed_at)}
+                    Responsable : {action.responsible || "Non défini"} | Complétée le : {formatDate(action.completed_at)}
                   </Text>
                 </View>
               ))}
@@ -632,7 +632,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
                 <View key={action.id} style={[styles.action, styles.actionInProgress]}>
                   <Text style={styles.actionDescription}>{action.action_description}</Text>
                   <Text style={styles.actionMeta}>
-                    Responsable: {action.responsible || "Non defini"} | Echeance: {formatDate(action.due_date)}
+                    Responsable : {action.responsible || "Non défini"} | Échéance : {formatDate(action.due_date)}
                   </Text>
                 </View>
               ))}
@@ -641,12 +641,12 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
           {actionsTodo.length > 0 && (
             <View style={styles.actionSection}>
-              <Text style={[styles.actionGroupTitle, { color: "#6b7280" }]}>Actions planifiees ({actionsTodo.length})</Text>
+              <Text style={[styles.actionGroupTitle, { color: "#6b7280" }]}>Actions planifiées ({actionsTodo.length})</Text>
               {actionsTodo.slice(0, 5).map((action) => (
                 <View key={action.id} style={[styles.action, styles.actionTodo]}>
                   <Text style={styles.actionDescription}>{action.action_description}</Text>
                   <Text style={styles.actionMeta}>
-                    Responsable: {action.responsible || "Non defini"} | Echeance: {formatDate(action.due_date)}
+                    Responsable : {action.responsible || "Non défini"} | Échéance : {formatDate(action.due_date)}
                   </Text>
                 </View>
               ))}
@@ -669,7 +669,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         </View>
 
         <View style={styles.footer} fixed>
-          <Text>Rapport genere par Cipia</Text>
+          <Text>Rapport généré par Cipia</Text>
           <Text>Page 3</Text>
         </View>
       </Page>
@@ -681,7 +681,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             <Text style={styles.companyName}>{profile?.company_name || "Organisme de Formation"}</Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.reportTitle}>Detail par Indicateur</Text>
+            <Text style={styles.reportTitle}>Détail par Indicateur</Text>
           </View>
         </View>
 
@@ -695,7 +695,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
               <View key={article.id} style={styles.article}>
                 <Text style={styles.articleTitle}>{article.title.substring(0, 80)}{article.title.length > 80 ? "..." : ""}</Text>
                 <Text style={styles.articleMeta}>
-                  {getSourceLabel(article.source)} | {formatDate(article.published_date)} | Impact: {article.impact_level || "Non evalue"}
+                  {getSourceLabel(article.source)} | {formatDate(article.published_date)} | Impact : {article.impact_level || "Non évalué"}
                 </Text>
                 {article.summary && (
                   <Text style={styles.articleSummary}>{article.summary.substring(0, 120)}...</Text>
@@ -709,7 +709,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         ))}
 
         <View style={styles.footer} fixed>
-          <Text>Rapport genere par Cipia</Text>
+          <Text>Rapport généré par Cipia</Text>
           <Text>Page 4</Text>
         </View>
       </Page>

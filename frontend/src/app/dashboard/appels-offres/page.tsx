@@ -209,7 +209,12 @@ export default function AppelsOffresPage() {
 
       <div className="flex items-center justify-between mb-4">
         <div className="text-sm text-gray-500">
-          {isFiltered ? (
+          {loading ? (
+            <span className="inline-flex items-center gap-2 text-gray-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Chargement des appels d&apos;offres...
+            </span>
+          ) : isFiltered ? (
             <>
               <span className="font-medium text-blue-600">{filteredCount} AO</span>
               <span className="mx-1">sur</span>

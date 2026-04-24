@@ -165,16 +165,18 @@ export default function AppelsOffresPage() {
   };
 
   // Filter articles by preferred regions (search in acheteur + region fields)
+  // Normalise tirets -> espaces pour matcher "Ile-de-France" contre "ile de france"
+  const normalize = (s: string) =>
+    s.toLowerCase().replace(/-/g, " ").replace(/\s+/g, " ").trim();
+
   const filteredArticles = preferredRegions.length === 0
     ? articles
     : articles.filter((ao) => {
-        // Combine acheteur and region for searching
-        const searchText = `${ao.acheteur || ""} ${ao.region || ""}`.toLowerCase();
-
-        // Check if any preferred region matches
+        const searchText = normalize(`${ao.acheteur || ""} ${ao.region || ""}`);
         return preferredRegions.some((pref) => {
-          const variations = regionVariations[pref] || [pref.replace(/-/g, " ")];
-          return variations.some((variant) => searchText.includes(variant));
+          const slugVariants = [normalize(pref), pref.replace(/-/g, " ")];
+          const variations = [...(regionVariations[pref] || []), ...slugVariants];
+          return variations.some((variant) => searchText.includes(normalize(variant)));
         });
       });
 

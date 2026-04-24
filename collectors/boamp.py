@@ -160,22 +160,31 @@ class BOAMPCollector(BaseCollector):
         return True
 
     def _extract_region(self, record: dict) -> Optional[str]:
-        """Derive region name from department code (BOAMP donne le dept, pas la region).
+        """Derive region name from department code.
 
-        Priorite :
-        1. code_departement_prestation (lieu d'execution)
-        2. code_departement (acheteur)
-        3. legacy fields lieu_exec_nom / dept
+        BOAMP expose code_departement et code_departement_prestation comme des listes
+        (ex : ['75']), pas des scalaires. On prend la premiere valeur de la liste.
         """
+        def first(val):
+            if isinstance(val, list):
+                return val[0] if val else None
+            return val
+
         dept = (
-            record.get("code_departement_prestation")
-            or record.get("code_departement")
-            or record.get("dept")
+            first(record.get("code_departement_prestation"))
+            or first(record.get("code_departement"))
+            or first(record.get("dept"))
         )
         if dept:
-            dept_str = str(dept).zfill(2)[:3]
-            return DEPT_TO_REGION.get(dept_str) or DEPT_TO_REGION.get(dept_str[:2])
-        return record.get("lieu_exec_nom")
+            dept_str = str(dept).strip().upper()
+            # Essaie match direct (2A, 2B, 971-976) puis zfill
+            return (
+                DEPT_TO_REGION.get(dept_str)
+                or DEPT_TO_REGION.get(dept_str.zfill(2))
+                or DEPT_TO_REGION.get(dept_str[:3])
+                or DEPT_TO_REGION.get(dept_str[:2])
+            )
+        return first(record.get("lieu_exec_nom"))
 
     def _extract_montant(self, record: dict) -> Optional[float]:
         """Extract estimated amount if available."""

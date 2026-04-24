@@ -142,41 +142,47 @@ export default function AppelsOffresPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Region name variations for matching
-  const regionVariations: Record<string, string[]> = {
-    "ile-de-france": ["ile de france", "idf", "paris", "75", "77", "78", "91", "92", "93", "94", "95"],
-    "auvergne-rhone-alpes": ["auvergne", "rhone alpes", "rhne alpes", "aura", "lyon", "69", "38", "63"],
-    "hauts-de-france": ["hauts de france", "haut de france", "hdf", "lille", "59", "62", "80", "60", "02", "nord", "pas de calais"],
-    "nouvelle-aquitaine": ["nouvelle aquitaine", "aquitaine", "bordeaux", "33", "limousin", "poitou"],
-    "occitanie": ["occitanie", "toulouse", "31", "languedoc", "roussillon", "34", "marseille"],
-    "grand-est": ["grand est", "alsace", "lorraine", "champagne", "strasbourg", "67", "68", "54", "55", "57"],
-    "provence-alpes-cote-dazur": ["paca", "provence", "alpes", "cote d'azur", "azur", "13", "06", "83", "84"],
-    "pays-de-la-loire": ["pays de la loire", "nantes", "44", "loire atlantique", "bretagne"],
-    "bretagne": ["bretagne", "rennes", "35", "22", "29", "56"],
-    "normandie": ["normandie", "caen", "rouen", "14", "50", "61", "27", "76"],
-    "bourgogne-franche-comte": ["bourgogne", "franche comte", "dijon", "21", "besancon"],
-    "centre-val-de-loire": ["centre", "val de loire", "orleans", "37", "41", "18", "36"],
-    "corse": ["corse", "ajaccio", "2a", "2b"],
-    "guadeloupe": ["guadeloupe", "971"],
-    "martinique": ["martinique", "972"],
-    "guyane": ["guyane", "973"],
-    "reunion": ["reunion", "974"],
-    "mayotte": ["mayotte", "976"],
+  // Mapping slug preferences -> nom region en DB (INSEE)
+  // La DB contient le nom complet (backfill dept -> region). Pas besoin de guess.
+  const SLUG_TO_REGION: Record<string, string> = {
+    "ile-de-france": "Ile-de-France",
+    "auvergne-rhone-alpes": "Auvergne-Rhone-Alpes",
+    "hauts-de-france": "Hauts-de-France",
+    "nouvelle-aquitaine": "Nouvelle-Aquitaine",
+    "occitanie": "Occitanie",
+    "grand-est": "Grand Est",
+    "provence-alpes-cote-dazur": "Provence-Alpes-Cote-d'Azur",
+    "pays-de-la-loire": "Pays de la Loire",
+    "bretagne": "Bretagne",
+    "normandie": "Normandie",
+    "bourgogne-franche-comte": "Bourgogne-Franche-Comte",
+    "centre-val-de-loire": "Centre-Val de Loire",
+    "corse": "Corse",
+    "guadeloupe": "Guadeloupe",
+    "martinique": "Martinique",
+    "guyane": "Guyane",
+    "reunion": "Reunion",
+    "mayotte": "Mayotte",
   };
 
-  // Filter articles by preferred regions (search in acheteur + region fields)
-  // Normalise tirets -> espaces pour matcher "Ile-de-France" contre "ile de france"
-  const normalize = (s: string) =>
-    s.toLowerCase().replace(/-/g, " ").replace(/\s+/g, " ").trim();
+  // Normalise pour comparaison insensible a la casse, aux accents et tirets
+  const normalize = (s: string | null | undefined) =>
+    (s || "")
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/[-'’]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
   const filteredArticles = preferredRegions.length === 0
     ? articles
     : articles.filter((ao) => {
-        const searchText = normalize(`${ao.acheteur || ""} ${ao.region || ""}`);
+        if (!ao.region) return false;
+        const aoRegion = normalize(ao.region);
         return preferredRegions.some((pref) => {
-          const slugVariants = [normalize(pref), pref.replace(/-/g, " ")];
-          const variations = [...(regionVariations[pref] || []), ...slugVariants];
-          return variations.some((variant) => searchText.includes(normalize(variant)));
+          const target = SLUG_TO_REGION[pref];
+          return target && aoRegion === normalize(target);
         });
       });
 

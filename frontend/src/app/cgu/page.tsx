@@ -232,6 +232,7 @@ export default function CguPage() {
               </h2>
               <ul className="mt-2 space-y-1">
                 <li><strong>Email :</strong> contact@cipia.fr</li>
+                <li><strong>Support :</strong> support@cipia.fr</li>
               </ul>
             </div>
           </section>

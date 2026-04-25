@@ -16,7 +16,7 @@ SCHEMA_SQL = """
 -- Articles (articles collectes from all sources)
 CREATE TABLE IF NOT EXISTS articles (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  source TEXT NOT NULL CHECK(source IN ('boamp', 'legifrance', 'opco_atlas', 'opco_akto', 'opco_ep', 'opco_mobilites', 'constructys', 'opcommerce', 'ocapiat', 'opco_2i', 'opco_sante', 'uniformation', 'afdas', 'france_travail', 'region', 'france_competences', 'travail_gouv', 'education_gouv')),
+  source TEXT NOT NULL,
   source_id TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   url TEXT,
@@ -107,7 +107,7 @@ CREATE INDEX IF NOT EXISTS idx_subscribers_active on subscribers(is_active);
 -- Collection logs(automated collection tracking)
 CREATE TABLE IF NOT EXISTS collection_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    source TEXT NOT NULL CHECK(source IN ('boamp', 'legifrance', 'opco_atlas', 'opco_akto', 'opco_ep', 'opco_mobilites', 'constructys', 'opcommerce', 'ocapiat', 'opco_2i', 'opco_sante', 'uniformation', 'afdas', 'france_travail', 'region', 'france_competences', 'travail_gouv', 'education_gouv')),
+    source TEXT NOT NULL,
     started_at TEXT NOT NULL DEFAULT (datetime('now')),
     finished_at TEXT,
     status TEXT NOT null check(status IN ('success', 'failed', 'partial')),

@@ -21,6 +21,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from collectors.boamp import BOAMPCollector
+from collectors.centre_inffo import CentreInffoCollector
+from collectors.dila_jorf import DILAJorfCollector
 from collectors.legifrance import LegifranceCollector
 from collectors.legifrance_rss import LegifranceRSSCollector
 from collectors.opco import collect_all_opco
@@ -74,25 +76,19 @@ def cmd_collect(args):
     # Ensure DB exists
     init_db(db_path)
 
-    # Use LegifranceRSSCollector by default (no OAuth2 needed).
-    # Fall back to the PISTE API collector only if credentials are available.
-    legifrance_client_id = os.environ.get("LEGIFRANCE_CLIENT_ID", "")
-    legifrance_client_secret = os.environ.get("LEGIFRANCE_CLIENT_SECRET", "")
-
-    if legifrance_client_id and legifrance_client_secret:
-        legifrance_collector = LegifranceCollector(db_path, logger)
-        logger.info("Legifrance: utilisation API PISTE (credentials disponibles)")
-    else:
-        legifrance_collector = LegifranceRSSCollector(db_path, logger)
-        logger.info("Legifrance: utilisation LegifranceRSS (pas de credentials PISTE)")
-
     # days_back configurable via env (default 30 pour runs quotidiens, plus haut pour backfill)
     days_back = int(os.environ.get("COLLECT_DAYS_BACK", "30"))
-    logger.info(f"Collecte : days_back={days_back}")
+    # JORF days_back plus court (dumps quotidiens lourds), default 7
+    jorf_days_back = int(os.environ.get("JORF_DAYS_BACK", "7"))
+    logger.info(f"Collecte : days_back={days_back}, jorf_days_back={jorf_days_back}")
 
+    # Sources stables (Phase 1 v2 - apres pivot Avril 2026)
+    # Anciens collecteurs (legifrance_rss, opco, regions, france_travail, playwright)
+    # desactives car sources cassees ou anti-bot. Voir CLAUDE.md / SUIVI-FONCTIONNALITES.md.
     collectors = [
         BOAMPCollector(db_path, logger, days_back=days_back),
-        legifrance_collector,
+        CentreInffoCollector(db_path, logger, days_back=days_back),
+        DILAJorfCollector(db_path, logger, days_back=jorf_days_back),
     ]
 
     print("=== Cipia -- Collecte ===\n")
@@ -104,66 +100,13 @@ def cmd_collect(args):
 
         status_icon = "OK" if not stats["errors"] else "ERREUR"
         print(
-            f"  [{status_icon}] {stats['source']:>12}: "
+            f"  [{status_icon}] {stats['source']:>14}: "
             f"{stats['inserted']} nouveaux / {stats['collected']} collectes "
             f"({stats['duration_seconds']}s)"
         )
         if stats["errors"]:
             for err in stats["errors"]:
                 print(f"       Erreur: {err}")
-
-    # OPCO scrapers
-    print("\n  --- OPCO ---")
-    opco_stats = collect_all_opco(db_path, logger)
-    for stats in opco_stats:
-        all_stats.append(stats)
-        status_icon = "OK" if not stats.get("errors") else "ERREUR"
-        print(
-            f"  [{status_icon}] {stats['source']:>16}: "
-            f"{stats.get('inserted', 0)} nouveaux / {stats.get('collected', 0)} collectes"
-        )
-
-    # RSS feeds (Uniformation, OPCO 2i)
-    print("\n  --- RSS Feeds ---")
-    rss_stats = collect_all_rss(db_path, logger)
-    for stats in rss_stats:
-        all_stats.append(stats)
-        status_icon = "OK" if not stats.get("errors") else "ERREUR"
-        print(
-            f"  [{status_icon}] {stats['source']:>16}: "
-            f"{stats.get('inserted', 0)} nouveaux / {stats.get('collected', 0)} collectes"
-        )
-
-    # Playwright scrapers (JS-rendered sites)
-    print("\n  --- Playwright (JS) ---")
-    pw_stats = collect_all_playwright(db_path, logger)
-    for stats in pw_stats:
-        all_stats.append(stats)
-        status_icon = "OK" if not stats.get("errors") else "ERREUR"
-        print(
-            f"  [{status_icon}] {stats['source']:>16}: "
-            f"{stats.get('inserted', 0)} nouveaux / {stats.get('collected', 0)} collectes"
-        )
-
-    # France Travail scrapers
-    print("\n  --- France Travail ---")
-    ft_stats = collect_france_travail(db_path, logger)
-    all_stats.append(ft_stats)
-    status_icon = "OK" if not ft_stats.get("errors") else "ERREUR"
-    print(
-        f"  [{status_icon}] {ft_stats['source']:>16}: "
-        f"{ft_stats.get('inserted', 0)} nouveaux / {ft_stats.get('collected', 0)} collectes"
-    )
-
-    # Regions scrapers
-    print("\n  --- Conseils Regionaux ---")
-    region_stats = collect_regions(db_path, logger)
-    all_stats.append(region_stats)
-    status_icon = "OK" if not region_stats.get("errors") else "ERREUR"
-    print(
-        f"  [{status_icon}] {region_stats['source']:>16}: "
-        f"{region_stats.get('inserted', 0)} nouveaux / {region_stats.get('collected', 0)} collectes"
-    )
 
     total_new = sum(s.get("inserted", 0) for s in all_stats)
     total_collected = sum(s.get("collected", 0) for s in all_stats)

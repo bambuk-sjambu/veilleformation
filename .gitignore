@@ -44,3 +44,12 @@ netlify/functions/search/index.json
 .venv/
 __pycache__/
 data/*.db*
+.gstack/
+
+# Donnees prospection (sensibles - 45 000 OF)
+data/of_*.csv
+data/of_*.sqlite*
+data/email_beta_campaign_*.html
+data/screenshots/
+data/test_*.json
+data/newsletter_*.html

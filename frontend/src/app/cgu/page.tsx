@@ -1,4 +1,6 @@
 import Link from "next/link";
+import PublicHeader from "@/components/PublicHeader";
+import PublicFooter from "@/components/PublicFooter";
 
 export const metadata = {
   title: "Conditions Générales d'Utilisation | Cipia",
@@ -7,8 +9,10 @@ export const metadata = {
 
 export default function CguPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
+    <>
+      <PublicHeader />
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
+        <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Conditions Générales d&apos;Utilisation
@@ -227,25 +231,20 @@ export default function CguPage() {
                 13. Contact
               </h2>
               <ul className="mt-2 space-y-1">
-                <li><strong>Support :</strong> support@cipia.fr</li>
-                <li><strong>Contact :</strong> contact@cipia.fr</li>
+                <li><strong>Email :</strong> contact@cipia.fr</li>
               </ul>
             </div>
           </section>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              Dernière mise à jour : 24 avril 2026
+              Dernière mise à jour : 25 avril 2026
             </p>
           </div>
         </div>
-
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-primary hover:underline">
-            ← Retour à l&apos;accueil
-          </Link>
         </div>
       </div>
-    </div>
+      <PublicFooter />
+    </>
   );
 }

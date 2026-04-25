@@ -1,4 +1,6 @@
 import Link from "next/link";
+import PublicHeader from "@/components/PublicHeader";
+import PublicFooter from "@/components/PublicFooter";
 
 export const metadata = {
   title: "Mentions légales | Cipia",
@@ -7,8 +9,10 @@ export const metadata = {
 
 export default function MentionsLegalesPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
+    <>
+      <PublicHeader />
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
+        <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
             Mentions légales
@@ -23,11 +27,13 @@ export default function MentionsLegalesPage() {
               <ul className="mt-2 space-y-1">
                 <li><strong>Raison sociale :</strong> Haruna SARL</li>
                 <li><strong>Forme juridique :</strong> Société à responsabilité limitée (SARL) de droit français</li>
-                <li><strong>Capital social :</strong> [à compléter] €</li>
-                <li><strong>Siège social :</strong> [adresse à compléter], France</li>
-                <li><strong>RCS :</strong> [Ville + numéro à compléter]</li>
-                <li><strong>SIRET :</strong> [à compléter]</li>
-                <li><strong>N° TVA intracommunautaire :</strong> [à compléter]</li>
+                <li><strong>Siège social :</strong> 112 avenue de Paris, 94300 Vincennes, France</li>
+                <li><strong>RCS :</strong> Créteil 752 912 022</li>
+                <li><strong>N° de gestion :</strong> 2012 B 03277</li>
+                <li><strong>Date d&apos;immatriculation :</strong> 31 juillet 2012</li>
+                <li><strong>SIRET :</strong> 752 912 022 00015</li>
+                <li><strong>Code APE :</strong> 6202A — Conseils en systèmes et logiciels informatiques</li>
+                <li><strong>N° TVA intracommunautaire :</strong> FR92 752 912 022</li>
                 <li><strong>Email :</strong> contact@cipia.fr</li>
               </ul>
             </div>
@@ -123,24 +129,19 @@ export default function MentionsLegalesPage() {
               </h2>
               <ul className="mt-2 space-y-1">
                 <li><strong>Email :</strong> contact@cipia.fr</li>
-                <li><strong>Support :</strong> support@cipia.fr</li>
               </ul>
             </div>
           </section>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              Dernière mise à jour : 24 avril 2026
+              Dernière mise à jour : 25 avril 2026
             </p>
           </div>
         </div>
-
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-primary hover:underline">
-            ← Retour à l&apos;accueil
-          </Link>
         </div>
       </div>
-    </div>
+      <PublicFooter />
+    </>
   );
 }

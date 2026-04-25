@@ -42,6 +42,19 @@ else
     ISSUES+=("Aucun traitement IA depuis ${HOURS_SINCE_PROCESS}h (>26h)")
   fi
 
+  # Verif par source critique : BOAMP, Centre Inffo, JORF doivent collecter au moins
+  # toutes les 48h (Centre Inffo poste plusieurs fois par semaine, JORF tous les jours).
+  for src_check in "boamp:36" "centre_inffo:96" "jorf:48"; do
+    src="${src_check%:*}"
+    max_h="${src_check#*:}"
+    src_hours=$(sqlite3 "$DB" "SELECT CAST((strftime('%s','now') - strftime('%s', MAX(collected_at))) / 3600 AS INTEGER) FROM articles WHERE source='$src'" 2>/dev/null)
+    if [ -z "$src_hours" ] || [ "$src_hours" = "" ]; then
+      ISSUES+=("Source '$src' jamais collectee")
+    elif [ "$src_hours" -gt "$max_h" ]; then
+      ISSUES+=("Source '$src' silencieuse depuis ${src_hours}h (>${max_h}h)")
+    fi
+  done
+
   TOTAL=$(sqlite3 "$DB" "SELECT COUNT(*) FROM articles" 2>/dev/null || echo 0)
   DONE=$(sqlite3 "$DB" "SELECT COUNT(*) FROM articles WHERE status='done'" 2>/dev/null || echo 0)
   FAILED=$(sqlite3 "$DB" "SELECT COUNT(*) FROM articles WHERE status='failed'" 2>/dev/null || echo 0)

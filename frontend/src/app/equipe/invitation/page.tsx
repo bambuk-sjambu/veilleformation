@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, CheckCircle2, AlertCircle, Users } from "lucide-react";
@@ -14,6 +14,14 @@ type InvitationDetails = {
 };
 
 export default function InvitationAcceptPage() {
+  return (
+    <Suspense fallback={null}>
+      <InvitationAcceptInner />
+    </Suspense>
+  );
+}
+
+function InvitationAcceptInner() {
   const router = useRouter();
   const params = useSearchParams();
   const token = params.get("token");

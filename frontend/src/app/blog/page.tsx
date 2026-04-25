@@ -75,7 +75,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   {
     slug: "guide-qualiopi-2026",
     title: "Comment obtenir la certification Qualiopi en 2026 ?",
-    excerpt: "Guide complet pour comprendre le référentiel Qualiopi, preparer les 32 indicateurs et reussir votre audit de certification du premier coup.",
+    excerpt: "Guide complet pour comprendre le référentiel Qualiopi, préparer les 32 indicateurs et réussir votre audit de certification du premier coup.",
     category: "Qualiopi",
     readTime: "15 min",
     date: "2026-03-15",
@@ -84,7 +84,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   {
     slug: "veille-reglementaire-qualiopi-indicateur-23",
     title: "Comment mettre en place une veille réglementaire efficace pour Qualiopi ?",
-    excerpt: "Methodologie complete pour satisfaire l'indicateur 23 : sources a surveiller, outils d'automatisation et preuves a fournir lors de l'audit.",
+    excerpt: "Méthodologie complète pour satisfaire l'indicateur 23 : sources à surveiller, outils d'automatisation et preuves à fournir lors de l'audit.",
     category: "Veille",
     readTime: "12 min",
     date: "2026-03-10",
@@ -92,8 +92,8 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   },
   {
     slug: "appels-offres-formation-professionnelle",
-    title: "Comment trouver et repondre aux appels d'offres de formation ?",
-    excerpt: "Guide pratique pour identifier les AO publics et prives, construire une offre gagnante et eviter les erreurs frequentes.",
+    title: "Comment trouver et répondre aux appels d'offres de formation ?",
+    excerpt: "Guide pratique pour identifier les AO publics et privés, construire une offre gagnante et éviter les erreurs fréquentes.",
     category: "Appels d'offres",
     readTime: "14 min",
     date: "2026-03-05",
@@ -101,8 +101,8 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   },
   {
     slug: "audit-qualiopi-preparer-son-dossier",
-    title: "Comment preparer son dossier d'audit Qualiopi sans stress ?",
-    excerpt: "Checklist complete des documents obligatoires, preuves de veille et erreurs a eviter pour reussir votre audit du premier coup.",
+    title: "Comment préparer son dossier d'audit Qualiopi sans stress ?",
+    excerpt: "Checklist complète des documents obligatoires, preuves de veille et erreurs à éviter pour réussir votre audit du premier coup.",
     category: "Audit",
     readTime: "18 min",
     date: "2026-02-28",
@@ -111,7 +111,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   {
     slug: "indicateurs-24-25-26-veille-qualiopi",
     title: "Comment structurer sa veille sur les indicateurs 24, 25 et 26 ?",
-    excerpt: "Guide pratique pour la veille competences, innovations pedagogiques et handicap - 3 indicateurs souvent negliges du référentiel Qualiopi.",
+    excerpt: "Guide pratique pour la veille compétences, innovations pédagogiques et handicap — 3 indicateurs souvent négligés du référentiel Qualiopi.",
     category: "Veille",
     readTime: "11 min",
     date: "2026-02-20",
@@ -120,7 +120,7 @@ const STATIC_FALLBACK_ARTICLES: BlogArticle[] = [
   {
     slug: "sources-veille-formation",
     title: "Quelles sources surveiller pour sa veille réglementaire formation ?",
-    excerpt: "Panorama complet des sources nationales, OPCO et régionales a intégrer dans votre strategie de veille réglementaire.",
+    excerpt: "Panorama complet des sources nationales, OPCO et régionales à intégrer dans votre stratégie de veille réglementaire.",
     category: "Sources",
     readTime: "10 min",
     date: "2026-02-15",

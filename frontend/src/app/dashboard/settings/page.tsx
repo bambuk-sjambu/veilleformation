@@ -283,9 +283,9 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Methodologie */}
+          {/* Méthodologie */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Methodologie de veille</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Méthodologie de veille</h2>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Description de votre méthodologie (optionnel)

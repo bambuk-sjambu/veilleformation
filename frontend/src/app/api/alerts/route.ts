@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
     if (!session?.userId) {
-      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
     const db = getDb();
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     // Check plan restrictions
     const user = db.prepare("SELECT plan FROM users WHERE id = ?").get(session.userId) as { plan: string } | undefined;
     if (!user || user.plan === "free") {
-      return NextResponse.json({ error: "Fonctionnalite reservee aux abonnes Solo et plus" }, { status: 403 });
+      return NextResponse.json({ error: "Fonctionnalité réservée aux abonnés Solo et plus" }, { status: 403 });
     }
 
     const alerts = db.prepare(`
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
     if (!session?.userId) {
-      return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
     const db = getDb();
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     // Check plan restrictions
     const user = db.prepare("SELECT plan FROM users WHERE id = ?").get(session.userId) as { plan: string } | undefined;
     if (!user || user.plan === "free") {
-      return NextResponse.json({ error: "Fonctionnalite reservee aux abonnes Solo et plus" }, { status: 403 });
+      return NextResponse.json({ error: "Fonctionnalité réservée aux abonnés Solo et plus" }, { status: 403 });
     }
 
     const body = await request.json();

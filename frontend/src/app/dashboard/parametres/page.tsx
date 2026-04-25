@@ -791,7 +791,7 @@ export default function ParamètresPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Methodologie de veille
+                  Méthodologie de veille
                 </label>
                 <textarea
                   value={profile.methodology_notes || ""}
@@ -876,7 +876,7 @@ export default function ParamètresPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Frequence</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Fréquence</label>
                           <select
                             value={newAlert.frequency}
                             onChange={(e) => setNewAlert({ ...newAlert, frequency: e.target.value })}
@@ -1112,7 +1112,7 @@ export default function ParamètresPage() {
                                   disabled={saving}
                                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                                 >
-                                  {saving ? "Envoi..." : "Envoyer l&apos;invitation"}
+                                  {saving ? "Envoi..." : "Envoyer l'invitation"}
                                 </button>
                                 <button
                                   type="button"
@@ -1140,7 +1140,7 @@ export default function ParamètresPage() {
                                     member.role === "admin" ? "bg-blue-100 text-blue-800" :
                                     "bg-gray-100 text-gray-600"
                                   }`}>
-                                    {member.role === "owner" ? "Proprietaire" : member.role === "admin" ? "Admin" : "Membre"}
+                                    {member.role === "owner" ? "Propriétaire" : member.role === "admin" ? "Admin" : "Membre"}
                                   </span>
                                   {member.role !== "owner" && (
                                     <button

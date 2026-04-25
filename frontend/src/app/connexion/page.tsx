@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 
 export default function ConnexionPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = searchParams.get("next");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +35,8 @@ export default function ConnexionPage() {
         return;
       }
 
-      router.push("/dashboard");
+      const target = nextParam && nextParam.startsWith("/") ? nextParam : "/dashboard";
+      router.push(target);
     } catch {
       setError("Impossible de contacter le serveur.");
       setLoading(false);

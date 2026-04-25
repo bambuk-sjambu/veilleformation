@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     // Check plan restrictions for storage
     // Free: no external content, Solo: 100 MB, Equipe: 5 GB, Agence: 50 GB
     if (!user || user.plan === "free") {
-      return NextResponse.json({ error: "Fonctionnalite reservee aux abonnes Solo et plus" }, { status: 403 });
+      return NextResponse.json({ error: "Fonctionnalité réservée aux abonnés Solo et plus" }, { status: 403 });
     }
 
     const formData = await request.formData();

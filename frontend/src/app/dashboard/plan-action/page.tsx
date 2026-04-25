@@ -448,7 +448,7 @@ export default function PlanActionPage() {
           <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">
-                {editingAction ? "Modifier l&apos;action" : "Nouvelle action"}
+                {editingAction ? "Modifier l'action" : "Nouvelle action"}
               </h2>
               <button
                 onClick={closeModal}
@@ -461,7 +461,7 @@ export default function PlanActionPage() {
             <form onSubmit={handleSubmit} className="p-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Article concerne *
+                  Article concerné *
                 </label>
                 <select
                   required
@@ -469,7 +469,7 @@ export default function PlanActionPage() {
                   onChange={(e) => setFormData({ ...formData, article_id: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">Selectionner un article...</option>
+                  <option value="">Sélectionner un article...</option>
                   {articles.map((article) => (
                     <option key={article.id} value={article.id}>
                       {article.title}
@@ -488,7 +488,7 @@ export default function PlanActionPage() {
                   onChange={(e) => setFormData({ ...formData, action_description: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Ex: Mettre à jour le formulaire d&apos;inscription..."
+                  placeholder="Ex : Mettre à jour le formulaire d'inscription..."
                 />
               </div>
 
@@ -507,7 +507,7 @@ export default function PlanActionPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Echeance
+                    Échéance
                   </label>
                   <input
                     type="date"

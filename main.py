@@ -25,7 +25,7 @@ from collectors.centre_inffo import CentreInffoCollector
 from collectors.dila_jorf import DILAJorfCollector
 from collectors.legifrance import LegifranceCollector
 from collectors.legifrance_rss import LegifranceRSSCollector
-from collectors.opco import collect_all_opco
+from collectors.opco import collect_all_opco, OCAPIATCollector
 from collectors.france_travail import collect_france_travail
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
@@ -49,6 +49,7 @@ from publishers.newsletter import (
     create_newsletter,
 )
 from publishers.brevo import BrevoClient
+from publishers.resend_client import ResendClient
 
 
 DEFAULT_DB_PATH = os.environ.get("DB_PATH", "data/veille.db")
@@ -83,12 +84,14 @@ def cmd_collect(args):
     logger.info(f"Collecte : days_back={days_back}, jorf_days_back={jorf_days_back}")
 
     # Sources stables (Phase 1 v2 - apres pivot Avril 2026)
-    # Anciens collecteurs (legifrance_rss, opco, regions, france_travail, playwright)
-    # desactives car sources cassees ou anti-bot. Voir CLAUDE.md / SUIVI-FONCTIONNALITES.md.
+    # Anciens collecteurs (legifrance_rss, regions, france_travail, playwright,
+    # autres OPCO scrapers HTML) desactives car sources cassees ou anti-bot.
+    # OCAPIAT reactive : utilise WP-JSON, meme robustesse que Centre Inffo.
     collectors = [
         BOAMPCollector(db_path, logger, days_back=days_back),
         CentreInffoCollector(db_path, logger, days_back=days_back),
         DILAJorfCollector(db_path, logger, days_back=jorf_days_back),
+        OCAPIATCollector(db_path, logger),
     ]
 
     print("=== Cipia -- Collecte ===\n")
@@ -297,41 +300,71 @@ def cmd_newsletter(args):
     finally:
         conn.close()
 
-    # Send via Brevo (if configured)
+    # Send via Resend (priorite) ou fallback Brevo
+    resend = ResendClient()
     brevo = BrevoClient()
-    if brevo.api_key:
-        if args.dry_run:
-            print("\n[DRY RUN] Newsletter non envoyee (--dry-run)")
+
+    provider = None
+    if resend.api_key:
+        provider = "resend"
+    elif brevo.api_key:
+        provider = "brevo"
+
+    if provider and args.dry_run:
+        print(f"\n[DRY RUN] Newsletter non envoyee (--dry-run, provider={provider})")
+    elif provider == "resend":
+        print("\nEnvoi via Resend...")
+        send_id = resend.send_newsletter(html, subject, db_path)
+        if send_id:
+            subscriber_count = resend.get_subscriber_count(db_path)
+            conn = get_connection(db_path)
+            try:
+                conn.execute(
+                    "UPDATE newsletters SET brevo_campaign_id=?, sent_at=datetime('now'), "
+                    "recipients_count=? WHERE id=?",
+                    (send_id, subscriber_count, newsletter_id),
+                )
+                conn.commit()
+            finally:
+                conn.close()
+
+            all_article_ids = []
+            for section in ["reglementaire", "ao", "metier", "handicap"]:
+                for a in articles.get(section, []):
+                    all_article_ids.append(a["id"])
+            mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
+
+            print(f"Newsletter #{edition_number} envoyee! (Resend batch {send_id})")
+            print(f"Destinataires: {subscriber_count}")
         else:
-            print("\nEnvoi via Brevo...")
-            campaign_id = brevo.create_and_send_campaign(html, subject)
-            if campaign_id:
-                # Update newsletter record
-                conn = get_connection(db_path)
-                try:
-                    conn.execute(
-                        "UPDATE newsletters SET brevo_campaign_id=?, sent_at=datetime('now') WHERE id=?",
-                        (campaign_id, newsletter_id),
-                    )
-                    conn.commit()
-                finally:
-                    conn.close()
+            print("ERREUR: Echec de l'envoi Resend")
+    elif provider == "brevo":
+        print("\nEnvoi via Brevo (fallback)...")
+        campaign_id = brevo.create_and_send_campaign(html, subject)
+        if campaign_id:
+            conn = get_connection(db_path)
+            try:
+                conn.execute(
+                    "UPDATE newsletters SET brevo_campaign_id=?, sent_at=datetime('now') WHERE id=?",
+                    (campaign_id, newsletter_id),
+                )
+                conn.commit()
+            finally:
+                conn.close()
 
-                # Mark articles as sent
-                all_article_ids = []
-                for section in ["reglementaire", "ao", "metier", "handicap"]:
-                    for a in articles.get(section, []):
-                        all_article_ids.append(a["id"])
-                mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
+            all_article_ids = []
+            for section in ["reglementaire", "ao", "metier", "handicap"]:
+                for a in articles.get(section, []):
+                    all_article_ids.append(a["id"])
+            mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
 
-                subscriber_count = brevo.get_subscriber_count()
-                print(f"Newsletter #{edition_number} envoyee! (campagne Brevo #{campaign_id})")
-                print(f"Destinataires: {subscriber_count}")
-            else:
-                print("ERREUR: Echec de l'envoi Brevo")
+            subscriber_count = brevo.get_subscriber_count()
+            print(f"Newsletter #{edition_number} envoyee! (campagne Brevo #{campaign_id})")
+            print(f"Destinataires: {subscriber_count}")
+        else:
+            print("ERREUR: Echec de l'envoi Brevo")
     else:
-        print("\nBREVO_API_KEY non configuree. Newsletter sauvegardee en base uniquement.")
-        # Still mark articles as sent locally
+        print("\nNi RESEND_API_KEY ni BREVO_API_KEY configurees. Newsletter sauvegardee en base uniquement.")
         all_article_ids = []
         for section in ["reglementaire", "ao", "metier", "handicap"]:
             for a in articles.get(section, []):

@@ -3,19 +3,22 @@
 Collects calls for proposals (appels a projets) and news from
 the 11 French OPCO websites relevant to training organizations.
 
-Updated 2026-03-18 with improved selectors and additional OPCOs.
+Updated 2026-04-27: re-enabled OCAPIAT via WP-JSON API.
 
-Working OPCOs:
+Working OPCOs (7/11):
 - OPCO Sante: static HTML, appels d'offres page
 - L'OPCOMMERCE: static HTML, appels d'offres page
 - AKTO: httpx, appels d'offres page
 - OPCO 2i: WordPress-like, appels d'offres page
 - Uniformation: httpx, appels d'offre page
 - OPCO EP: static HTML, marches publics page
+- OCAPIAT: WordPress JSON API (/wp-json/wp/v2/posts)
 
-Inaccessible or JS-heavy:
-- OCAPIAT, OPCO Mobilites, ATLAS, Constructys (timeouts/SSL)
-- AFDAS (redirects, page structure changed)
+Inaccessible / external profil acheteur (4/11):
+- ATLAS (opco-atlas.fr): timeout
+- OPCO Mobilites (opcomobilites.fr): timeout
+- AFDAS: AAPs hébergés sur achatpublic.com (plateforme tierce JS, scraping bloqué)
+- Constructys: pas de page AAP dédiée, actualités trop bruitées
 """
 
 import re
@@ -603,6 +606,83 @@ class OPCOEPCollector(BaseCollector):
         )
 
 
+class OCAPIATCollector(BaseCollector):
+    """Scraper for OCAPIAT via WordPress REST API."""
+
+    SOURCE_NAME = "ocapiat"
+    OPCO_NAME = "OCAPIAT"
+    BASE_URL = "https://www.ocapiat.fr"
+    SEARCH_TERMS = ["appel d'offres", "appel a projets", "consultation", "marche public"]
+    AAP_KEYWORDS = ["appel", "consultation", "marche", "aap", "projet"]
+
+    def collect(self) -> list[dict]:
+        articles = []
+        seen_ids = set()
+        client = httpx.Client(headers=HEADERS, timeout=TIMEOUT, follow_redirects=True)
+
+        try:
+            for term in self.SEARCH_TERMS:
+                api_url = f"{self.BASE_URL}/wp-json/wp/v2/posts"
+                params = {"search": term, "per_page": 20, "_fields": "id,title,link,excerpt,date,content"}
+                self.logger.info(f"OCAPIAT: WP-JSON search='{term}'")
+
+                try:
+                    resp = client.get(api_url, params=params)
+                    resp.raise_for_status()
+                    posts = resp.json()
+                except (httpx.HTTPError, ValueError) as e:
+                    self.logger.warning(f"OCAPIAT: erreur API {term}: {e}")
+                    continue
+
+                if not isinstance(posts, list):
+                    continue
+
+                for post in posts:
+                    pid = post.get("id")
+                    if not pid or pid in seen_ids:
+                        continue
+                    seen_ids.add(pid)
+
+                    title = post.get("title", {}).get("rendered", "").strip()
+                    title = re.sub(r"<[^>]+>", "", title)
+                    title = title.replace("&#8217;", "'").replace("&#8211;", "-").replace("&amp;", "&")
+
+                    if not title or len(title) < 10:
+                        continue
+
+                    title_lower = title.lower()
+                    if not any(kw in title_lower for kw in self.AAP_KEYWORDS):
+                        continue
+
+                    link = post.get("link", "")
+                    if not link:
+                        continue
+
+                    excerpt_html = post.get("excerpt", {}).get("rendered", "") or ""
+                    excerpt = re.sub(r"<[^>]+>", "", excerpt_html).strip()[:500] or None
+
+                    date_iso = post.get("date", "")[:10] or None
+
+                    articles.append({
+                        "source": self.SOURCE_NAME,
+                        "source_id": make_source_id(self.SOURCE_NAME, link),
+                        "title": title[:500],
+                        "url": link,
+                        "content": excerpt,
+                        "published_date": date_iso,
+                        "category": "ao",
+                        "status": "new",
+                        "acheteur": self.OPCO_NAME,
+                        "region": None,
+                    })
+
+            self.logger.info(f"OCAPIAT: {len(articles)} items collectes")
+        finally:
+            client.close()
+
+        return articles
+
+
 # Registry of all OPCO collectors
 OPCO_COLLECTORS = {
     "opco_sante": OPCOSanteCollector,
@@ -611,6 +691,7 @@ OPCO_COLLECTORS = {
     "opco_2i": OPCO2iCollector,
     "uniformation": UniformationCollector,
     "opco_ep": OPCOEPCollector,
+    "ocapiat": OCAPIATCollector,
 }
 
 

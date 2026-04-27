@@ -154,7 +154,7 @@ export default function PricingPage() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">
-            Conformite Qualiopi simplifiee
+            Conformité Qualiopi simplifiée
           </h1>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             La veille réglementaire automatisée pour les 45 000 organismes de formation certifiés Qualiopi
@@ -267,15 +267,15 @@ export default function PricingPage() {
       <div className="bg-white py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Questions frequentes
+            Questions fréquentes
           </h2>
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Est-ce que je peux annuler a tout moment ?
+                Est-ce que je peux annuler à tout moment ?
               </h3>
               <p className="mt-2 text-gray-600">
-                Oui, il n&apos;y a aucun engagement. Vous pouvez annuler votre abonnement a tout moment depuis votre espace client.
+                Oui, il n&apos;y a aucun engagement. Vous pouvez annuler votre abonnement à tout moment depuis votre espace client.
               </p>
             </div>
             <div>
@@ -283,8 +283,8 @@ export default function PricingPage() {
                 Comment fonctionne l&apos;export PDF pour l&apos;audit Qualiopi ?
               </h3>
               <p className="mt-2 text-gray-600">
-                En un clic, vous genereez un document PDF complet prêt a présenter a votre auditeur Qualiopi,
-                incluant tous les articles surveilles, les actions menees et votre methodologie de veille.
+                En un clic, vous générez un document PDF complet prêt à présenter à votre auditeur Qualiopi,
+                incluant tous les articles surveillés, les actions menées et votre méthodologie de veille.
               </p>
             </div>
             <div>
@@ -292,8 +292,10 @@ export default function PricingPage() {
                 Quelles sources surveillez-vous ?
               </h3>
               <p className="mt-2 text-gray-600">
-                Nous collectons automatiquement les articles de BOAMP, Legifrance, 11 OPCO, France Travail
-                et les 13 Conseils Regionaux. Tout est analysé par IA pour ne vous présenter que le pertinent.
+                Nous collectons automatiquement les articles du BOAMP (appels d&apos;offres publics formation),
+                du Journal Officiel (JORF), de Centre Inffo, de France Travail, et de 6 OPCO sectoriels
+                (AKTO, OPCO 2i, OPCO EP, OPCO Santé, OPCOMMERCE, Uniformation). Tout est analysé
+                par IA pour ne vous présenter que ce qui impacte votre certification Qualiopi.
               </p>
             </div>
           </div>
@@ -304,10 +306,10 @@ export default function PricingPage() {
       <div className="bg-blue-600 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Prêt a simplifier votre veille réglementaire ?
+            Prêt à simplifier votre veille réglementaire ?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Rejoignez les organismes de formation qui font confiance a Cipia
+            Rejoignez les organismes de formation qui font confiance à Cipia
           </p>
           <Link
             href="/inscription"

@@ -25,7 +25,16 @@ from collectors.centre_inffo import CentreInffoCollector
 from collectors.dila_jorf import DILAJorfCollector
 from collectors.legifrance import LegifranceCollector
 from collectors.legifrance_rss import LegifranceRSSCollector
-from collectors.opco import collect_all_opco, OCAPIATCollector
+from collectors.opco import (
+    collect_all_opco,
+    OCAPIATCollector,
+    AKTOCollector,
+    OPCO2iCollector,
+    OPCOEPCollector,
+    OPCOSanteCollector,
+    OPCOmmerceCollector,
+    UniformationCollector,
+)
 from collectors.france_travail import collect_france_travail
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
@@ -84,14 +93,22 @@ def cmd_collect(args):
     logger.info(f"Collecte : days_back={days_back}, jorf_days_back={jorf_days_back}")
 
     # Sources stables (Phase 1 v2 - apres pivot Avril 2026)
-    # Anciens collecteurs (legifrance_rss, regions, france_travail, playwright,
-    # autres OPCO scrapers HTML) desactives car sources cassees ou anti-bot.
-    # OCAPIATCollector code disponible (WP-JSON) mais OCAPIAT bloque l'IP
-    # datacenter Hetzner -> reactivable derriere un proxy residentiel.
+    # Sources principales : BOAMP + Centre Inffo + JORF (~750 articles/jour)
+    # Sources OPCO sectorielles sub-seuil (<40k EUR HT, hors BOAMP) :
+    #   AKTO, OPCO 2i, OPCO EP, OPCO Sante, OPCOMMERCE, Uniformation
+    # OCAPIATCollector code disponible mais bloque IP datacenter Hetzner.
+    # Anciens collecteurs (legifrance_rss, regions, france_travail, playwright)
+    # toujours desactives.
     collectors = [
         BOAMPCollector(db_path, logger, days_back=days_back),
         CentreInffoCollector(db_path, logger, days_back=days_back),
         DILAJorfCollector(db_path, logger, days_back=jorf_days_back),
+        AKTOCollector(db_path, logger),
+        OPCO2iCollector(db_path, logger),
+        OPCOEPCollector(db_path, logger),
+        OPCOSanteCollector(db_path, logger),
+        OPCOmmerceCollector(db_path, logger),
+        UniformationCollector(db_path, logger),
     ]
 
     print("=== Cipia -- Collecte ===\n")

@@ -3,22 +3,24 @@
 Collects calls for proposals (appels a projets) and news from
 the 11 French OPCO websites relevant to training organizations.
 
-Updated 2026-04-27: re-enabled OCAPIAT via WP-JSON API.
+Updated 2026-04-27: pivot complete - 6 OPCO actifs en prod + 1 dispo (OCAPIAT bloque IP).
 
-Working OPCOs (7/11):
-- OPCO Sante: static HTML, appels d'offres page
-- L'OPCOMMERCE: static HTML, appels d'offres page
-- AKTO: httpx, appels d'offres page
-- OPCO 2i: WordPress-like, appels d'offres page
-- Uniformation: httpx, appels d'offre page
-- OPCO EP: static HTML, marches publics page
-- OCAPIAT: WordPress JSON API (/wp-json/wp/v2/posts)
+Active en prod (6/11) - couvrent les AAPs sub-seuil <40k EUR HT :
+- AKTO: services a la personne, proprete, hotellerie
+- OPCO 2i: industries
+- OPCO EP: entreprises de proximite
+- OPCO Sante: sante
+- L'OPCOMMERCE: commerce
+- Uniformation: cohesion sociale
 
-Inaccessible / external profil acheteur (4/11):
-- ATLAS (opco-atlas.fr): timeout
-- OPCO Mobilites (opcomobilites.fr): timeout
-- AFDAS: AAPs hébergés sur achatpublic.com (plateforme tierce JS, scraping bloqué)
-- Constructys: pas de page AAP dédiée, actualités trop bruitées
+Code dispo, desactive en prod (1/11) :
+- OCAPIAT (agro): WP-JSON OK en local, IP datacenter Hetzner bloquee
+
+Inaccessibles (4/11) :
+- ATLAS (opco-atlas.fr): timeout permanent
+- OPCO Mobilites (opcomobilites.fr): timeout permanent
+- AFDAS: AAPs heberges sur achatpublic.com (plateforme tierce JS)
+- Constructys: pas de page AAP dediee, actualites trop bruitees
 """
 
 import re

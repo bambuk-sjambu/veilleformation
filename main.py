@@ -86,12 +86,12 @@ def cmd_collect(args):
     # Sources stables (Phase 1 v2 - apres pivot Avril 2026)
     # Anciens collecteurs (legifrance_rss, regions, france_travail, playwright,
     # autres OPCO scrapers HTML) desactives car sources cassees ou anti-bot.
-    # OCAPIAT reactive : utilise WP-JSON, meme robustesse que Centre Inffo.
+    # OCAPIATCollector code disponible (WP-JSON) mais OCAPIAT bloque l'IP
+    # datacenter Hetzner -> reactivable derriere un proxy residentiel.
     collectors = [
         BOAMPCollector(db_path, logger, days_back=days_back),
         CentreInffoCollector(db_path, logger, days_back=days_back),
         DILAJorfCollector(db_path, logger, days_back=jorf_days_back),
-        OCAPIATCollector(db_path, logger),
     ]
 
     print("=== Cipia -- Collecte ===\n")

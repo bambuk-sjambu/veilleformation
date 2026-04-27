@@ -35,7 +35,7 @@ from collectors.opco import (
     OPCOmmerceCollector,
     UniformationCollector,
 )
-from collectors.france_travail import collect_france_travail
+from collectors.france_travail import collect_france_travail, FranceTravailCollector
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
 
@@ -96,9 +96,13 @@ def cmd_collect(args):
     # Sources principales : BOAMP + Centre Inffo + JORF (~750 articles/jour)
     # Sources OPCO sectorielles sub-seuil (<40k EUR HT, hors BOAMP) :
     #   AKTO, OPCO 2i, OPCO EP, OPCO Sante, OPCOMMERCE, Uniformation
-    # OCAPIATCollector code disponible mais bloque IP datacenter Hetzner.
-    # Anciens collecteurs (legifrance_rss, regions, france_travail, playwright)
-    # toujours desactives.
+    # France Travail : page accessible 1.3s depuis VPS, parsing intermittent.
+    # Desactives :
+    # - OCAPIAT, ATLAS, OPCO Mobilites : IP datacenter Hetzner bloquee
+    # - AFDAS, Constructys : sites OK mais pages AAP non scrapables
+    # - RegionsCollector : 240s/run, trop lent (a optimiser plus tard)
+    # - LegifranceCollector : a reactiver avec cles PISTE (memory ref)
+    # - legifrance_rss, playwright : toujours desactives.
     collectors = [
         BOAMPCollector(db_path, logger, days_back=days_back),
         CentreInffoCollector(db_path, logger, days_back=days_back),
@@ -109,6 +113,7 @@ def cmd_collect(args):
         OPCOSanteCollector(db_path, logger),
         OPCOmmerceCollector(db_path, logger),
         UniformationCollector(db_path, logger),
+        FranceTravailCollector(db_path, logger),
     ]
 
     print("=== Cipia -- Collecte ===\n")

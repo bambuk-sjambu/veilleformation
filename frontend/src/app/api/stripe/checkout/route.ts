@@ -62,11 +62,19 @@ export async function POST(request: NextRequest) {
         plan,
       },
       subscription_data: {
+        trial_period_days: 14,
+        trial_settings: {
+          end_behavior: {
+            missing_payment_method: "cancel",
+          },
+        },
         metadata: {
           userId: dbUser.id.toString(),
           plan,
         },
       },
+      // CB requise pour demarrer l'essai (sinon trial_settings cancel ne sert a rien)
+      payment_method_collection: "always",
     });
 
     return NextResponse.json({ url: session.url });

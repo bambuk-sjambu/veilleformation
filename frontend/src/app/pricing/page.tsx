@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+
+// Tarif lancement -30% sur le prix plein post-lancement.
+// Le prix plein s'applique apres 200 inscriptions au tarif lancement.
+const LAUNCH_DISCOUNT = 0.30; // -30%
+const LAUNCH_TOTAL_SLOTS = 200;
 
 const plans = [
   {
     id: "gratuit",
     name: "Gratuit",
     price: 0,
+    originalPrice: 0,
     period: "pour toujours",
     description: "Pour découvrir la veille réglementaire",
     features: [
@@ -24,6 +30,7 @@ const plans = [
     id: "solo",
     name: "Solo",
     price: 15,
+    originalPrice: 22,
     period: "/mois",
     description: "Pour les indépendants et TPE",
     features: [
@@ -34,13 +41,14 @@ const plans = [
       "Plan d'action intégré",
       "Support prioritaire",
     ],
-    cta: "Choisir Solo",
+    cta: "Démarrer 14 jours d'essai",
     popular: true,
   },
   {
     id: "équipe",
     name: "Équipe",
     price: 39,
+    originalPrice: 56,
     period: "/mois",
     description: "Pour les organismes de formation",
     features: [
@@ -51,13 +59,14 @@ const plans = [
       "Historique 12 mois",
       "Formation inclusion (30 min)",
     ],
-    cta: "Choisir Équipe",
+    cta: "Démarrer 14 jours d'essai",
     popular: false,
   },
   {
     id: "agence",
     name: "Agence",
     price: 79,
+    originalPrice: 113,
     period: "/mois",
     description: "Pour les consultants et accompagnateurs",
     features: [
@@ -75,6 +84,14 @@ const plans = [
 
 export default function PricingPage() {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
+  const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/subscribers/count")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => data && setSubscriberCount(data.count))
+      .catch(() => setSubscriberCount(null));
+  }, []);
 
   const getPrice = (plan: typeof plans[0]) => {
     if (billingPeriod === "yearly") {
@@ -82,6 +99,17 @@ export default function PricingPage() {
     }
     return plan.price;
   };
+
+  const getOriginalPrice = (plan: typeof plans[0]) => {
+    if (billingPeriod === "yearly") {
+      return Math.round(plan.originalPrice * 0.8);
+    }
+    return plan.originalPrice;
+  };
+
+  const placesLeft = subscriberCount !== null
+    ? Math.max(0, LAUNCH_TOTAL_SLOTS - subscriberCount)
+    : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -107,6 +135,21 @@ export default function PricingPage() {
         </div>
       </header>
 
+      {/* Bandeau Lancement */}
+      <div className="bg-yellow-400 text-black py-3 text-center font-medium">
+        <span className="inline-flex items-center gap-2 flex-wrap justify-center px-4">
+          <span className="bg-black text-yellow-400 px-2 py-0.5 rounded text-sm font-bold">LANCEMENT -30%</span>
+          {placesLeft !== null && placesLeft > 0 && (
+            <span className="text-sm">
+              Plus que <strong>{placesLeft} places</strong> au tarif lancement, puis passage au prix plein.
+            </span>
+          )}
+          {placesLeft === 0 && (
+            <span className="text-sm">Tarif lancement épuisé. Inscriptions au prix plein.</span>
+          )}
+        </span>
+      </div>
+
       {/* Hero */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -116,6 +159,13 @@ export default function PricingPage() {
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             La veille réglementaire automatisée pour les 45 000 organismes de formation certifiés Qualiopi
           </p>
+          {subscriberCount !== null && subscriberCount > 0 && (
+            <p className="text-blue-100 mb-6">
+              <strong className="text-yellow-300">{subscriberCount}</strong>{" "}
+              {subscriberCount === 1 ? "organisme déjà inscrit" : "organismes déjà inscrits"} —{" "}
+              le tarif augmente à chaque palier d&apos;adhésions.
+            </p>
+          )}
           <div className="flex justify-center space-x-4">
             <button
               onClick={() => setBillingPeriod("monthly")}
@@ -160,6 +210,16 @@ export default function PricingPage() {
                 <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
                 <p className="text-gray-500 text-sm mt-1">{plan.description}</p>
                 <div className="mt-4">
+                  {plan.price > 0 && plan.originalPrice > plan.price && (
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-lg text-gray-400 line-through">
+                        {getOriginalPrice(plan)} EUR
+                      </span>
+                      <span className="bg-yellow-100 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded">
+                        −30% lancement
+                      </span>
+                    </div>
+                  )}
                   <span className="text-4xl font-bold text-gray-900">
                     {plan.price === 0 ? "Gratuit" : `${getPrice(plan)} EUR`}
                   </span>
@@ -170,6 +230,11 @@ export default function PricingPage() {
                 {billingPeriod === "yearly" && plan.price > 0 && (
                   <p className="text-sm text-green-600 mt-1">
                     Economisez {plan.price * 12 - getPrice(plan) * 12} EUR/an
+                  </p>
+                )}
+                {plan.price > 0 && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    14 jours d&apos;essai · Sans engagement · Annulation à tout moment
                   </p>
                 )}
                 <ul className="mt-6 space-y-3">

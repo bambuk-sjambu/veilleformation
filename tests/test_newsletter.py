@@ -254,7 +254,7 @@ class TestGenerateHTML:
         assert "#5" in html or "Edition #5" in html
         assert "02/03/2026" in html
         assert "08/03/2026" in html
-        assert "Veille reglementaire" in html
+        assert "Veille réglementaire" in html
         assert "Decret test" in html
 
     def test_generate_newsletter_html_empty_sections(self):

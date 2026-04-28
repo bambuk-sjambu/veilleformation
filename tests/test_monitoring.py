@@ -261,7 +261,7 @@ class TestPrintStatus:
         captured = capsys.readouterr()
         assert "critical" in captured.out.lower() or "CRITICAL" in captured.out
 
-    def test_print_status_with_articles(self, db_path, conn):
+    def test_print_status_with_articles(self, db_path, conn, capsys):
         """print_status should show article counts."""
         _insert_article(conn, source_id="test-1", status="done")
         print_status(db_path)

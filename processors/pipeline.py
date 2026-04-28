@@ -14,7 +14,12 @@ from datetime import datetime
 import anthropic
 
 from processors.prompts import build_user_prompt, get_system_prompt
-from storage.database import get_connection, get_articles, update_article_status
+from storage.database import (
+    get_connection,
+    get_articles,
+    get_articles_round_robin,
+    update_article_status,
+)
 
 # Cost per token for Claude Haiku 4.5 (as of 2025)
 # Input: $1.00 / 1M tokens, Output: $5.00 / 1M tokens
@@ -60,7 +65,11 @@ class AIProcessor:
         self.total_output_tokens = 0
 
     def get_pending_articles(self, limit: int = 50) -> list[dict]:
-        """Fetch articles with status='new' ordered by published_date DESC.
+        """Fetch pending articles in round-robin fashion across sources.
+
+        Without round-robin, a single high-volume source (JORF with 268 articles
+        per cron) would monopolize the LIMIT slots and starve smaller sources
+        like Centre Inffo (56 articles, older published_date).
 
         Args:
             limit: Maximum number of articles to fetch.
@@ -70,7 +79,7 @@ class AIProcessor:
         """
         conn = get_connection(self.db_path)
         try:
-            return get_articles(conn, status="new", limit=limit)
+            return get_articles_round_robin(conn, status="new", limit=limit)
         finally:
             conn.close()
 

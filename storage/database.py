@@ -316,6 +316,39 @@ def get_articles(
     return [dict(row) for row in rows]
 
 
+def get_articles_round_robin(
+    conn: sqlite3.Connection,
+    status: str,
+    limit: int = 50,
+) -> list[dict]:
+    """Retrieve articles in round-robin fashion across sources.
+
+    Avoids starvation when one high-volume source (e.g. JORF with 268 articles)
+    monopolizes the limited LIMIT slots and leaves smaller sources unprocessed.
+
+    Uses ROW_NUMBER() OVER (PARTITION BY source ORDER BY collected_at DESC,
+    published_date DESC) so we pick the most recent article from each source
+    first, then the second-most-recent from each, etc.
+    """
+    sql = """
+        WITH ranked AS (
+            SELECT
+                *,
+                ROW_NUMBER() OVER (
+                    PARTITION BY source
+                    ORDER BY collected_at DESC, published_date DESC
+                ) AS rn
+            FROM articles
+            WHERE status = ?
+        )
+        SELECT * FROM ranked
+        ORDER BY rn ASC, collected_at DESC, published_date DESC
+        LIMIT ?
+    """
+    rows = conn.execute(sql, (status, limit)).fetchall()
+    return [{k: v for k, v in dict(row).items() if k != "rn"} for row in rows]
+
+
 def update_article_status(
     conn: sqlite3.Connection, article_id: int, status: str
 ) -> bool:

@@ -18,6 +18,8 @@ import {
   BookOpen,
   FileDown,
   MoreHorizontal,
+  Activity,
+  ShieldCheck,
 } from "lucide-react";
 
 const primaryNav = [
@@ -29,6 +31,8 @@ const primaryNav = [
 ];
 
 const secondaryNav = [
+  { href: "/dashboard/parametres/sources", label: "Santé sources", icon: Activity },
+  { href: "/dashboard/admin", label: "Admin", icon: ShieldCheck },
   { href: "/blog", label: "Blog", icon: BookOpen },
   { href: "/dashboard/import", label: "Importer", icon: Upload },
   { href: "/dashboard/export", label: "Export PDF", icon: FileDown },

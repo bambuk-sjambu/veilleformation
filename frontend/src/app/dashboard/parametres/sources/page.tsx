@@ -65,6 +65,35 @@ const SOURCE_LABELS: Record<string, string> = {
   france_competences: "France Compétences",
 };
 
+// Estimation de couverture par axe.
+// Base : ce que les sources actives en prod capturent vs l'univers theorique.
+const COVERAGE = {
+  reglementaire: {
+    pct: 80,
+    label: "Veille réglementaire",
+    desc: "Indicateurs 23-26 Qualiopi (textes officiels + actualité formation)",
+    breakdown: [
+      { source: "JORF (DILA)", contrib: "+50%", note: "décrets, arrêtés, lois" },
+      { source: "Centre Inffo", contrib: "+30%", note: "actu sectorielle (Quotidien Formation)" },
+      { source: "Légifrance API PISTE", contrib: "−20%", note: "désactivé (compte PISTE non finalisé)" },
+    ],
+    color: "bg-blue-500",
+  },
+  ao: {
+    pct: 73,
+    label: "Appels d'offres formation",
+    desc: "AAP/AO sur la formation professionnelle, tous achteurs",
+    breakdown: [
+      { source: "BOAMP (≥40k€ HT)", contrib: "+60%", note: "tous AO publics au-dessus du seuil légal" },
+      { source: "5 OPCO sectoriels (sub-seuil)", contrib: "+13%", note: "AKTO, OPCO 2i, OPCO Santé, OPCOMMERCE, Uniformation" },
+      { source: "France Travail", contrib: "−10%", note: "désactivé (aucune page publique scrapable)" },
+      { source: "Conseils Régionaux (13)", contrib: "−12%", note: "désactivé (240s/run trop lent)" },
+      { source: "OCAPIAT, ATLAS, Mobilités", contrib: "−5%", note: "IP datacenter Hetzner bloquée" },
+    ],
+    color: "bg-amber-500",
+  },
+};
+
 export default function SourcesHealthPage() {
   const [sources, setSources] = useState<SourceHealth[]>([]);
   const [loading, setLoading] = useState(true);
@@ -125,6 +154,44 @@ export default function SourcesHealthPage() {
               Mis à jour : {new Date(generatedAt).toLocaleString("fr-FR")}
             </p>
           )}
+        </div>
+
+        {/* Coverage estimate per axis */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {(["reglementaire", "ao"] as const).map((axisKey) => {
+            const c = COVERAGE[axisKey];
+            return (
+              <div key={axisKey} className="bg-white rounded-lg shadow-sm p-5">
+                <div className="flex items-baseline justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-900">{c.label}</h3>
+                  <span className="text-3xl font-bold text-gray-900">{c.pct}%</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-3">{c.desc}</p>
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div
+                    className={`h-2 rounded-full ${c.color}`}
+                    style={{ width: `${c.pct}%` }}
+                  />
+                </div>
+                <ul className="space-y-1.5 text-xs">
+                  {c.breakdown.map((b, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span
+                        className={`font-mono font-semibold ${
+                          b.contrib.startsWith("+") ? "text-green-700" : "text-red-600"
+                        }`}
+                      >
+                        {b.contrib}
+                      </span>
+                      <span className="text-gray-700">
+                        <strong>{b.source}</strong> — {b.note}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         {/* Summary cards */}

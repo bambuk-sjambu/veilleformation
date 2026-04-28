@@ -20,7 +20,11 @@ export async function POST(request: NextRequest) {
     const db = getDb();
     const dbUser = db
       .prepare("SELECT * FROM users WHERE id = ?")
-      .get(user.userId) as { id: number; email: string; stripe_customer_id: string | null };
+      .get(user.userId) as { id: number; email: string; stripe_customer_id: string | null } | undefined;
+
+    if (!dbUser) {
+      return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
+    }
 
     let customerId = dbUser.stripe_customer_id;
 

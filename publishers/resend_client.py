@@ -51,8 +51,12 @@ class ResendClient:
         finally:
             conn.close()
 
-    def _send_one(self, client: httpx.Client, to: str, subject: str, html: str) -> Optional[str]:
-        """Send a single email. Returns Resend email_id on success, None on failure."""
+    def _send_one(self, client: httpx.Client, to: str, subject: str, html: str,
+                  max_retries: int = 3) -> Optional[str]:
+        """Send a single email with exponential backoff on 429/5xx.
+
+        Returns Resend email_id on success, None on definitive failure.
+        """
         payload = {
             "from": f"{self.sender_name} <{self.sender_email}>",
             "to": [to],
@@ -60,26 +64,47 @@ class ResendClient:
             "html": html,
             "reply_to": self.reply_to,
         }
-        try:
-            resp = client.post(f"{self.BASE_URL}/emails", json=payload, headers=self._headers)
-            if resp.status_code >= 400:
-                logger.warning("Resend send failed for %s: %s %s", to, resp.status_code, resp.text[:200])
-                return None
-            data = resp.json()
-            return data.get("id")
-        except Exception as e:
-            logger.warning("Resend send exception for %s: %s", to, e)
-            return None
+        for attempt in range(max_retries):
+            try:
+                resp = client.post(f"{self.BASE_URL}/emails", json=payload, headers=self._headers)
+                # Retry on rate limit or transient server errors
+                if resp.status_code in (429, 500, 502, 503, 504):
+                    delay = 2 ** attempt  # 1s, 2s, 4s
+                    logger.warning(
+                        "Resend %s for %s (attempt %d/%d), retry in %ds",
+                        resp.status_code, to, attempt + 1, max_retries, delay,
+                    )
+                    time.sleep(delay)
+                    continue
+                if resp.status_code >= 400:
+                    # Definitive client error (400, 401, 422 = bad email, etc.)
+                    logger.warning(
+                        "Resend send failed (definitive) for %s: %s %s",
+                        to, resp.status_code, resp.text[:200],
+                    )
+                    return None
+                data = resp.json()
+                return data.get("id")
+            except (httpx.RequestError, httpx.TimeoutException) as e:
+                delay = 2 ** attempt
+                logger.warning(
+                    "Resend network error for %s (attempt %d/%d): %s, retry in %ds",
+                    to, attempt + 1, max_retries, e, delay,
+                )
+                time.sleep(delay)
+        logger.error("Resend send exhausted retries for %s", to)
+        return None
 
-    def send_newsletter(self, html: str, subject: str, db_path: str) -> Optional[str]:
+    def send_newsletter(self, html: str, subject: str, db_path: str) -> dict:
         """Send the newsletter HTML to all active subscribers.
 
-        Returns a synthetic batch_id on success (stored in newsletters.brevo_campaign_id
-        for backward compat), None if the send failed entirely (zero successful sends).
+        Returns a result dict:
+          {"batch_id": str|None, "sent": int, "failed": int, "total": int}
+        batch_id is None if zero successful sends (caller should treat as failure).
         """
         if not self.api_key:
             logger.error("Resend send_newsletter: RESEND_API_KEY manquante")
-            return None
+            return {"batch_id": None, "sent": 0, "failed": 0, "total": 0}
 
         conn = get_connection(db_path)
         try:
@@ -90,11 +115,11 @@ class ResendClient:
         finally:
             conn.close()
 
-        if not rows:
+        emails = [r[0] for r in rows]  # SQL already filtered NULL
+        if not emails:
             logger.warning("Resend send_newsletter: aucun subscriber actif")
-            return None
+            return {"batch_id": None, "sent": 0, "failed": 0, "total": 0}
 
-        emails = [r[0] for r in rows if r[0]]
         batch_id = f"resend-{uuid.uuid4().hex[:12]}"
         logger.info("Resend: envoi newsletter a %d destinataires (batch=%s)", len(emails), batch_id)
 
@@ -112,6 +137,9 @@ class ResendClient:
 
         logger.info("Resend: %d envoyes / %d echecs / %d total", sent, failed, len(emails))
 
-        if sent == 0:
-            return None
-        return batch_id
+        return {
+            "batch_id": batch_id if sent > 0 else None,
+            "sent": sent,
+            "failed": failed,
+            "total": len(emails),
+        }

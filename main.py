@@ -337,15 +337,14 @@ def cmd_newsletter(args):
         print(f"\n[DRY RUN] Newsletter non envoyee (--dry-run, provider={provider})")
     elif provider == "resend":
         print("\nEnvoi via Resend...")
-        send_id = resend.send_newsletter(html, subject, db_path)
-        if send_id:
-            subscriber_count = resend.get_subscriber_count(db_path)
+        result = resend.send_newsletter(html, subject, db_path)
+        if result["batch_id"]:
             conn = get_connection(db_path)
             try:
                 conn.execute(
                     "UPDATE newsletters SET brevo_campaign_id=?, sent_at=datetime('now'), "
                     "recipients_count=? WHERE id=?",
-                    (send_id, subscriber_count, newsletter_id),
+                    (result["batch_id"], result["sent"], newsletter_id),
                 )
                 conn.commit()
             finally:
@@ -357,10 +356,10 @@ def cmd_newsletter(args):
                     all_article_ids.append(a["id"])
             mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
 
-            print(f"Newsletter #{edition_number} envoyee! (Resend batch {send_id})")
-            print(f"Destinataires: {subscriber_count}")
+            print(f"Newsletter #{edition_number} envoyee! (Resend batch {result['batch_id']})")
+            print(f"Delivres: {result['sent']}/{result['total']} (echecs: {result['failed']})")
         else:
-            print("ERREUR: Echec de l'envoi Resend")
+            print(f"ERREUR: Echec de l'envoi Resend (0/{result['total']} delivres, {result['failed']} echecs)")
     elif provider == "brevo":
         print("\nEnvoi via Brevo (fallback)...")
         campaign_id = brevo.create_and_send_campaign(html, subject)
@@ -388,11 +387,14 @@ def cmd_newsletter(args):
             print("ERREUR: Echec de l'envoi Brevo")
     else:
         print("\nNi RESEND_API_KEY ni BREVO_API_KEY configurees. Newsletter sauvegardee en base uniquement.")
-        all_article_ids = []
-        for section in ["reglementaire", "ao", "metier", "handicap"]:
-            for a in articles.get(section, []):
-                all_article_ids.append(a["id"])
-        mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
+        # Ne marquer comme sent QUE si ce n'est pas un dry-run, sinon on
+        # corrompt l'etat des articles sans envoi reel.
+        if not args.dry_run:
+            all_article_ids = []
+            for section in ["reglementaire", "ao", "metier", "handicap"]:
+                for a in articles.get(section, []):
+                    all_article_ids.append(a["id"])
+            mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
 
     # Save HTML preview
     preview_path = f"data/newsletter_{edition_number}.html"

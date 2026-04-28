@@ -24,7 +24,8 @@ HEADERS = {
     "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.5",
 }
 
-TIMEOUT = 30
+TIMEOUT = 5  # 5s par requete : avec 13 regions x ~2 paths, max ~130s en pire cas
+             # (vs 30s avant qui donnait 240s+ de runs en prod)
 
 # Regional council configurations with updated URLs (2026-03)
 REGIONAL_COUNCILS = [

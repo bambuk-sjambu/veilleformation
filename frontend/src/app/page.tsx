@@ -512,48 +512,61 @@ function Preview() {
             </div>
           </div>
 
-          {/* Mockup 3 — Santé sources */}
+          {/* Mockup 3 — Appels d'offres */}
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
             <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-200">
               <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-              <span className="ml-3 text-xs text-gray-600 font-mono">cipia.fr/dashboard/parametres/sources</span>
+              <span className="ml-3 text-xs text-gray-600 font-mono">cipia.fr/dashboard/appels-offres</span>
             </div>
             <div className="p-5 bg-gray-50 min-h-[260px]">
-              <h3 className="font-bold text-gray-900 mb-3">Couverture des sources</h3>
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-white p-3 rounded-lg shadow-sm">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-semibold text-gray-900">Réglementaire</span>
-                    <span className="text-2xl font-bold text-gray-900">80%</span>
-                  </div>
-                  <div className="h-1.5 bg-gray-200 rounded-full mt-2">
-                    <div className="h-1.5 bg-blue-500 rounded-full" style={{ width: "80%" }}></div>
-                  </div>
-                </div>
-                <div className="bg-white p-3 rounded-lg shadow-sm">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-semibold text-gray-900">Appels d&apos;offres</span>
-                    <span className="text-2xl font-bold text-gray-900">73%</span>
-                  </div>
-                  <div className="h-1.5 bg-gray-200 rounded-full mt-2">
-                    <div className="h-1.5 bg-amber-500 rounded-full" style={{ width: "73%" }}></div>
-                  </div>
-                </div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-900">Appels d&apos;offres formation</h3>
+                <span className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded">155 AO actifs</span>
               </div>
-              <div className="space-y-1.5 text-xs">
-                <div className="flex items-center justify-between bg-white px-3 py-1.5 rounded">
-                  <span className="text-gray-700"><span className="text-green-500">●</span> JORF (DILA)</span>
-                  <span className="text-gray-500 font-mono">376 articles / 7j</span>
+              <div className="space-y-2">
+                <div className="bg-white p-3 rounded-lg border-l-4 border-amber-500 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">Formation cybersécurité 2026</p>
+                      <p className="text-xs text-gray-500 mt-0.5">OPCO 2i · Ile-de-France</p>
+                    </div>
+                    <span className="text-xs px-2 py-0.5 bg-red-100 text-red-700 rounded font-semibold">J-3</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                    <span><strong className="text-gray-700">85 k€</strong> estimé</span>
+                    <span>·</span>
+                    <span>Score IA <strong className="text-gray-700">9/10</strong></span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between bg-white px-3 py-1.5 rounded">
-                  <span className="text-gray-700"><span className="text-green-500">●</span> BOAMP</span>
-                  <span className="text-gray-500 font-mono">225 articles / 7j</span>
+                <div className="bg-white p-3 rounded-lg border-l-4 border-blue-500 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">Bilan de compétences pour demandeurs d&apos;emploi</p>
+                      <p className="text-xs text-gray-500 mt-0.5">BOAMP · Bourgogne-Franche-Comté</p>
+                    </div>
+                    <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-semibold">J-12</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                    <span><strong className="text-gray-700">42 k€</strong> estimé</span>
+                    <span>·</span>
+                    <span>Score IA <strong className="text-gray-700">7/10</strong></span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between bg-white px-3 py-1.5 rounded">
-                  <span className="text-gray-700"><span className="text-green-500">●</span> Centre Inffo</span>
-                  <span className="text-gray-500 font-mono">56 articles / 7j</span>
+                <div className="bg-white p-3 rounded-lg border-l-4 border-gray-300 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">Formation linguistique salariés industrie</p>
+                      <p className="text-xs text-gray-500 mt-0.5">AKTO · Auvergne-Rhône-Alpes</p>
+                    </div>
+                    <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-semibold">J-25</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                    <span><strong className="text-gray-700">120 k€</strong> estimé</span>
+                    <span>·</span>
+                    <span>Score IA <strong className="text-gray-700">8/10</strong></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -617,6 +630,7 @@ function Pricing() {
     {
       name: "Gratuit",
       price: "0",
+      originalPrice: "0",
       period: "",
       description: "Pour découvrir la veille automatique",
       features: [
@@ -631,6 +645,7 @@ function Pricing() {
     {
       name: "Solo",
       price: "15",
+      originalPrice: "22",
       period: "/mois",
       description: "Pour le responsable qualité autonome",
       features: [
@@ -640,12 +655,13 @@ function Pricing() {
         "Export PDF audit",
         "Historique complet",
       ],
-      cta: "Démarrer l'essai",
+      cta: "Démarrer l'essai 14 jours",
       highlighted: true,
     },
     {
       name: "Équipe",
       price: "39",
+      originalPrice: "56",
       period: "/mois",
       description: "Pour les équipes qualité",
       features: [
@@ -655,12 +671,13 @@ function Pricing() {
         "Newsletter personnalisée",
         "Support prioritaire",
       ],
-      cta: "Démarrer l'essai",
+      cta: "Démarrer l'essai 14 jours",
       highlighted: false,
     },
     {
       name: "Agence",
       price: "79",
+      originalPrice: "113",
       period: "/mois",
       description: "Pour les cabinets et réseaux",
       features: [
@@ -677,6 +694,18 @@ function Pricing() {
 
   return (
     <section id="tarifs" className="py-20 bg-white">
+      {/* Bandeau Lancement -30% */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div className="bg-yellow-400 text-black py-3 text-center font-medium rounded-lg">
+          <span className="inline-flex items-center gap-2 flex-wrap justify-center px-4">
+            <span className="bg-black text-yellow-400 px-2 py-0.5 rounded text-sm font-bold">LANCEMENT -30%</span>
+            <span className="text-sm">
+              Tarif lancement jusqu&apos;aux 200 premiers organismes inscrits, puis prix plein.
+            </span>
+          </span>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -706,10 +735,25 @@ function Pricing() {
               </h3>
               <p className="text-sm text-gray-500 mb-4">{plan.description}</p>
               <div className="mb-6">
+                {plan.price !== "0" && plan.originalPrice !== plan.price && (
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-base text-gray-400 line-through">
+                      {plan.originalPrice}&#8364;
+                    </span>
+                    <span className="bg-yellow-100 text-yellow-900 text-[10px] font-bold px-2 py-0.5 rounded">
+                      −30% lancement
+                    </span>
+                  </div>
+                )}
                 <span className="text-4xl font-extrabold text-gray-900">
                   {plan.price}&#8364;
                 </span>
                 <span className="text-gray-500">{plan.period}</span>
+                {plan.price !== "0" && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    14 jours d&apos;essai · Sans engagement
+                  </p>
+                )}
               </div>
               <ul className="space-y-2 mb-6">
                 {plan.features.map((feature, j) => (

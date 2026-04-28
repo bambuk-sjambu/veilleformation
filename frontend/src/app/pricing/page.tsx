@@ -188,6 +188,15 @@ export default function PricingPage() {
               Annuel (-20%)
             </button>
           </div>
+          <p className="mt-6 text-sm text-blue-100">
+            <Link href="/exemple-newsletter" className="underline hover:text-yellow-300 transition">
+              Voir un exemple de la newsletter du mardi →
+            </Link>
+            <span className="mx-3 text-blue-300">·</span>
+            <a href="/#apercu" className="underline hover:text-yellow-300 transition">
+              Aperçu de l&apos;outil
+            </a>
+          </p>
         </div>
       </div>
 

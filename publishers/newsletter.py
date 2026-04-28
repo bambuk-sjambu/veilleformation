@@ -220,8 +220,8 @@ NEWSLETTER_TEMPLATE = """\
 <tr>
 <td style="padding:24px 32px 8px;">
   <p style="margin:0;font-size:14px;color:#6B7280;line-height:1.5;">
-    Bonjour,<br/>Voici votre veille reglementaire et appels d'offres de la semaine
-    pour les organismes de formation certifies Qualiopi.
+    Bonjour,<br/>Voici votre veille réglementaire et appels d'offres de la semaine
+    pour les organismes de formation certifiés Qualiopi.
   </p>
 </td>
 </tr>
@@ -233,7 +233,7 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #1E40AF;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#1E40AF;">Veille reglementaire</h2>
+      <h2 style="margin:0;font-size:18px;color:#1E40AF;">Veille réglementaire</h2>
       <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Indicateur 23 Qualiopi</p>
     </td>
   </tr>
@@ -268,7 +268,7 @@ NEWSLETTER_TEMPLATE = """\
   <tr>
     <td style="border-bottom:3px solid #F59E0B;padding-bottom:6px;">
       <h2 style="margin:0;font-size:18px;color:#92400E;">Appels d'offres formation</h2>
-      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ ao|length }} opportunite{{ 's' if ao|length != 1 else '' }} cette semaine</p>
+      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ ao|length }} opportunité{{ 's' if ao|length != 1 else '' }} cette semaine</p>
     </td>
   </tr>
   </table>
@@ -290,7 +290,7 @@ NEWSLETTER_TEMPLATE = """\
       <td style="padding-right:16px;"><strong>Montant :</strong> {{ "%.0f"|format(art.montant_estime) }} &euro;</td>
       {% endif %}
       {% if art.region %}
-      <td style="padding-right:16px;"><strong>Region :</strong> {{ art.region }}</td>
+      <td style="padding-right:16px;"><strong>Région :</strong> {{ art.region }}</td>
       {% endif %}
       {% if art.relevance_score %}
       <td><strong>Score :</strong> {{ art.relevance_score }}/10</td>
@@ -298,7 +298,7 @@ NEWSLETTER_TEMPLATE = """\
     </tr>
     </table>
     {% if art.url %}
-    <p style="margin:8px 0 0;font-size:12px;"><a href="{{ art.url }}" style="color:#92400E;text-decoration:underline;">Voir le marche &rarr;</a></p>
+    <p style="margin:8px 0 0;font-size:12px;"><a href="{{ art.url }}" style="color:#92400E;text-decoration:underline;">Voir le marché &rarr;</a></p>
     {% endif %}
   </td></tr>
   </table>
@@ -314,7 +314,7 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #10B981;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#065F46;">Veille metier &amp; innovation</h2>
+      <h2 style="margin:0;font-size:18px;color:#065F46;">Veille métier &amp; innovation</h2>
       <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Indicateurs 24 &amp; 25 Qualiopi</p>
     </td>
   </tr>
@@ -345,7 +345,7 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #7C3AED;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#5B21B6;">Handicap &amp; accessibilite</h2>
+      <h2 style="margin:0;font-size:18px;color:#5B21B6;">Handicap &amp; accessibilité</h2>
       <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Indicateur 26 Qualiopi</p>
     </td>
   </tr>
@@ -376,7 +376,7 @@ NEWSLETTER_TEMPLATE = """\
   <tr><td style="padding:20px;">
     <p style="margin:0;font-size:12px;color:#1E40AF;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Le chiffre de la semaine</p>
     <p style="margin:8px 0;font-size:36px;font-weight:700;color:#1E40AF;">{{ stats.total }}</p>
-    <p style="margin:0;font-size:13px;color:#374151;">textes et appels d'offres analyses par notre IA pour vous faire gagner du temps sur votre veille Qualiopi.</p>
+    <p style="margin:0;font-size:13px;color:#374151;">textes et appels d'offres analysés par notre IA pour vous faire gagner du temps sur votre veille Qualiopi.</p>
   </td></tr>
   </table>
 </td>
@@ -388,7 +388,7 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td style="background-color:#1E40AF;border-radius:6px;">
-      <a href="https://cipia.fr" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">Decouvrir tous les articles</a>
+      <a href="https://cipia.fr" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">Découvrir tous les articles</a>
     </td>
   </tr>
   </table>
@@ -399,11 +399,11 @@ NEWSLETTER_TEMPLATE = """\
 <tr>
 <td style="background-color:#F9FAFB;padding:20px 32px;border-top:1px solid #E5E7EB;">
   <p style="margin:0 0 6px;font-size:12px;color:#9CA3AF;text-align:center;">
-    Cette newsletter est generee par IA (Claude) a partir de sources officielles.<br/>
-    Les analyses d'impact sont fournies a titre indicatif et ne constituent pas un avis juridique.
+    Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>
+    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas un avis juridique.
   </p>
   <p style="margin:8px 0 0;font-size:12px;color:#9CA3AF;text-align:center;">
-    <a href="{{ unsubscribe_url }}" style="color:#6B7280;text-decoration:underline;">Se desabonner</a>
+    <a href="{{ unsubscribe_url }}" style="color:#6B7280;text-decoration:underline;">Se désabonner</a>
     &nbsp;&bull;&nbsp;
     <a href="mailto:contact@cipia.fr" style="color:#6B7280;text-decoration:underline;">Contact</a>
     &nbsp;&bull;&nbsp;

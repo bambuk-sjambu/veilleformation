@@ -35,7 +35,7 @@ from collectors.opco import (
     OPCOmmerceCollector,
     UniformationCollector,
 )
-from collectors.france_travail import collect_france_travail, FranceTravailCollector
+from collectors.france_travail import collect_france_travail  # FranceTravailCollector dispo mais non utilise
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
 
@@ -92,13 +92,16 @@ def cmd_collect(args):
     jorf_days_back = int(os.environ.get("JORF_DAYS_BACK", "7"))
     logger.info(f"Collecte : days_back={days_back}, jorf_days_back={jorf_days_back}")
 
-    # Sources stables (Phase 1 v2 - apres pivot Avril 2026)
-    # Sources principales : BOAMP + Centre Inffo + JORF (~750 articles/jour)
-    # Sources OPCO sectorielles sub-seuil (<40k EUR HT, hors BOAMP) :
-    #   AKTO, OPCO 2i, OPCO EP, OPCO Sante, OPCOMMERCE, Uniformation
-    # France Travail : page accessible 1.3s depuis VPS, parsing intermittent.
-    # Desactives :
-    # - OCAPIAT, ATLAS, OPCO Mobilites : IP datacenter Hetzner bloquee
+    # Sources stables (Phase 1 v2 - apres pivot Avril 2026 + audit 28/04)
+    # Sources principales (cores, API officielles) : BOAMP + Centre Inffo + JORF
+    # Sources OPCO sectorielles sub-seuil (HTML scraping, intermittent) :
+    #   AKTO, OPCO 2i, OPCO Sante, OPCOMMERCE, Uniformation
+    # Desactives apres audit pratique :
+    # - France Travail : aucune page publique de search ni d'AAP scrapable
+    #   (toutes les URLs candidates -> 404). Drop le 28/04.
+    # - OPCO EP : IP datacenter Hetzner bloquee (3/3 timeouts SSL handshake).
+    #   Code conserve, reactivable derriere un proxy residentiel.
+    # - OCAPIAT, ATLAS, OPCO Mobilites : meme blocage IP Hetzner
     # - AFDAS, Constructys : sites OK mais pages AAP non scrapables
     # - RegionsCollector : 240s/run, trop lent (a optimiser plus tard)
     # - LegifranceCollector : a reactiver avec cles PISTE (memory ref)
@@ -109,11 +112,9 @@ def cmd_collect(args):
         DILAJorfCollector(db_path, logger, days_back=jorf_days_back),
         AKTOCollector(db_path, logger),
         OPCO2iCollector(db_path, logger),
-        OPCOEPCollector(db_path, logger),
         OPCOSanteCollector(db_path, logger),
         OPCOmmerceCollector(db_path, logger),
         UniformationCollector(db_path, logger),
-        FranceTravailCollector(db_path, logger),
     ]
 
     print("=== Cipia -- Collecte ===\n")
@@ -488,6 +489,64 @@ def cmd_status(args):
         print("Aucune collecte effectuee")
 
 
+def cmd_audit_sources(args):
+    """Audit volume + sante de chaque source de collecte (7j et 30j)."""
+    db_path = args.db or DEFAULT_DB_PATH
+
+    if not Path(db_path).exists():
+        print(f"Base non trouvee: {db_path}")
+        sys.exit(1)
+
+    conn = get_connection(db_path)
+    try:
+        # Volumes par source sur 7j et 30j
+        rows = conn.execute("""
+            SELECT
+                source,
+                SUM(CASE WHEN collected_at >= date('now','-7 days') THEN 1 ELSE 0 END) AS n_7j,
+                SUM(CASE WHEN collected_at >= date('now','-30 days') THEN 1 ELSE 0 END) AS n_30j,
+                COUNT(*) AS n_total,
+                MAX(collected_at) AS last_seen,
+                CAST(julianday('now') - julianday(MAX(collected_at)) AS INTEGER) AS days_since,
+                SUM(CASE WHEN status='done' THEN 1 ELSE 0 END) AS n_enriched,
+                SUM(CASE WHEN status='failed' THEN 1 ELSE 0 END) AS n_failed
+            FROM articles
+            GROUP BY source
+            ORDER BY n_7j DESC, n_30j DESC
+        """).fetchall()
+    finally:
+        conn.close()
+
+    print("=== Cipia -- Audit sources ===")
+    print()
+    print(f"{'Source':<18} {'7j':>5} {'30j':>5} {'Total':>6} {'Dernier (j)':>12} {'Enrichis':>9} {'Failed':>7}  Statut")
+    print("-" * 90)
+
+    for r in rows:
+        source, n7, n30, ntot, last, days_since, n_done, n_failed = r
+        days_since = days_since if days_since is not None else 999
+
+        # Status: vert si <= 2 jours et n7>0, orange si 3-7 jours, rouge si >7 jours ou jamais
+        if days_since <= 2 and n7 > 0:
+            status = "OK"
+        elif days_since <= 7:
+            status = "INTERMITTENT"
+        elif days_since <= 30:
+            status = "SILENCIEUSE"
+        else:
+            status = "MORTE"
+
+        last_str = f"{days_since}j" if days_since < 999 else "?"
+        print(f"{source:<18} {n7:>5} {n30:>5} {ntot:>6} {last_str:>12} {n_done:>9} {n_failed:>7}  {status}")
+
+    print()
+    print("Statuts :")
+    print("  OK            = active dans les 2 derniers jours, volume > 0 sur 7j")
+    print("  INTERMITTENT  = active dans les 3-7 jours")
+    print("  SILENCIEUSE   = derniere collecte 8-30j, surveiller")
+    print("  MORTE         = aucune collecte depuis >30j, candidate au drop")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Cipia -- Veille reglementaire pour organismes de formation",
@@ -545,6 +604,7 @@ Commandes:
     )
 
     subparsers.add_parser("status", help="Afficher les statistiques")
+    subparsers.add_parser("audit-sources", help="Audit volume + sante des sources collecte")
 
     args = parser.parse_args()
 
@@ -560,6 +620,7 @@ Commandes:
         "newsletter": cmd_newsletter,
         "retry": cmd_retry,
         "status": cmd_status,
+        "audit-sources": cmd_audit_sources,
     }
 
     commands[args.command](args)

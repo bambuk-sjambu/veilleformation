@@ -15,11 +15,17 @@ export default async function DashboardLayout({
   }
 
   let avatarUrl: string | null = null;
+  let isFeedbackPanel = false;
   try {
     const row = getDb()
-      .prepare("SELECT avatar_url FROM users WHERE id = ?")
-      .get(user.userId) as { avatar_url: string | null } | undefined;
+      .prepare(
+        "SELECT avatar_url, is_feedback_panel FROM users WHERE id = ?"
+      )
+      .get(user.userId) as
+      | { avatar_url: string | null; is_feedback_panel: number | null }
+      | undefined;
     avatarUrl = row?.avatar_url || null;
+    isFeedbackPanel = Number(row?.is_feedback_panel) === 1;
   } catch {
     // ignore si colonne pas encore creee
   }
@@ -29,6 +35,7 @@ export default async function DashboardLayout({
       firstName={user.firstName || ""}
       lastName={user.lastName || ""}
       avatarUrl={avatarUrl}
+      isFeedbackPanel={isFeedbackPanel}
     >
       {children}
     </DashboardShell>

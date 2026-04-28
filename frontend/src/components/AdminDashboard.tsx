@@ -13,6 +13,8 @@ import {
   Building2,
   Euro,
   TrendingUp,
+  MessageCircle,
+  X,
 } from "lucide-react";
 
 interface KpisBlock {
@@ -79,6 +81,64 @@ const PLAN_LABELS: Record<string, string> = {
   agence: "Agence",
 };
 
+interface PanelUser {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  plan: string | null;
+  created_at: string;
+  is_feedback_panel: number | null;
+  feedback_count: number;
+  last_feedback_at: string | null;
+  company: string | null;
+}
+
+interface FeedbackItem {
+  id: number;
+  user_id: number;
+  category: string;
+  page: string;
+  rating: number | null;
+  text: string;
+  screenshot_url: string | null;
+  status: string;
+  admin_notes: string | null;
+  created_at: string;
+  updated_at: string | null;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
+}
+
+const FEEDBACK_STATUSES = [
+  "nouveau",
+  "traite",
+  "reporte",
+  "pas_pour_nous",
+] as const;
+
+const STATUS_LABELS: Record<string, string> = {
+  nouveau: "Nouveau",
+  traite: "Traite",
+  reporte: "Reporte",
+  pas_pour_nous: "Pas pour nous",
+};
+
+const STATUS_BADGE: Record<string, string> = {
+  nouveau: "bg-blue-100 text-blue-800",
+  traite: "bg-green-100 text-green-800",
+  reporte: "bg-amber-100 text-amber-800",
+  pas_pour_nous: "bg-gray-100 text-gray-700",
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  bug: "Bug",
+  manque: "Manque",
+  suggestion: "Suggestion",
+  confus: "Confus",
+};
+
 function formatDate(iso: string | null): string {
   if (!iso) return "—";
   try {
@@ -96,6 +156,18 @@ export default function AdminDashboard() {
   const [data, setData] = useState<OverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Panel feedback
+  const [panelUsers, setPanelUsers] = useState<PanelUser[]>([]);
+  const [panelLoading, setPanelLoading] = useState(false);
+  const [panelError, setPanelError] = useState<string | null>(null);
+  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [selectedFb, setSelectedFb] = useState<FeedbackItem | null>(null);
+  const [editNotes, setEditNotes] = useState("");
+  const [savingNotes, setSavingNotes] = useState(false);
 
   const fetchOverview = useCallback(async () => {
     setLoading(true);
@@ -115,9 +187,125 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const fetchPanel = useCallback(async () => {
+    setPanelLoading(true);
+    setPanelError(null);
+    try {
+      const res = await fetch("/api/admin/feedback-panel", {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      const json = (await res.json()) as { users: PanelUser[] };
+      setPanelUsers(json.users || []);
+    } catch (e) {
+      setPanelError(e instanceof Error ? e.message : "Erreur inconnue");
+    } finally {
+      setPanelLoading(false);
+    }
+  }, []);
+
+  const fetchFeedbacks = useCallback(async (filter: string) => {
+    setFeedbackLoading(true);
+    setFeedbackError(null);
+    try {
+      const url = filter
+        ? `/api/admin/feedback?status=${encodeURIComponent(filter)}`
+        : "/api/admin/feedback";
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      const json = (await res.json()) as { feedbacks: FeedbackItem[] };
+      setFeedbacks(json.feedbacks || []);
+    } catch (e) {
+      setFeedbackError(e instanceof Error ? e.message : "Erreur inconnue");
+    } finally {
+      setFeedbackLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchOverview();
-  }, [fetchOverview]);
+    fetchPanel();
+    fetchFeedbacks("");
+  }, [fetchOverview, fetchPanel, fetchFeedbacks]);
+
+  useEffect(() => {
+    fetchFeedbacks(statusFilter);
+  }, [statusFilter, fetchFeedbacks]);
+
+  async function togglePanel(userId: number, current: number | null) {
+    const next = Number(current) === 1 ? 0 : 1;
+    // Optimistic
+    setPanelUsers((prev) =>
+      prev.map((u) =>
+        u.id === userId ? { ...u, is_feedback_panel: next } : u
+      )
+    );
+    try {
+      const res = await fetch("/api/admin/feedback-panel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userId,
+          is_feedback_panel: next,
+        }),
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+    } catch (e) {
+      // Rollback
+      setPanelUsers((prev) =>
+        prev.map((u) =>
+          u.id === userId ? { ...u, is_feedback_panel: current } : u
+        )
+      );
+      setPanelError(e instanceof Error ? e.message : "Erreur toggle");
+    }
+  }
+
+  async function changeFeedbackStatus(id: number, newStatus: string) {
+    // Optimistic
+    setFeedbacks((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, status: newStatus } : f))
+    );
+    try {
+      const res = await fetch("/api/admin/feedback", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+    } catch (e) {
+      setFeedbackError(e instanceof Error ? e.message : "Erreur statut");
+      // Reload pour resync
+      fetchFeedbacks(statusFilter);
+    }
+  }
+
+  async function saveNotes() {
+    if (!selectedFb) return;
+    setSavingNotes(true);
+    try {
+      const res = await fetch("/api/admin/feedback", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: selectedFb.id,
+          status: selectedFb.status,
+          admin_notes: editNotes,
+        }),
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      setFeedbacks((prev) =>
+        prev.map((f) =>
+          f.id === selectedFb.id ? { ...f, admin_notes: editNotes } : f
+        )
+      );
+      setSelectedFb({ ...selectedFb, admin_notes: editNotes });
+    } catch (e) {
+      setFeedbackError(e instanceof Error ? e.message : "Erreur notes");
+    } finally {
+      setSavingNotes(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -523,6 +711,363 @@ export default function AdminDashboard() {
             </div>
           </div>
         </section>
+
+        {/* SECTION 8 — Panel feedback */}
+        <section id="feedback" className="mb-8 scroll-mt-4">
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 flex items-center gap-2">
+            <MessageCircle className="w-4 h-4" />
+            Panel feedback
+          </h2>
+
+          {/* Sous-section A — Users */}
+          <div className="mb-6">
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+              Utilisateurs (cocher pour activer le panel)
+            </h3>
+            {panelError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-2 text-red-700 text-sm">
+                {panelError}
+              </div>
+            )}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Email
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Organisme
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Plan
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Inscrit le
+                    </th>
+                    <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                      Panel ?
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                      Retours
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Dernier
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {panelLoading && panelUsers.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-6 text-center text-gray-500 text-sm"
+                      >
+                        Chargement...
+                      </td>
+                    </tr>
+                  ) : panelUsers.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-6 text-center text-gray-500 text-sm"
+                      >
+                        Aucun utilisateur
+                      </td>
+                    </tr>
+                  ) : (
+                    panelUsers.map((u) => (
+                      <tr key={u.id}>
+                        <td className="px-4 py-2 text-sm text-gray-900 font-medium">
+                          {u.email}
+                          {u.first_name || u.last_name ? (
+                            <div className="text-xs text-gray-500">
+                              {u.first_name} {u.last_name}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-700">
+                          {u.company || "—"}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-700">
+                          {PLAN_LABELS[(u.plan || "").toLowerCase()] ||
+                            u.plan ||
+                            "—"}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-500">
+                          {formatDate(u.created_at)}
+                        </td>
+                        <td className="px-4 py-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={Number(u.is_feedback_panel) === 1}
+                            onChange={() =>
+                              togglePanel(u.id, u.is_feedback_panel)
+                            }
+                            className="w-4 h-4 text-blue-700 rounded focus:ring-blue-700 cursor-pointer"
+                          />
+                        </td>
+                        <td className="px-4 py-2 text-right text-sm font-semibold text-gray-900">
+                          {u.feedback_count}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-500">
+                          {formatDate(u.last_feedback_at)}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Sous-section B — Feedbacks */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Retours recus
+              </h3>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="text-xs border border-gray-200 rounded px-2 py-1 bg-white"
+              >
+                <option value="">Tous statuts</option>
+                {FEEDBACK_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {STATUS_LABELS[s]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {feedbackError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-2 text-red-700 text-sm">
+                {feedbackError}
+              </div>
+            )}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Date
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      OF
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Page
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Categ.
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Note
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Extrait
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                      Statut
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {feedbackLoading && feedbacks.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-6 text-center text-gray-500 text-sm"
+                      >
+                        Chargement...
+                      </td>
+                    </tr>
+                  ) : feedbacks.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-6 text-center text-gray-500 text-sm"
+                      >
+                        Aucun retour pour ce filtre
+                      </td>
+                    </tr>
+                  ) : (
+                    feedbacks.map((f) => (
+                      <tr
+                        key={f.id}
+                        onClick={() => {
+                          setSelectedFb(f);
+                          setEditNotes(f.admin_notes || "");
+                        }}
+                        className="cursor-pointer hover:bg-gray-50"
+                      >
+                        <td className="px-4 py-2 text-sm text-gray-500 whitespace-nowrap">
+                          {formatDate(f.created_at)}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-900">
+                          <div className="font-medium">{f.email || "—"}</div>
+                          {f.first_name || f.last_name ? (
+                            <div className="text-xs text-gray-500">
+                              {f.first_name} {f.last_name}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td className="px-4 py-2 text-xs text-gray-600 font-mono max-w-[160px] truncate">
+                          {f.page}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-700">
+                          {CATEGORY_LABELS[f.category] || f.category}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-700">
+                          {f.rating ? `${f.rating}/5` : "—"}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-700 max-w-[280px] truncate">
+                          {f.text}
+                        </td>
+                        <td
+                          className="px-4 py-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <select
+                            value={f.status}
+                            onChange={(e) =>
+                              changeFeedbackStatus(f.id, e.target.value)
+                            }
+                            className={`text-xs rounded px-2 py-1 border-0 font-medium ${
+                              STATUS_BADGE[f.status] || "bg-gray-100"
+                            }`}
+                          >
+                            {FEEDBACK_STATUSES.map((s) => (
+                              <option key={s} value={s}>
+                                {STATUS_LABELS[s]}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* Modal detail feedback */}
+        {selectedFb && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+            onClick={() => setSelectedFb(null)}
+          >
+            <div
+              className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 sticky top-0 bg-white">
+                <h2 className="font-semibold text-gray-900">
+                  Feedback #{selectedFb.id}
+                </h2>
+                <button
+                  onClick={() => setSelectedFb(null)}
+                  className="p-1 rounded hover:bg-gray-100 text-gray-500"
+                  aria-label="Fermer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="px-5 py-4 space-y-3 text-sm">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <div className="text-xs text-gray-500 uppercase">De</div>
+                    <div className="text-gray-900 font-medium">
+                      {selectedFb.email}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {selectedFb.first_name} {selectedFb.last_name}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 uppercase">Date</div>
+                    <div className="text-gray-700">
+                      {formatDate(selectedFb.created_at)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 uppercase">Page</div>
+                    <div className="text-gray-700 font-mono text-xs break-all">
+                      {selectedFb.page}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 uppercase">
+                      Categorie / Note
+                    </div>
+                    <div className="text-gray-700">
+                      {CATEGORY_LABELS[selectedFb.category] ||
+                        selectedFb.category}
+                      {selectedFb.rating ? ` — ${selectedFb.rating}/5` : ""}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 uppercase mb-1">
+                    Message
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-3 text-gray-800 whitespace-pre-wrap">
+                    {selectedFb.text}
+                  </div>
+                </div>
+                {selectedFb.screenshot_url && (
+                  <div>
+                    <div className="text-xs text-gray-500 uppercase mb-1">
+                      Capture
+                    </div>
+                    <a
+                      href={selectedFb.screenshot_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selectedFb.screenshot_url}
+                        alt="screenshot"
+                        className="max-h-64 rounded-lg border border-gray-200"
+                      />
+                    </a>
+                  </div>
+                )}
+                <div>
+                  <div className="text-xs text-gray-500 uppercase mb-1">
+                    Notes admin
+                  </div>
+                  <textarea
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                    rows={3}
+                    maxLength={2000}
+                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-700 focus:border-blue-700 outline-none"
+                    placeholder="Notes internes..."
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-3 sticky bottom-0 bg-white">
+                <button
+                  onClick={() => setSelectedFb(null)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+                >
+                  Fermer
+                </button>
+                <button
+                  onClick={saveNotes}
+                  disabled={savingNotes}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg disabled:opacity-50"
+                >
+                  {savingNotes ? "Enregistrement..." : "Enregistrer notes"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <p className="text-xs text-gray-400 text-center mt-8">
           Cipia — vue admin réservée aux super-admins. Données live, non mises en cache.

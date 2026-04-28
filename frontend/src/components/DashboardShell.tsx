@@ -21,6 +21,7 @@ import {
   Activity,
   ShieldCheck,
 } from "lucide-react";
+import FeedbackWidget from "./FeedbackWidget";
 
 const primaryNav = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -48,11 +49,13 @@ export default function DashboardShell({
   firstName,
   lastName,
   avatarUrl,
+  isFeedbackPanel = false,
 }: {
   children: React.ReactNode;
   firstName: string;
   lastName: string;
   avatarUrl?: string | null;
+  isFeedbackPanel?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -215,6 +218,8 @@ export default function DashboardShell({
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
+
+      <FeedbackWidget isFeedbackPanel={isFeedbackPanel} />
     </div>
   );
 }

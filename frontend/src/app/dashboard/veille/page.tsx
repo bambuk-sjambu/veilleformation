@@ -203,9 +203,9 @@ export default function VeillePage() {
         <p className="text-sm text-gray-500 mt-2">
           Données collectées depuis{" "}
           <Link href="/sources" className="text-primary hover:underline font-medium">
-            17 sources officielles
+            8 sources officielles actives
           </Link>{" "}
-          (BOAMP, Legifrance, OPCO, Regions...)
+          (BOAMP, JORF, Centre Inffo, 5 OPCO sectoriels)
         </p>
       </div>
 

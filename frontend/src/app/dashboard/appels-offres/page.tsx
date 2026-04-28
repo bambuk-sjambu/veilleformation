@@ -201,9 +201,9 @@ export default function AppelsOffresPage() {
         <p className="text-sm text-gray-500 mt-2">
           Données collectées depuis{" "}
           <Link href="/sources" className="text-primary hover:underline font-medium">
-            17 sources officielles
+            8 sources officielles actives
           </Link>{" "}
-          (BOAMP, OPCO, Régions, France Travail...)
+          (BOAMP au-dessus de 40 k€ HT + 5 OPCO sectoriels sub-seuil)
         </p>
       </div>
 

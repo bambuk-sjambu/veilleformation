@@ -116,8 +116,8 @@ export default function DashboardStats({ firstName }: { firstName: string }) {
 
   const indicatorLabels: Record<string, string> = {
     "23": "Veille légale et réglementaire",
-    "24": "Competences, metiers, emplois",
-    "25": "Innovations pedagogiques",
+    "24": "Compétences, métiers, emplois",
+    "25": "Innovations pédagogiques",
     "26": "Handicap et compensations",
   };
 
@@ -186,7 +186,7 @@ export default function DashboardStats({ firstName }: { firstName: string }) {
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-gray-500" />
               <h3 className="font-semibold text-gray-900">
-                Repartition par impact
+                Répartition par impact
               </h3>
             </div>
             <div className="space-y-3">

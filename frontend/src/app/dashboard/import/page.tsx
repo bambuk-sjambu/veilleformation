@@ -112,9 +112,9 @@ export default function ImportPage() {
   const getIndicatorLabels = (indicators: string | null) => {
     if (!indicators) return [];
     const labels: Record<string, string> = {
-      "23": "Legal",
-      "24": "Competences",
-      "25": "Pedagogie",
+      "23": "Légal",
+      "24": "Compétences",
+      "25": "Pédagogie",
       "26": "Handicap",
     };
     try {

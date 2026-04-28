@@ -59,17 +59,17 @@ const indicatorConfig: Record<
 > = {
   "23": {
     label: "Veille légale et réglementaire",
-    short: "Legal",
+    short: "Légal",
     classes: "bg-blue-100 text-blue-800",
   },
   "24": {
-    label: "Competences, metiers, emplois",
-    short: "Metiers",
+    label: "Compétences, métiers, emplois",
+    short: "Métiers",
     classes: "bg-green-100 text-green-800",
   },
   "25": {
-    label: "Innovations pedagogiques",
-    short: "Pedagogie",
+    label: "Innovations pédagogiques",
+    short: "Pédagogie",
     classes: "bg-purple-100 text-purple-800",
   },
   "26": {

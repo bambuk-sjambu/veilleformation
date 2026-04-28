@@ -13,6 +13,7 @@ import {
   Upload,
   Loader2,
   CheckCircle,
+  Camera,
 } from "lucide-react";
 
 type Category = "bug" | "manque" | "suggestion" | "confus";
@@ -44,10 +45,50 @@ export default function FeedbackWidget({
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [autoCaptured, setAutoCaptured] = useState(false);
+  const [capturing, setCapturing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Capture l'ecran AVANT d'ouvrir le modal (sinon le modal serait dans la capture)
+  async function openWithCapture() {
+    setCapturing(true);
+    try {
+      // Import dynamique pour ne pas alourdir le bundle initial
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(document.body, {
+        logging: false,
+        // ignore le bouton flottant lui-meme
+        ignoreElements: (el) => el.classList?.contains("cipia-feedback-btn"),
+        // qualite raisonnable pour deliverabilite (taille fichier < 1 Mo en general)
+        scale: window.devicePixelRatio > 1 ? 1 : 1.5,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      });
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const captureFile = new File([blob], `capture-${Date.now()}.png`, {
+              type: "image/png",
+            });
+            setFile(captureFile);
+            setPreviewUrl(URL.createObjectURL(blob));
+            setAutoCaptured(true);
+          }
+          setCapturing(false);
+          setOpen(true);
+        },
+        "image/png",
+        0.9,
+      );
+    } catch (e) {
+      console.error("html2canvas failed:", e);
+      setCapturing(false);
+      setOpen(true); // ouvrir quand meme sans capture
+    }
+  }
 
   // Cleanup preview URL
   useEffect(() => {
@@ -76,6 +117,7 @@ export default function FeedbackWidget({
     setFile(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
+    setAutoCaptured(false);
     setError(null);
     setSubmitting(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -188,13 +230,18 @@ export default function FeedbackWidget({
       {/* Bouton flottant */}
       {!open && (
         <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 bg-blue-700 hover:bg-blue-800 text-white rounded-full shadow-lg p-4 transition flex items-center gap-2 group"
+          onClick={openWithCapture}
+          disabled={capturing}
+          className="cipia-feedback-btn fixed bottom-6 right-6 z-50 bg-blue-700 hover:bg-blue-800 text-white rounded-full shadow-lg p-4 transition flex items-center gap-2 group disabled:opacity-70"
           aria-label="Donner un feedback"
         >
-          <MessageCircle className="w-5 h-5" />
-          <span className="hidden group-hover:inline text-sm font-medium pr-1">
-            Feedback
+          {capturing ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <MessageCircle className="w-5 h-5" />
+          )}
+          <span className={`${capturing ? "inline" : "hidden group-hover:inline"} text-sm font-medium pr-1`}>
+            {capturing ? "Capture..." : "Feedback"}
           </span>
         </button>
       )}
@@ -331,8 +378,31 @@ export default function FeedbackWidget({
 
               {/* Screenshot */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                  Capture d&apos;ecran (optionnel, max 5 Mo)
+                <label className="flex items-center justify-between text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5" />
+                    Capture d&apos;ecran
+                    {autoCaptured && (
+                      <span className="ml-1 normal-case bg-green-100 text-green-800 text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-normal">
+                        Auto
+                      </span>
+                    )}
+                  </span>
+                  {previewUrl && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFile(null);
+                        if (previewUrl) URL.revokeObjectURL(previewUrl);
+                        setPreviewUrl(null);
+                        setAutoCaptured(false);
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="text-xs text-gray-400 hover:text-red-600 normal-case font-medium"
+                    >
+                      Retirer
+                    </button>
+                  )}
                 </label>
                 {!previewUrl ? (
                   <button
@@ -344,34 +414,28 @@ export default function FeedbackWidget({
                     Choisir une image
                   </button>
                 ) : (
-                  <div className="relative inline-block">
+                  <div className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={previewUrl}
-                      alt="preview"
-                      className="max-h-32 rounded-lg border border-gray-200"
+                      alt="capture"
+                      className="w-full max-h-48 object-cover object-top rounded-lg border border-gray-200"
                     />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFile(null);
-                        if (previewUrl) URL.revokeObjectURL(previewUrl);
-                        setPreviewUrl(null);
-                        if (fileInputRef.current)
-                          fileInputRef.current.value = "";
-                      }}
-                      className="absolute -top-2 -right-2 bg-white rounded-full shadow border border-gray-200 p-1 text-gray-500 hover:text-red-600"
-                      aria-label="Retirer l'image"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
+                    {autoCaptured && (
+                      <p className="text-xs text-gray-500 mt-1.5">
+                        Capture prise automatiquement avant l&apos;ouverture de cette fenêtre.
+                      </p>
+                    )}
                   </div>
                 )}
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
-                  onChange={handleFileChange}
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    setAutoCaptured(false);
+                  }}
                   className="hidden"
                 />
               </div>

@@ -48,6 +48,27 @@ const STATUS_CONFIG = {
   },
 };
 
+// Mapping source -> axe metier (réglementaire vs appels d'offres).
+// Utilise pour scinder le tableau en 2 vues distinctes.
+const SOURCE_TO_AXIS: Record<string, "reglementaire" | "ao"> = {
+  // Réglementaire (indicateurs 23-26 Qualiopi)
+  jorf: "reglementaire",
+  centre_inffo: "reglementaire",
+  legifrance: "reglementaire",
+  france_competences: "reglementaire",
+  // Appels d'offres formation
+  boamp: "ao",
+  opco_akto: "ao",
+  opco_2i: "ao",
+  opco_ep: "ao",
+  opco_sante: "ao",
+  opcommerce: "ao",
+  uniformation: "ao",
+  ocapiat: "ao",
+  france_travail: "ao",
+  region: "ao",
+};
+
 const SOURCE_LABELS: Record<string, string> = {
   boamp: "BOAMP (appels d'offres publics)",
   centre_inffo: "Centre Inffo (Quotidien Formation)",
@@ -219,64 +240,89 @@ export default function SourcesHealthPage() {
           </div>
         )}
 
-        {/* Sources table */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">7 jours</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">30 jours</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Dernier</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Enrichis IA</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {loading && sources.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">Chargement...</td>
-                </tr>
-              ) : sources.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">Aucune source enregistrée.</td>
-                </tr>
-              ) : (
-                sources.map((s) => {
-                  const cfg = STATUS_CONFIG[s.status];
-                  return (
-                    <tr key={s.source}>
-                      <td className="px-6 py-3 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {SOURCE_LABELS[s.source] || s.source}
-                        </div>
-                        <div className="text-xs text-gray-500 font-mono">{s.source}</div>
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-900 font-medium">{s.n_7j}</td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-700">{s.n_30j}</td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-500">{s.n_total}</td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-700">
-                        {s.days_since !== null ? `il y a ${s.days_since}j` : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-700">
-                        {s.enrichment_pct}%
-                        {s.n_failed > 0 && (
-                          <span className="text-xs text-red-600 ml-1">({s.n_failed} fail)</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${cfg.color}`}>
-                          {cfg.label}
-                        </span>
-                      </td>
+        {/* Sources tables - splitted by axis */}
+        {(() => {
+          const reglSources = sources.filter((s) => SOURCE_TO_AXIS[s.source] === "reglementaire");
+          const aoSources = sources.filter((s) => SOURCE_TO_AXIS[s.source] === "ao");
+          const otherSources = sources.filter((s) => !SOURCE_TO_AXIS[s.source]);
+
+          const renderTable = (title: string, color: string, list: SourceHealth[]) => (
+            <div className="mb-6">
+              <h2 className={`text-lg font-semibold mb-2 ${color}`}>{title}</h2>
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">7 jours</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">30 jours</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Dernier</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Enrichis IA</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                     </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {list.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-6 py-8 text-center text-gray-500 text-sm">
+                          Aucune source enregistrée pour cet axe.
+                        </td>
+                      </tr>
+                    ) : (
+                      list.map((s) => {
+                        const cfg = STATUS_CONFIG[s.status];
+                        return (
+                          <tr key={s.source}>
+                            <td className="px-6 py-3 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">
+                                {SOURCE_LABELS[s.source] || s.source}
+                              </div>
+                              <div className="text-xs text-gray-500 font-mono">{s.source}</div>
+                            </td>
+                            <td className="px-4 py-3 text-right text-sm text-gray-900 font-medium">{s.n_7j}</td>
+                            <td className="px-4 py-3 text-right text-sm text-gray-700">{s.n_30j}</td>
+                            <td className="px-4 py-3 text-right text-sm text-gray-500">{s.n_total}</td>
+                            <td className="px-4 py-3 text-right text-sm text-gray-700">
+                              {s.days_since !== null ? `il y a ${s.days_since}j` : "—"}
+                            </td>
+                            <td className="px-4 py-3 text-right text-sm text-gray-700">
+                              {s.enrichment_pct}%
+                              {s.n_failed > 0 && (
+                                <span className="text-xs text-red-600 ml-1">({s.n_failed} fail)</span>
+                              )}
+                            </td>
+                            <td className="px-6 py-3 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${cfg.color}`}>
+                                {cfg.label}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+
+          if (loading && sources.length === 0) {
+            return (
+              <div className="bg-white rounded-lg shadow-sm p-8 text-center text-gray-500">
+                Chargement...
+              </div>
+            );
+          }
+
+          return (
+            <>
+              {renderTable("Veille réglementaire (indicateurs 23-26 Qualiopi)", "text-blue-700", reglSources)}
+              {renderTable("Appels d'offres formation", "text-amber-700", aoSources)}
+              {otherSources.length > 0 && renderTable("Autres sources", "text-gray-700", otherSources)}
+            </>
+          );
+        })()}
 
         {/* Legend */}
         <div className="mt-6 bg-white rounded-lg shadow-sm p-6">

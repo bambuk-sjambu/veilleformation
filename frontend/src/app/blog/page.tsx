@@ -192,11 +192,6 @@ export default async function BlogPage() {
               key={article.slug}
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <Link href={`/blog/${article.slug}`}>
-                <div className="aspect-video bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                  <span className="text-blue-400 text-6xl">📄</span>
-                </div>
-              </Link>
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <span

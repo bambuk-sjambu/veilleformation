@@ -450,14 +450,6 @@ export default async function BlogArticlePage({
               </div>
             </header>
 
-            {/* Image featured */}
-            <div className="w-full h-52 bg-gradient-to-br from-blue-100 via-blue-200 to-indigo-300 rounded-xl mb-8 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-5xl mb-1">📋</div>
-                <p className="text-blue-700 font-medium text-sm">{article.cluster}</p>
-              </div>
-            </div>
-
             {/* Résumé rapide */}
             <div className="bg-blue-50 border-l-4 border-blue-500 rounded-r-xl p-5 mb-8">
               <div className="flex items-start gap-3">

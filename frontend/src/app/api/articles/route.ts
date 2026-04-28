@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     const params = request.nextUrl.searchParams;
 
     const category = params.get("category");
+    const notCategory = params.get("not_category");
     const status = params.get("status") || "done";
     const limit = parseInt(params.get("limit") || "50", 10);
     const offset = parseInt(params.get("offset") || "0", 10);
@@ -42,6 +43,11 @@ export async function GET(request: NextRequest) {
     if (category) {
       conditions.push("category = ?");
       values.push(category);
+    }
+
+    if (notCategory) {
+      conditions.push("(category != ? OR category IS NULL)");
+      values.push(notCategory);
     }
 
     if (impact) {

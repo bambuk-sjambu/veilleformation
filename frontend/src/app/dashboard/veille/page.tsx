@@ -124,18 +124,16 @@ export default function VeillePage() {
     setLoading(true);
     const params = new URLSearchParams();
     params.set("status", "done");
+    params.set("not_category", "ao");  // les AO ont leur propre page /dashboard/appels-offres
     if (filterImpact) params.set("impact", filterImpact);
     if (filterIndicator) params.set("indicator", filterIndicator);
-    params.set("limit", "200");
+    params.set("limit", "500");
 
     fetch(`/api/articles?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        const filtered = (data.articles || []).filter(
-          (a: Article) => a.category !== "ao"
-        );
-        setArticles(filtered);
-        setTotal(filtered.length);
+        setArticles(data.articles || []);
+        setTotal(data.total || 0);
       })
       .catch(() => setArticles([]))
       .finally(() => setLoading(false));

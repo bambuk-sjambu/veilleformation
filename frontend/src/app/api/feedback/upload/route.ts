@@ -105,6 +105,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const url = `/feedback-screenshots/${filename}`;
+  // URL sert via la route API (Next.js next start ne sert pas les fichiers
+  // ajoutes a public/ apres le build).
+  const url = `/api/feedback-screenshots/${filename}`;
   return NextResponse.json({ url });
 }

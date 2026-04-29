@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { unlink } from "fs/promises";
-import path from "path";
 import { getDb, dbExists } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSuperAdmin } from "@/lib/admin";
@@ -12,6 +10,7 @@ const VALID_STATUSES = [
   "traite",
   "reporte",
   "pas_pour_nous",
+  "supprime",
 ] as const;
 type Status = (typeof VALID_STATUSES)[number];
 
@@ -171,87 +170,6 @@ export async function PATCH(request: NextRequest) {
       { error: "Erreur mise a jour" },
       { status: 500 }
     );
-  }
-
-  return NextResponse.json({ ok: true });
-}
-
-export async function DELETE(request: NextRequest) {
-  const user = await getCurrentUser();
-  if (!user || !user.userId) {
-    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
-  }
-
-  if (!dbExists()) {
-    return NextResponse.json({ error: "Base indisponible" }, { status: 503 });
-  }
-
-  const db = getDb();
-  if (!isSuperAdmin(user.userId, db)) {
-    return NextResponse.json({ error: "Acces refuse" }, { status: 403 });
-  }
-
-  const url = new URL(request.url);
-  const id = Number(url.searchParams.get("id"));
-  if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: "id invalide" }, { status: 400 });
-  }
-
-  // Recupere le screenshot_url avant suppression pour effacer le fichier
-  let screenshotUrl: string | null = null;
-  try {
-    const row = db
-      .prepare("SELECT screenshot_url FROM feedbacks WHERE id = ?")
-      .get(id) as { screenshot_url: string | null } | undefined;
-    if (!row) {
-      return NextResponse.json(
-        { error: "Feedback introuvable" },
-        { status: 404 }
-      );
-    }
-    screenshotUrl = row.screenshot_url;
-  } catch (e) {
-    console.error("admin/feedback DELETE select failed:", e);
-    return NextResponse.json(
-      { error: "Erreur lecture feedback" },
-      { status: 500 }
-    );
-  }
-
-  // Supprime la ligne en DB
-  try {
-    db.prepare("DELETE FROM feedbacks WHERE id = ?").run(id);
-  } catch (e) {
-    console.error("admin/feedback DELETE failed:", e);
-    return NextResponse.json(
-      { error: "Erreur suppression" },
-      { status: 500 }
-    );
-  }
-
-  // Supprime le fichier capture (best effort, ne bloque pas si echec)
-  if (screenshotUrl && screenshotUrl.startsWith("/feedback-screenshots/")) {
-    const filename = path.basename(screenshotUrl);
-    // Garde-fou : pas de path traversal (.., /, \)
-    if (!/^[a-zA-Z0-9._-]+$/.test(filename)) {
-      console.warn(`Nom de fichier suspect, pas de suppression : ${filename}`);
-    } else {
-      const filepath = path.join(
-        process.cwd(),
-        "public",
-        "feedback-screenshots",
-        filename
-      );
-      try {
-        await unlink(filepath);
-      } catch (e) {
-        // ENOENT acceptable (fichier deja absent)
-        const err = e as NodeJS.ErrnoException;
-        if (err.code !== "ENOENT") {
-          console.error(`unlink ${filepath} failed:`, e);
-        }
-      }
-    }
   }
 
   return NextResponse.json({ ok: true });

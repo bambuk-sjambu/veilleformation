@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
+import path from "path";
 import { getDb, dbExists } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -68,35 +69,68 @@ const PUBLIC_BASE_URL = (
   "https://cipia.fr"
 ).replace(/\/$/, "");
 
-function toAbsoluteUrl(url: string | null): string | null {
-  if (!url) return null;
-  if (/^https?:\/\//i.test(url)) return url;
-  return `${PUBLIC_BASE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+const MIME_BY_EXT: Record<string, string> = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+};
+
+// Charge la capture depuis disque a partir de son URL relative
+// (/api/feedback-screenshots/<file> ou /feedback-screenshots/<file> pour le legacy).
+function loadScreenshotBytes(
+  screenshotUrl: string | null,
+): { bytes: Buffer; mime: string; filename: string } | null {
+  if (!screenshotUrl) return null;
+  const m = screenshotUrl.match(
+    /\/(?:api\/)?feedback-screenshots\/([a-zA-Z0-9._-]+)$/,
+  );
+  if (!m) return null;
+  const filename = m[1];
+  const ext = path.extname(filename).toLowerCase();
+  const mime = MIME_BY_EXT[ext];
+  if (!mime) return null;
+  const filepath = path.join(
+    process.cwd(),
+    "public",
+    "feedback-screenshots",
+    filename,
+  );
+  try {
+    const bytes = fs.readFileSync(filepath);
+    return { bytes, mime, filename };
+  } catch {
+    return null;
+  }
 }
 
 async function notifyTelegram(
   message: string,
-  photoUrl: string | null = null,
+  screenshotUrl: string | null = null,
 ): Promise<void> {
   const creds = getTelegramCreds();
   if (!creds) return;
   try {
-    if (photoUrl) {
-      // sendPhoto envoie l'image avec la legende. Caption max 1024 chars sur Telegram.
+    const photo = loadScreenshotBytes(screenshotUrl);
+    if (photo) {
+      // sendPhoto via multipart : on uploade les bytes (l'URL est auth-protegee
+      // donc Telegram ne peut pas la fetch lui-meme).
       const caption = message.length > 1024 ? message.slice(0, 1021) + "..." : message;
+      const fd = new FormData();
+      fd.append("chat_id", creds.chatId);
+      fd.append("caption", caption);
+      fd.append(
+        "photo",
+        new Blob([new Uint8Array(photo.bytes)], { type: photo.mime }),
+        photo.filename,
+      );
       const url = `https://api.telegram.org/bot${creds.token}/sendPhoto`;
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: creds.chatId,
-          photo: photoUrl,
-          caption,
-        }),
-        signal: AbortSignal.timeout(8000),
+        body: fd,
+        signal: AbortSignal.timeout(15000),
       });
       if (res.ok) return;
-      // Si sendPhoto echoue (URL invalide, fichier introuvable...), fallback sur sendMessage
       const errBody = await res.text().catch(() => "");
       console.error(
         `Telegram sendPhoto failed (${res.status}), falling back to sendMessage: ${errBody}`,
@@ -109,8 +143,8 @@ async function notifyTelegram(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: creds.chatId,
-        text: photoUrl ? `${message}\n\nCapture : ${photoUrl}` : message,
-        disable_web_page_preview: false,
+        text: message,
+        disable_web_page_preview: true,
       }),
       signal: AbortSignal.timeout(5000),
     });
@@ -233,8 +267,7 @@ export async function POST(request: NextRequest) {
       ratingLine +
       `\n\n${truncated}\n\n` +
       `Voir : ${PUBLIC_BASE_URL}/dashboard/admin#feedback`;
-    const photoUrl = toAbsoluteUrl(screenshotUrl);
-    await notifyTelegram(message, photoUrl);
+    await notifyTelegram(message, screenshotUrl);
   } catch (e) {
     console.error("Telegram block error (non bloquant):", e);
   }

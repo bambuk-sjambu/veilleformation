@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
   MessageCircle,
@@ -10,7 +10,6 @@ import {
   HelpCircle,
   Lightbulb,
   AlertCircle,
-  Upload,
   Loader2,
   CheckCircle,
   Camera,
@@ -44,25 +43,20 @@ export default function FeedbackWidget({
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [autoCaptured, setAutoCaptured] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Capture l'ecran AVANT d'ouvrir le modal (sinon le modal serait dans la capture)
+  // Capture l'ecran AVANT d'ouvrir le modal (capture systematique au clic sur la bulle).
+  // html2canvas-pro supporte oklch/lab/lch (Tailwind 4) — la version classique plantait silencieusement.
   async function openWithCapture() {
     setCapturing(true);
     try {
-      // Import dynamique pour ne pas alourdir le bundle initial
-      const html2canvas = (await import("html2canvas")).default;
+      const html2canvas = (await import("html2canvas-pro")).default;
       const canvas = await html2canvas(document.body, {
         logging: false,
-        // ignore le bouton flottant lui-meme
         ignoreElements: (el) => el.classList?.contains("cipia-feedback-btn"),
-        // qualite raisonnable pour deliverabilite (taille fichier < 1 Mo en general)
         scale: window.devicePixelRatio > 1 ? 1 : 1.5,
         useCORS: true,
         backgroundColor: "#ffffff",
@@ -74,8 +68,6 @@ export default function FeedbackWidget({
               type: "image/png",
             });
             setFile(captureFile);
-            setPreviewUrl(URL.createObjectURL(blob));
-            setAutoCaptured(true);
           }
           setCapturing(false);
           setOpen(true);
@@ -86,16 +78,9 @@ export default function FeedbackWidget({
     } catch (e) {
       console.error("html2canvas failed:", e);
       setCapturing(false);
-      setOpen(true); // ouvrir quand meme sans capture
+      setOpen(true);
     }
   }
-
-  // Cleanup preview URL
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
 
   // Auto-fermeture du toast success
   useEffect(() => {
@@ -115,41 +100,13 @@ export default function FeedbackWidget({
     setHoverRating(0);
     setText("");
     setFile(null);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(null);
-    setAutoCaptured(false);
     setError(null);
     setSubmitting(false);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   function closeModal() {
     setOpen(false);
     resetForm();
-  }
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0] || null;
-    if (!f) {
-      setFile(null);
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-      return;
-    }
-    if (!f.type.startsWith("image/")) {
-      setError("Seules les images sont acceptees");
-      e.target.value = "";
-      return;
-    }
-    if (f.size > 5 * 1024 * 1024) {
-      setError("Image trop volumineuse (max 5 Mo)");
-      e.target.value = "";
-      return;
-    }
-    setError(null);
-    setFile(f);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(URL.createObjectURL(f));
   }
 
   async function handleSubmit() {
@@ -240,7 +197,11 @@ export default function FeedbackWidget({
           ) : (
             <MessageCircle className="w-5 h-5" />
           )}
-          <span className={`${capturing ? "inline" : "hidden group-hover:inline"} text-sm font-medium pr-1`}>
+          <span
+            className={`${
+              capturing ? "inline" : "hidden group-hover:inline"
+            } text-sm font-medium pr-1`}
+          >
             {capturing ? "Capture..." : "Feedback"}
           </span>
         </button>
@@ -376,69 +337,19 @@ export default function FeedbackWidget({
                 </div>
               </div>
 
-              {/* Screenshot */}
-              <div>
-                <label className="flex items-center justify-between text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Camera className="w-3.5 h-3.5" />
-                    Capture d&apos;ecran
-                    {autoCaptured && (
-                      <span className="ml-1 normal-case bg-green-100 text-green-800 text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-normal">
-                        Auto
-                      </span>
-                    )}
-                  </span>
-                  {previewUrl && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFile(null);
-                        if (previewUrl) URL.revokeObjectURL(previewUrl);
-                        setPreviewUrl(null);
-                        setAutoCaptured(false);
-                        if (fileInputRef.current) fileInputRef.current.value = "";
-                      }}
-                      className="text-xs text-gray-400 hover:text-red-600 normal-case font-medium"
-                    >
-                      Retirer
-                    </button>
-                  )}
-                </label>
-                {!previewUrl ? (
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-3 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-500 hover:border-blue-700 hover:text-blue-700 transition"
-                  >
-                    <Upload className="w-4 h-4" />
-                    Choisir une image
-                  </button>
-                ) : (
-                  <div className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={previewUrl}
-                      alt="capture"
-                      className="w-full max-h-48 object-cover object-top rounded-lg border border-gray-200"
-                    />
-                    {autoCaptured && (
-                      <p className="text-xs text-gray-500 mt-1.5">
-                        Capture prise automatiquement avant l&apos;ouverture de cette fenêtre.
-                      </p>
-                    )}
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  onChange={(e) => {
-                    handleFileChange(e);
-                    setAutoCaptured(false);
-                  }}
-                  className="hidden"
-                />
-              </div>
+              {/* Indicateur capture (auto, invisible si echec) */}
+              {file && (
+                <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>Capture d&apos;écran de la page jointe automatiquement.</span>
+                </div>
+              )}
+              {!file && !capturing && (
+                <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>Aucune capture jointe (la capture automatique a échoué).</span>
+                </div>
+              )}
 
               {/* Erreur */}
               {error && (

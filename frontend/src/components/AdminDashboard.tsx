@@ -15,6 +15,7 @@ import {
   TrendingUp,
   MessageCircle,
   X,
+  Trash2,
 } from "lucide-react";
 
 interface KpisBlock {
@@ -168,6 +169,7 @@ export default function AdminDashboard() {
   const [selectedFb, setSelectedFb] = useState<FeedbackItem | null>(null);
   const [editNotes, setEditNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
+  const [deletingFb, setDeletingFb] = useState(false);
 
   const fetchOverview = useCallback(async () => {
     setLoading(true);
@@ -304,6 +306,31 @@ export default function AdminDashboard() {
       setFeedbackError(e instanceof Error ? e.message : "Erreur notes");
     } finally {
       setSavingNotes(false);
+    }
+  }
+
+  async function deleteFeedback() {
+    if (!selectedFb) return;
+    const ok = window.confirm(
+      `Supprimer définitivement ce retour #${selectedFb.id} ?\n\nCette action est irréversible (capture incluse).`
+    );
+    if (!ok) return;
+    setDeletingFb(true);
+    try {
+      const res = await fetch(
+        `/api/admin/feedback?id=${selectedFb.id}`,
+        { method: "DELETE" }
+      );
+      if (!res.ok) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(j.error || `Erreur ${res.status}`);
+      }
+      setFeedbacks((prev) => prev.filter((f) => f.id !== selectedFb.id));
+      setSelectedFb(null);
+    } catch (e) {
+      setFeedbackError(e instanceof Error ? e.message : "Erreur suppression");
+    } finally {
+      setDeletingFb(false);
     }
   }
 
@@ -1050,20 +1077,30 @@ export default function AdminDashboard() {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-3 sticky bottom-0 bg-white">
+              <div className="flex items-center justify-between gap-2 border-t border-gray-200 px-5 py-3 sticky bottom-0 bg-white">
                 <button
-                  onClick={() => setSelectedFb(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+                  onClick={deleteFeedback}
+                  disabled={deletingFb || savingNotes}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 border border-red-200 rounded-lg disabled:opacity-50"
                 >
-                  Fermer
+                  <Trash2 className="w-4 h-4" />
+                  {deletingFb ? "Suppression..." : "Supprimer"}
                 </button>
-                <button
-                  onClick={saveNotes}
-                  disabled={savingNotes}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg disabled:opacity-50"
-                >
-                  {savingNotes ? "Enregistrement..." : "Enregistrer notes"}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSelectedFb(null)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+                  >
+                    Fermer
+                  </button>
+                  <button
+                    onClick={saveNotes}
+                    disabled={savingNotes || deletingFb}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg disabled:opacity-50"
+                  >
+                    {savingNotes ? "Enregistrement..." : "Enregistrer notes"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

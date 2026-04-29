@@ -62,20 +62,56 @@ function getTelegramCreds(): { token: string; chatId: string } | null {
   return { token, chatId };
 }
 
-async function notifyTelegram(message: string): Promise<void> {
+const PUBLIC_BASE_URL = (
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  process.env.PUBLIC_BASE_URL ||
+  "https://cipia.fr"
+).replace(/\/$/, "");
+
+function toAbsoluteUrl(url: string | null): string | null {
+  if (!url) return null;
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${PUBLIC_BASE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
+async function notifyTelegram(
+  message: string,
+  photoUrl: string | null = null,
+): Promise<void> {
   const creds = getTelegramCreds();
   if (!creds) return;
   try {
+    if (photoUrl) {
+      // sendPhoto envoie l'image avec la legende. Caption max 1024 chars sur Telegram.
+      const caption = message.length > 1024 ? message.slice(0, 1021) + "..." : message;
+      const url = `https://api.telegram.org/bot${creds.token}/sendPhoto`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: creds.chatId,
+          photo: photoUrl,
+          caption,
+        }),
+        signal: AbortSignal.timeout(8000),
+      });
+      if (res.ok) return;
+      // Si sendPhoto echoue (URL invalide, fichier introuvable...), fallback sur sendMessage
+      const errBody = await res.text().catch(() => "");
+      console.error(
+        `Telegram sendPhoto failed (${res.status}), falling back to sendMessage: ${errBody}`,
+      );
+    }
+
     const url = `https://api.telegram.org/bot${creds.token}/sendMessage`;
     await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: creds.chatId,
-        text: message,
-        disable_web_page_preview: true,
+        text: photoUrl ? `${message}\n\nCapture : ${photoUrl}` : message,
+        disable_web_page_preview: false,
       }),
-      // 5s timeout via AbortSignal
       signal: AbortSignal.timeout(5000),
     });
   } catch (e) {
@@ -184,7 +220,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Notification Telegram (best effort)
+  // Notification Telegram (best effort) — envoie la capture en photo si dispo
   try {
     const truncated = text.length > 200 ? text.slice(0, 200) + "..." : text;
     const fullName = `${userRow.first_name || ""} ${userRow.last_name || ""}`.trim();
@@ -196,8 +232,9 @@ export async function POST(request: NextRequest) {
       `Type : ${category}` +
       ratingLine +
       `\n\n${truncated}\n\n` +
-      `Voir : https://cipia.fr/dashboard/admin#feedback`;
-    await notifyTelegram(message);
+      `Voir : ${PUBLIC_BASE_URL}/dashboard/admin#feedback`;
+    const photoUrl = toAbsoluteUrl(screenshotUrl);
+    await notifyTelegram(message, photoUrl);
   } catch (e) {
     console.error("Telegram block error (non bloquant):", e);
   }

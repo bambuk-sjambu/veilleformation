@@ -127,7 +127,7 @@ export default function VeillePage() {
     params.set("not_category", "ao");  // les AO ont leur propre page /dashboard/appels-offres
     if (filterImpact) params.set("impact", filterImpact);
     if (filterIndicator) params.set("indicator", filterIndicator);
-    params.set("limit", "500");
+    params.set("limit", "2000");
 
     fetch(`/api/articles?${params.toString()}`)
       .then((res) => res.json())

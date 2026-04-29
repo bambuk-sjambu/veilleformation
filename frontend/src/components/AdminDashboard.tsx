@@ -171,6 +171,12 @@ export default function AdminDashboard() {
   const [selectedFb, setSelectedFb] = useState<FeedbackItem | null>(null);
   const [editNotes, setEditNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
+  const [previewNl, setPreviewNl] = useState<{
+    id: number;
+    subject: string;
+    html: string | null;
+    loading: boolean;
+  } | null>(null);
 
   const fetchOverview = useCallback(async () => {
     setLoading(true);
@@ -261,6 +267,20 @@ export default function AdminDashboard() {
         )
       );
       setPanelError(e instanceof Error ? e.message : "Erreur toggle");
+    }
+  }
+
+  async function openNewsletterPreview(id: number, subject: string) {
+    setPreviewNl({ id, subject, html: null, loading: true });
+    try {
+      const res = await fetch(`/api/newsletters?id=${id}`);
+      const data = (await res.json()) as {
+        newsletter?: { html_content?: string | null };
+      };
+      const html = data?.newsletter?.html_content || null;
+      setPreviewNl({ id, subject, html, loading: false });
+    } catch {
+      setPreviewNl({ id, subject, html: null, loading: false });
     }
   }
 
@@ -631,8 +651,15 @@ export default function AdminDashboard() {
                   </tr>
                 ) : (
                   data.newsletters.map((n) => (
-                    <tr key={n.id}>
-                      <td className="px-6 py-3 text-sm font-medium text-gray-900">
+                    <tr
+                      key={n.id}
+                      onClick={() =>
+                        openNewsletterPreview(n.id, n.subject)
+                      }
+                      className="cursor-pointer hover:bg-blue-50 transition"
+                      title="Cliquer pour afficher la newsletter"
+                    >
+                      <td className="px-6 py-3 text-sm font-medium text-blue-700">
                         #{n.edition_number}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-700">
@@ -984,6 +1011,54 @@ export default function AdminDashboard() {
         </section>
 
         {/* Modal detail feedback */}
+        {previewNl && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            onClick={() => setPreviewNl(null)}
+          >
+            <div
+              className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+                <div className="min-w-0">
+                  <div className="text-xs text-gray-500 uppercase tracking-wide">
+                    Newsletter
+                  </div>
+                  <div className="font-semibold text-gray-900 truncate">
+                    {previewNl.subject}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setPreviewNl(null)}
+                  className="p-1 rounded hover:bg-gray-100 text-gray-500 ml-2"
+                  aria-label="Fermer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden bg-gray-100">
+                {previewNl.loading ? (
+                  <div className="flex items-center justify-center h-96 text-gray-500">
+                    Chargement...
+                  </div>
+                ) : previewNl.html ? (
+                  <iframe
+                    srcDoc={previewNl.html}
+                    sandbox="allow-same-origin"
+                    title={previewNl.subject}
+                    className="w-full h-[75vh] bg-white"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-96 text-gray-500">
+                    Aucun contenu HTML disponible.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {selectedFb && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"

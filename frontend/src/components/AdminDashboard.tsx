@@ -265,6 +265,33 @@ export default function AdminDashboard() {
   }
 
   async function changeFeedbackStatus(id: number, newStatus: string) {
+    // "supprime" n'est pas un vrai statut : declenche la suppression reelle.
+    if (newStatus === "supprime") {
+      const ok = window.confirm(
+        `Supprimer définitivement ce retour #${id} ?\n\nCette action est irréversible (capture incluse).`
+      );
+      if (!ok) {
+        // Force le re-render pour que le select reflete l'ancien statut
+        setFeedbacks((prev) => [...prev]);
+        return;
+      }
+      try {
+        const res = await fetch(`/api/admin/feedback?id=${id}`, {
+          method: "DELETE",
+        });
+        if (!res.ok) {
+          const j = (await res.json().catch(() => ({}))) as { error?: string };
+          throw new Error(j.error || `Erreur ${res.status}`);
+        }
+        setFeedbacks((prev) => prev.filter((f) => f.id !== id));
+        if (selectedFb?.id === id) setSelectedFb(null);
+      } catch (e) {
+        setFeedbackError(e instanceof Error ? e.message : "Erreur suppression");
+        fetchFeedbacks(statusFilter);
+      }
+      return;
+    }
+
     // Optimistic
     setFeedbacks((prev) =>
       prev.map((f) => (f.id === id ? { ...f, status: newStatus } : f))

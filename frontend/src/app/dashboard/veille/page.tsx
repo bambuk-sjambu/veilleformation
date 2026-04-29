@@ -119,6 +119,9 @@ export default function VeillePage() {
   const [filterIndicator, setFilterIndicator] = useState<string | null>(null);
   const [filterReadStatus, setFilterReadStatus] = useState<string | null>(null);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const PAGE_SIZE = 100;
 
   const fetchArticles = useCallback(() => {
     setLoading(true);
@@ -190,6 +193,24 @@ export default function VeillePage() {
     .filter((a) => !filterReadStatus || a.read_status === filterReadStatus);
 
   const favCount = articles.filter((a) => a.is_starred).length;
+
+  // Reset a la page 1 quand les filtres changent
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterImpact, filterIndicator, filterReadStatus, showFavoritesOnly]);
+
+  const totalPages = Math.max(1, Math.ceil(displayedArticles.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIdx = (safePage - 1) * PAGE_SIZE;
+  const paginatedArticles = displayedArticles.slice(
+    startIdx,
+    startIdx + PAGE_SIZE,
+  );
+  const showingFrom = displayedArticles.length === 0 ? 0 : startIdx + 1;
+  const showingTo = Math.min(
+    startIdx + PAGE_SIZE,
+    displayedArticles.length,
+  );
 
   return (
     <div>
@@ -331,17 +352,53 @@ export default function VeillePage() {
         </div>
       </div>
 
-      {/* Results count */}
-      <p className="text-sm text-gray-500 mb-4">
-        {displayedArticles.length} article
-        {displayedArticles.length !== 1 ? "s" : ""}{" "}
-        {showFavoritesOnly ? "en favoris" : ""}
-        {filterReadStatus ? ` — ${readStatusConfig[filterReadStatus]?.label}` : ""}
-        {filterIndicator
-          ? ` — ${indicatorConfig[filterIndicator]?.label || ""}`
-          : ""}
-        {filterImpact ? ` — impact ${filterImpact}` : ""}
-      </p>
+      {/* Results count + pagination header */}
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <p className="text-sm text-gray-500">
+          <span className="font-semibold text-gray-700">
+            {displayedArticles.length}
+          </span>{" "}
+          article{displayedArticles.length !== 1 ? "s" : ""}
+          {displayedArticles.length !== articles.length && articles.length > 0
+            ? ` sur ${articles.length}`
+            : ""}
+          {showFavoritesOnly ? " en favoris" : ""}
+          {filterReadStatus ? ` — ${readStatusConfig[filterReadStatus]?.label}` : ""}
+          {filterIndicator
+            ? ` — ${indicatorConfig[filterIndicator]?.label || ""}`
+            : ""}
+          {filterImpact ? ` — impact ${filterImpact}` : ""}
+          {displayedArticles.length > PAGE_SIZE && (
+            <span className="text-gray-400">
+              {" "}
+              · affichage {showingFrom}–{showingTo}
+            </span>
+          )}
+        </p>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safePage <= 1}
+              className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Précédent
+            </button>
+            <span className="px-3 py-1.5 text-xs text-gray-600">
+              Page {safePage} / {totalPages}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPage((p) => Math.min(totalPages, p + 1))
+              }
+              disabled={safePage >= totalPages}
+              className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Suivant
+            </button>
+          </div>
+        )}
+      </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -363,7 +420,7 @@ export default function VeillePage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {displayedArticles.map((article) => {
+          {paginatedArticles.map((article) => {
             const indicators = parseIndicators(article.qualiopi_indicators);
 
             return (
@@ -486,6 +543,29 @@ export default function VeillePage() {
               </div>
             );
           })}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 pt-6">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={safePage <= 1}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ← Précédent
+              </button>
+              <span className="px-4 py-2 text-sm text-gray-600">
+                Page {safePage} / {totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={safePage >= totalPages}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Suivant →
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

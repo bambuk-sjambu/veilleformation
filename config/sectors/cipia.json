@@ -1,0 +1,48 @@
+{
+  "id": "cipia",
+  "brand": {
+    "name": "Cipia",
+    "legalName": "Cipia",
+    "domain": "cipia.fr",
+    "tagline": "Veille réglementaire Qualiopi par IA",
+    "description": "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA selon les indicateurs Qualiopi 23-26. Export PDF prêt pour l'audit.",
+    "logoUrl": "/icon.svg",
+    "colorPrimary": "#1d4ed8",
+    "colorAccent": "#fbbf24"
+  },
+  "vocab": {
+    "audience": "organismes de formation Qualiopi",
+    "audienceShort": "OF",
+    "auditName": "audit Qualiopi",
+    "regulatorRefName": "référentiel Qualiopi"
+  },
+  "taxonomy": {
+    "indicators": [
+      {
+        "id": "23",
+        "short": "Légal",
+        "label": "Veille légale et réglementaire",
+        "description": "Textes législatifs et réglementaires impactant les organismes de formation"
+      },
+      {
+        "id": "24",
+        "short": "Compétences",
+        "label": "Veille compétences, métiers, emplois",
+        "description": "Évolutions des compétences, métiers et besoins en emploi"
+      },
+      {
+        "id": "25",
+        "short": "Pédagogie",
+        "label": "Veille innovations pédagogiques et technologiques",
+        "description": "Nouvelles méthodes pédagogiques, outils numériques, ingénierie de formation"
+      },
+      {
+        "id": "26",
+        "short": "Handicap",
+        "label": "Veille handicap et compensations",
+        "description": "Accessibilité, compensations et inclusion des personnes en situation de handicap"
+      }
+    ],
+    "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]
+  }
+}

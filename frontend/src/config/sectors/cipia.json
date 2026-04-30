@@ -23,25 +23,29 @@
         "id": "23",
         "short": "Légal",
         "label": "Veille légale et réglementaire",
-        "description": "Textes législatifs et réglementaires impactant les organismes de formation"
+        "description": "Textes législatifs et réglementaires impactant les organismes de formation",
+        "promptHint": "veille legale/reglementaire"
       },
       {
         "id": "24",
         "short": "Compétences",
         "label": "Veille compétences, métiers, emplois",
-        "description": "Évolutions des compétences, métiers et besoins en emploi"
+        "description": "Évolutions des compétences, métiers et besoins en emploi",
+        "promptHint": "competences/metiers/emplois"
       },
       {
         "id": "25",
         "short": "Pédagogie",
         "label": "Veille innovations pédagogiques et technologiques",
-        "description": "Nouvelles méthodes pédagogiques, outils numériques, ingénierie de formation"
+        "description": "Nouvelles méthodes pédagogiques, outils numériques, ingénierie de formation",
+        "promptHint": "innovations pedagogiques/technologiques"
       },
       {
         "id": "26",
         "short": "Handicap",
         "label": "Veille handicap et compensations",
-        "description": "Accessibilité, compensations et inclusion des personnes en situation de handicap"
+        "description": "Accessibilité, compensations et inclusion des personnes en situation de handicap",
+        "promptHint": "handicap/compensation"
       }
     ],
     "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]

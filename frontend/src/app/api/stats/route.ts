@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { getDb, dbExists } from "@/lib/db";
+import { sector } from "@/config";
+
+const initialByIndicator = (): Record<string, number> =>
+  Object.fromEntries(sector.taxonomy.indicators.map((i) => [i.id, 0]));
 
 function getNextTuesday(): string {
   const now = new Date();
@@ -24,7 +28,7 @@ export async function GET() {
         total_reglementaire: 0,
         total_metier: 0,
         by_impact: { fort: 0, moyen: 0, faible: 0 },
-        by_indicator: { "23": 0, "24": 0, "25": 0, "26": 0 },
+        by_indicator: initialByIndicator(),
         last_collected: null,
         last_newsletter: null,
         next_newsletter: getNextTuesday(),
@@ -50,7 +54,7 @@ export async function GET() {
         total_reglementaire: 0,
         total_metier: 0,
         by_impact: { fort: 0, moyen: 0, faible: 0 },
-        by_indicator: { "23": 0, "24": 0, "25": 0, "26": 0 },
+        by_indicator: initialByIndicator(),
         last_collected: null,
         last_newsletter: null,
         next_newsletter: getNextTuesday(),
@@ -105,13 +109,8 @@ export async function GET() {
     }
 
     // By indicator - qualiopi_indicators is stored as comma-separated string like "23,24"
-    const byIndicator: Record<string, number> = {
-      "23": 0,
-      "24": 0,
-      "25": 0,
-      "26": 0,
-    };
-    for (const ind of ["23", "24", "25", "26"]) {
+    const byIndicator: Record<string, number> = initialByIndicator();
+    for (const ind of sector.taxonomy.indicators.map((i) => i.id)) {
       const row = db
         .prepare(
           "SELECT COUNT(*) as cnt FROM articles WHERE status = 'done' AND qualiopi_indicators LIKE ?"

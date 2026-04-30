@@ -54,31 +54,28 @@ const readStatusConfig: Record<string, { label: string; icon: React.ElementType;
   a_exploiter: { label: "A exploiter", icon: Lightbulb, classes: "bg-purple-100 text-purple-700" },
 };
 
+// Couleurs Tailwind par indicator id (fallback grey si id inconnu).
+// Conserve en local pour eviter de polluer cipia.json avec des classes UI.
+const INDICATOR_COLORS: Record<string, string> = {
+  "23": "bg-blue-100 text-blue-800",
+  "24": "bg-green-100 text-green-800",
+  "25": "bg-purple-100 text-purple-800",
+  "26": "bg-teal-100 text-teal-800",
+};
+
 const indicatorConfig: Record<
   string,
   { label: string; short: string; classes: string }
-> = {
-  "23": {
-    label: "Veille légale et réglementaire",
-    short: "Légal",
-    classes: "bg-blue-100 text-blue-800",
-  },
-  "24": {
-    label: "Compétences, métiers, emplois",
-    short: "Métiers",
-    classes: "bg-green-100 text-green-800",
-  },
-  "25": {
-    label: "Innovations pédagogiques",
-    short: "Pédagogie",
-    classes: "bg-purple-100 text-purple-800",
-  },
-  "26": {
-    label: "Handicap et compensations",
-    short: "Handicap",
-    classes: "bg-teal-100 text-teal-800",
-  },
-};
+> = Object.fromEntries(
+  sector.taxonomy.indicators.map((ind) => [
+    ind.id,
+    {
+      label: ind.label,
+      short: ind.short,
+      classes: INDICATOR_COLORS[ind.id] || "bg-gray-100 text-gray-700",
+    },
+  ])
+);
 
 function parseIndicators(raw: string | null): string[] {
   if (!raw) return [];
@@ -296,22 +293,25 @@ export default function VeillePage() {
               >
                 Tous
               </button>
-              {(["23", "24", "25", "26"] as const).map((ind) => (
-                <button
-                  key={ind}
-                  onClick={() =>
-                    setFilterIndicator(filterIndicator === ind ? null : ind)
-                  }
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                    filterIndicator === ind
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                  title={indicatorConfig[ind]?.label}
-                >
-                  {indicatorConfig[ind]?.short || ind}
-                </button>
-              ))}
+              {sector.taxonomy.indicators.map((indicator) => {
+                const ind = indicator.id;
+                return (
+                  <button
+                    key={ind}
+                    onClick={() =>
+                      setFilterIndicator(filterIndicator === ind ? null : ind)
+                    }
+                    className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                      filterIndicator === ind
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                    title={indicatorConfig[ind]?.label}
+                  >
+                    {indicatorConfig[ind]?.short || ind}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div>

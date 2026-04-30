@@ -24,6 +24,7 @@ class TaxonomyIndicator:
     short: str
     label: str
     description: str
+    promptHint: str
 
 
 @dataclass(frozen=True)

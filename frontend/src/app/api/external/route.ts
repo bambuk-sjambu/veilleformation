@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import Anthropic from "@anthropic-ai/sdk";
+import { sector } from "@/config";
 
 // GET /api/external - List user's external content
 export async function GET(request: NextRequest) {
@@ -142,22 +143,26 @@ export async function POST(request: NextRequest) {
     if (content && process.env.ANTHROPIC_API_KEY) {
       try {
         const anthropic = new Anthropic();
+        const indicatorList = sector.taxonomy.indicators
+          .map((i) => `${i.id}=${i.promptHint}`)
+          .join(", ");
+        const indicatorIds = sector.taxonomy.indicators.map((i) => i.id).join(",");
         const aiResponse = await anthropic.messages.create({
           model: "claude-haiku-4-5-20250315",
           max_tokens: 1024,
           messages: [{
             role: "user",
-            content: `Analyse ce document pour un organisme de formation certifie Qualiopi.
+            content: `Analyse ce document pour un ${sector.vocab.audience.replace(/s$/, "")} certifie ${sector.vocab.regulatorName}.
             Fournis:
             1. Un resume en 3-5 phrases
-            2. Les indicateurs Qualiopi concernes (23=legal, 24=competences, 25=pedagogie, 26=handicap)
+            2. Les indicateurs ${sector.vocab.regulatorName} concernes (${indicatorList})
             3. Le niveau d'impact (fort/moyen/faible)
             4. Un score de pertinence de 1 a 10
 
             Document:
             ${content.substring(0, 10000)}
 
-            Reponds en JSON: {"summary": "...", "indicators": [23,24], "impact": "moyen", "score": 7}`
+            Reponds en JSON: {"summary": "...", "indicators": [${indicatorIds.split(",").slice(0, 2).join(",")}], "impact": "moyen", "score": 7}`
           }]
         });
 

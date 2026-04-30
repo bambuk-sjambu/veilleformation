@@ -395,8 +395,12 @@ const getSourceLabel = (source: string) => {
 };
 
 export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: AuditPDFProps) {
-  // Group articles by indicator
-  const articlesByIndicator: Record<string, Article[]> = { "23": [], "24": [], "25": [], "26": [] };
+  // Group articles by indicator (genere depuis sector.taxonomy.indicators)
+  const articlesByIndicator: Record<string, Article[]> = Object.fromEntries(
+    sector.taxonomy.indicators.map((i) => [i.id, [] as Article[]])
+  );
+  // ID par defaut pour les articles sans indicateur explicite (1er de la liste).
+  const defaultIndicatorId = sector.taxonomy.indicators[0]?.id ?? "";
   articles.forEach((article) => {
     if (article.qualiopi_indicators) {
       let indicators: string[] = [];
@@ -410,8 +414,8 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
       indicators.forEach((ind) => {
         if (articlesByIndicator[ind]) articlesByIndicator[ind].push(article);
       });
-    } else {
-      articlesByIndicator["23"].push(article);
+    } else if (defaultIndicatorId && articlesByIndicator[defaultIndicatorId]) {
+      articlesByIndicator[defaultIndicatorId].push(article);
     }
   });
 
@@ -442,12 +446,9 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
     }
   });
 
-  const indicatorLabels: Record<string, string> = {
-    "23": "Indicateur 23 - Veille légale et réglementaire",
-    "24": "Indicateur 24 - Métiers, compétences et emplois",
-    "25": "Indicateur 25 - Innovations pédagogiques et technologiques",
-    "26": "Indicateur 26 - Handicap et compensations",
-  };
+  const indicatorLabels: Record<string, string> = Object.fromEntries(
+    sector.taxonomy.indicators.map((i) => [i.id, `Indicateur ${i.id} - ${i.label}`])
+  );
 
   const totalArticles = articles.length;
   const maxImpact = Math.max(impactCounts.fort, impactCounts.moyen, impactCounts.faible, 1);
@@ -458,7 +459,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
       <Page size="A4" style={styles.coverPage}>
         <Text style={styles.coverLogo}>{sector.brand.name}</Text>
         <Text style={styles.coverTitle}>Rapport de Veille Réglementaire</Text>
-        <Text style={styles.coverSubtitle}>Preuve de conformité {sector.vocab.regulatorName} - Indicateurs 23 à 26</Text>
+        <Text style={styles.coverSubtitle}>Preuve de conformité {sector.vocab.regulatorName} - Indicateurs {sector.taxonomy.indicators[0]?.id} à {sector.taxonomy.indicators[sector.taxonomy.indicators.length - 1]?.id}</Text>
 
         <View style={styles.coverInfo}>
           <View style={styles.coverInfoRow}>
@@ -532,10 +533,12 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
               <Text style={styles.summaryValue}>{actionsTodo.length}</Text>
               <Text style={styles.summaryLabel}>À faire</Text>
             </View>
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryValue}>{articlesByIndicator["23"].length}</Text>
-              <Text style={styles.summaryLabel}>Ind. 23</Text>
-            </View>
+            {sector.taxonomy.indicators[0] && (
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryValue}>{articlesByIndicator[sector.taxonomy.indicators[0].id]?.length ?? 0}</Text>
+                <Text style={styles.summaryLabel}>Ind. {sector.taxonomy.indicators[0].id}</Text>
+              </View>
+            )}
           </View>
         </View>
 

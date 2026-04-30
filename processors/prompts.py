@@ -1,13 +1,34 @@
 """System and user prompts for the Claude AI processing pipeline.
 
 Aligned with Cipia Cahier des Charges v1.2.
+
+Les listes d'indicateurs et leurs descriptions courtes sont generees
+dynamiquement depuis `sector.taxonomy.indicators` (champ `promptHint`).
+Le nom du champ JSON `qualiopi_indicators` reste fige pour preserver le
+pipeline IA et la compatibilite DB (renommage en A.4+).
 """
 
 from typing import Optional
 
+from config import load_sector
+
+_sector = load_sector()
+_indicators = _sector.taxonomy.indicators
+
+# Liste des IDs autorises (ex: "[23, 24, 25, 26]") pour le bullet du prompt.
+_INDICATOR_IDS_BLOCK = "[" + ", ".join(ind.id for ind in _indicators) + "]"
+
+# Bloc des descriptions courtes injecte sous le bullet `qualiopi_indicators`.
+# Format strict (espaces et casse) :
+#   "  - Indicateur {id} = {promptHint}"
+_INDICATOR_DESCRIPTIONS_BLOCK = "\n".join(
+    f"  - Indicateur {ind.id} = {ind.promptHint}" for ind in _indicators
+)
+
+
 # System prompts for different article types
 
-SYSTEM_PROMPT_REGLEMENTAIRE = """Tu es un expert en reglementation de la formation professionnelle en France et en certification Qualiopi.
+SYSTEM_PROMPT_REGLEMENTAIRE = f"""Tu es un expert en reglementation de la formation professionnelle en France et en certification Qualiopi.
 
 Analyse l'article suivant et produis une reponse JSON stricte avec les champs suivants :
 
@@ -15,11 +36,8 @@ Analyse l'article suivant et produis une reponse JSON stricte avec les champs su
 - summary: Resume en francais de 3 a 5 phrases. Explique clairement ce que change ce texte pour un organisme de formation certifie Qualiopi.
 - impact_level: "fort", "moyen" ou "faible" selon l'impact sur les OF certifies Qualiopi.
 - impact_justification: Une phrase d'impact concret du type "Ce texte vous concerne si [condition]. Il change [quoi] a partir du [date]."
-- qualiopi_indicators: Liste des indicateurs Qualiopi concernes parmi [23, 24, 25, 26].
-  - Indicateur 23 = veille legale/reglementaire
-  - Indicateur 24 = competences/metiers/emplois
-  - Indicateur 25 = innovations pedagogiques/technologiques
-  - Indicateur 26 = handicap/compensation
+- qualiopi_indicators: Liste des indicateurs Qualiopi concernes parmi {_INDICATOR_IDS_BLOCK}.
+{_INDICATOR_DESCRIPTIONS_BLOCK}
 - qualiopi_justification: Une phrase expliquant le lien avec les indicateurs.
 - relevance_score: Note de pertinence de 1 a 10 (10 = tres pertinent pour tous les OF).
 - category: Categorie parmi ["reglementaire", "ao", "metier", "handicap", "financement"].
@@ -34,7 +52,7 @@ Regles de classification impact :
 
 Format de sortie: JSON valide uniquement, sans markdown ni texte autour."""
 
-SYSTEM_PROMPT_AO = """Tu es un expert en marches publics de formation professionnelle en France.
+SYSTEM_PROMPT_AO = f"""Tu es un expert en marches publics de formation professionnelle en France.
 
 Analyse l'appel d'offres suivant et produis une reponse JSON stricte avec les champs suivants :
 
@@ -42,7 +60,7 @@ Analyse l'appel d'offres suivant et produis une reponse JSON stricte avec les ch
 - summary: Resume en francais de 3 a 5 phrases. Presente l'opportunite de maniere attractive pour un organisme de formation.
 - impact_level: "fort", "moyen" ou "faible" selon l'attractivite de l'AO.
 - impact_justification: Phrase d'impact type "AO interessant si vous etes specialise en [domaine]. Budget de X EUR, deadline le [date]."
-- qualiopi_indicators: Liste des indicateurs Qualiopi concernes parmi [23, 24, 25, 26].
+- qualiopi_indicators: Liste des indicateurs Qualiopi concernes parmi {_INDICATOR_IDS_BLOCK}.
 - qualiopi_justification: Une phrase expliquant le lien avec les indicateurs.
 - relevance_score: Note de pertinence generale de 1 a 10.
 - category: Categorie parmi ["ao", "financement", "methode", "autre"]. Toujours "ao" pour les appels d'offres.

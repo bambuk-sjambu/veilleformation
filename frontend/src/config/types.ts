@@ -13,6 +13,9 @@ export interface TaxonomyIndicator {
   label: string;
   /** Description longue pour les prompts IA + tooltips. */
   description: string;
+  /** Hint compact injecté dans le prompt IA (ex: "veille legale/reglementaire").
+   *  Permet de contrôler finement le prompt sans toucher au code. */
+  promptHint: string;
 }
 
 export interface BrandConfig {

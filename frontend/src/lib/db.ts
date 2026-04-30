@@ -233,6 +233,11 @@ export interface DbArticle {
   impact_justification: string | null;
   qualiopi_indicators: string | null;
   qualiopi_justification: string | null;
+  // Refactor multi-secteur (A.4) : nouvelles colonnes generiques. Le frontend
+  // les lit preferentiellement (cf. helpers dans @/lib/extra-meta).
+  taxonomy_indicators: string | null;
+  taxonomy_justification: string | null;
+  extra_meta: string | null;
   relevance_score: number | null;
   typologie_ao: string | null;
   acheteur: string | null;

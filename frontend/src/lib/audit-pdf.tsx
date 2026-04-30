@@ -6,6 +6,7 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import { sector } from "@/config";
+import { getIndicators } from "@/lib/extra-meta";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -336,6 +337,8 @@ interface Article {
   summary: string | null;
   impact_level: string | null;
   qualiopi_indicators: string | null;
+  // Refactor multi-secteur A.4.c : nouvelle colonne lue en priorite.
+  taxonomy_indicators?: string | null;
   collected_at: string;
 }
 
@@ -402,14 +405,17 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
   // ID par defaut pour les articles sans indicateur explicite (1er de la liste).
   const defaultIndicatorId = sector.taxonomy.indicators[0]?.id ?? "";
   articles.forEach((article) => {
-    if (article.qualiopi_indicators) {
+    // Refactor multi-secteur A.4.c : prefere taxonomy_indicators (nouvelle
+    // colonne), fallback sur qualiopi_indicators (ancienne).
+    const rawIndicators = getIndicators(article);
+    if (rawIndicators) {
       let indicators: string[] = [];
       try {
         // Try JSON parse first (format: "[23, 24]")
-        indicators = JSON.parse(article.qualiopi_indicators).map((i: number) => String(i));
+        indicators = JSON.parse(rawIndicators).map((i: number) => String(i));
       } catch {
         // Fallback to comma split (format: "23, 24")
-        indicators = article.qualiopi_indicators.split(",").map((i) => i.trim());
+        indicators = rawIndicators.split(",").map((i) => i.trim());
       }
       indicators.forEach((ind) => {
         if (articlesByIndicator[ind]) articlesByIndicator[ind].push(article);

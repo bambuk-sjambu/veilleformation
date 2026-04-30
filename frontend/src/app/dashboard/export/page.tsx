@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { sector } from "@/config";
+import { getIndicators } from "@/lib/extra-meta";
 
 interface Profile {
   company_name: string;
@@ -57,9 +58,12 @@ export default function ExportPage() {
       const actions = actionsData.actions || [];
 
       const byIndicator: Record<string, number> = { "23": 0, "24": 0, "25": 0, "26": 0 };
-      articles.forEach((a: { qualiopi_indicators: string | null }) => {
-        if (a.qualiopi_indicators) {
-          a.qualiopi_indicators.split(",").forEach((ind: string) => {
+      // Refactor multi-secteur A.4.c : prefere taxonomy_indicators (nouvelle
+      // colonne), fallback sur qualiopi_indicators (ancienne).
+      articles.forEach((a: { taxonomy_indicators?: string | null; qualiopi_indicators?: string | null }) => {
+        const raw = getIndicators(a);
+        if (raw) {
+          raw.split(",").forEach((ind: string) => {
             const i = ind.trim();
             if (byIndicator[i] !== undefined) {
               byIndicator[i]++;

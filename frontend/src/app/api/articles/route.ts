@@ -56,8 +56,13 @@ export async function GET(request: NextRequest) {
     }
 
     if (indicator) {
-      conditions.push("qualiopi_indicators LIKE ?");
-      values.push(`%${indicator}%`);
+      // Refactor multi-secteur A.4.c : prefere taxonomy_indicators (nouvelle
+      // colonne), fallback sur qualiopi_indicators (ancienne, toujours peuplee
+      // pour Cipia tant que A.4.d n'a pas drop).
+      conditions.push(
+        "(taxonomy_indicators LIKE ? OR (taxonomy_indicators IS NULL AND qualiopi_indicators LIKE ?))"
+      );
+      values.push(`%${indicator}%`, `%${indicator}%`);
     }
 
     const where = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";

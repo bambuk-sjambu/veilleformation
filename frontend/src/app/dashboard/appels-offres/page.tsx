@@ -12,6 +12,7 @@ import {
   Calendar,
   Euro,
 } from "lucide-react";
+import { getMetaField } from "@/lib/extra-meta";
 
 interface AoArticle {
   id: number;
@@ -19,10 +20,15 @@ interface AoArticle {
   summary: string | null;
   url: string | null;
   published_date: string | null;
+  // Anciennes colonnes dediees (toujours peuplees pour Cipia, possiblement
+  // null pour les futurs secteurs).
   acheteur: string | null;
   region: string | null;
   montant_estime: number | null;
   date_limite: string | null;
+  // Refactor multi-secteur A.4.c : nouveau champ JSON groupant les meta AO.
+  // Lecture preferentielle via getMetaField() depuis @/lib/extra-meta.
+  extra_meta: string | null;
   relevance_score: number | null;
   source: string;
 }
@@ -178,8 +184,9 @@ export default function AppelsOffresPage() {
   const filteredArticles = preferredRegions.length === 0
     ? articles
     : articles.filter((ao) => {
-        if (!ao.region) return false;
-        const aoRegion = normalize(ao.region);
+        const region = getMetaField(ao, "region");
+        if (!region) return false;
+        const aoRegion = normalize(region);
         return preferredRegions.some((pref) => {
           const target = SLUG_TO_REGION[pref];
           return target && aoRegion === normalize(target);
@@ -255,7 +262,16 @@ export default function AppelsOffresPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredArticles.map((ao) => (
+          {filteredArticles.map((ao) => {
+            // Refactor multi-secteur A.4.c : lecture preferentielle de
+            // extra_meta (nouvelle colonne JSON) avec fallback sur les
+            // anciennes colonnes dediees.
+            const acheteur = getMetaField(ao, "acheteur");
+            const region = getMetaField(ao, "region");
+            const montant = getMetaField(ao, "montant_estime");
+            const dateLimite = getMetaField(ao, "date_limite");
+
+            return (
             <div
               key={ao.id}
               className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow"
@@ -266,13 +282,13 @@ export default function AppelsOffresPage() {
                     <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
                       AO {ao.source?.toUpperCase()}
                     </span>
-                    {(ao.region || ao.acheteur) && (
+                    {(region || acheteur) && (
                       <span className="text-xs font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700 flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
-                        {ao.region || ao.acheteur}
+                        {region || acheteur}
                       </span>
                     )}
-                    <DeadlineBadge dateStr={ao.date_limite} />
+                    <DeadlineBadge dateStr={dateLimite} />
                   </div>
 
                   <h3 className="font-semibold text-gray-900 mb-1">
@@ -286,28 +302,28 @@ export default function AppelsOffresPage() {
                   )}
 
                   <div className="flex items-center flex-wrap gap-4 text-sm">
-                    {ao.acheteur && (
+                    {acheteur && (
                       <span className="flex items-center gap-1 text-gray-500">
                         <Building2 className="w-3.5 h-3.5" />
-                        {ao.acheteur}
+                        {acheteur}
                       </span>
                     )}
-                    {ao.region && (
+                    {region && (
                       <span className="flex items-center gap-1 text-gray-500">
                         <MapPin className="w-3.5 h-3.5" />
-                        {ao.region}
+                        {region}
                       </span>
                     )}
-                    {ao.montant_estime !== null && ao.montant_estime > 0 && (
+                    {montant !== null && montant > 0 && (
                       <span className="flex items-center gap-1 text-gray-500">
                         <Euro className="w-3.5 h-3.5" />
-                        {formatMontant(ao.montant_estime)}
+                        {formatMontant(montant)}
                       </span>
                     )}
-                    {ao.date_limite ? (
+                    {dateLimite ? (
                       <span className="flex items-center gap-1 text-gray-500">
                         <Calendar className="w-3.5 h-3.5" />
-                        Limite : {formatDateFr(ao.date_limite)}
+                        Limite : {formatDateFr(dateLimite)}
                       </span>
                     ) : ao.published_date ? (
                       <span className="flex items-center gap-1 text-gray-500">
@@ -332,7 +348,8 @@ export default function AppelsOffresPage() {
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

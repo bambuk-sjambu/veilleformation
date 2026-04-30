@@ -15,6 +15,7 @@ import {
   Info,
 } from "lucide-react";
 import { sector } from "@/config";
+import { getIndicators } from "@/lib/extra-meta";
 
 interface Article {
   id: number;
@@ -24,6 +25,8 @@ interface Article {
   published_date: string | null;
   impact_level: string | null;
   qualiopi_indicators: string | null;
+  // Refactor multi-secteur A.4.c : nouvelle colonne lue en priorite.
+  taxonomy_indicators: string | null;
   relevance_score: number | null;
   source: string;
   category: string | null;
@@ -422,7 +425,7 @@ export default function VeillePage() {
       ) : (
         <div className="space-y-4">
           {paginatedArticles.map((article) => {
-            const indicators = parseIndicators(article.qualiopi_indicators);
+            const indicators = parseIndicators(getIndicators(article));
 
             return (
               <div

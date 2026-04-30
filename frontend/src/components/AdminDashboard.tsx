@@ -911,7 +911,7 @@ export default function AdminDashboard() {
                       Date
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                      OF
+                      {sector.vocab.audienceShort}
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                       Page

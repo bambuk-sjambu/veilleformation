@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { sector } from "@/config";
 
 interface UserProfile {
   id: number;
@@ -298,7 +299,7 @@ export default function SettingsPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               <p className="mt-1 text-sm text-gray-500">
-                Cette description apparaîtra dans vos rapports d'audit Qualiopi.
+                Cette description apparaîtra dans vos rapports d&apos;{sector.vocab.auditName}.
               </p>
             </div>
           </div>

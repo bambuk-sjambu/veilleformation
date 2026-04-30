@@ -14,6 +14,7 @@ import {
   Loader2,
   DatabaseZap,
 } from "lucide-react";
+import { sector } from "@/config";
 
 interface Stats {
   total_articles: number;
@@ -135,7 +136,7 @@ export default function DashboardStats({ firstName }: { firstName: string }) {
           Bienvenue, {firstName} !
         </h1>
         <p className="text-gray-600 mt-1">
-          Votre tableau de bord de veille Qualiopi
+          Votre tableau de bord de veille {sector.vocab.regulatorName}
         </p>
       </div>
 

@@ -14,6 +14,7 @@ import {
   Lightbulb,
   Info,
 } from "lucide-react";
+import { sector } from "@/config";
 
 interface Article {
   id: number;
@@ -104,7 +105,7 @@ function RelevanceScore({ score }: { score: number | null }) {
   return (
     <span
       className={`text-xs font-medium px-2 py-0.5 rounded ${color}`}
-      title="Pertinence pour les organismes de formation (1=faible, 10=tres pertinent)"
+      title={`Pertinence pour les ${sector.vocab.audience} (1=faible, 10=tres pertinent)`}
     >
       Pertinence {score}/10
     </span>

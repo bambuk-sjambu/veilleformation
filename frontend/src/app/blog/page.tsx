@@ -6,14 +6,14 @@ import { sector } from "@/config";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Blog ${sector.brand.name} — Veille Qualiopi | Guides et Conseils Experts`,
-  description: "Guides pratiques, conseils d'experts et actualités sur la certification Qualiopi, la veille réglementaire et les appels d'offres formation professionnelle.",
+  title: `Blog ${sector.brand.name} — Veille ${sector.vocab.regulatorName} | Guides et Conseils Experts`,
+  description: `Guides pratiques, conseils d'experts et actualités sur la certification ${sector.vocab.regulatorName}, la veille réglementaire et les appels d'offres formation professionnelle.`,
   alternates: {
     canonical: `https://${sector.brand.domain}/blog/`,
   },
   openGraph: {
-    title: `Blog ${sector.brand.name} — Veille Qualiopi | Guides et Conseils Experts`,
-    description: "Guides pratiques, conseils d'experts et actualités sur la certification Qualiopi, la veille réglementaire et les appels d'offres formation professionnelle.",
+    title: `Blog ${sector.brand.name} — Veille ${sector.vocab.regulatorName} | Guides et Conseils Experts`,
+    description: `Guides pratiques, conseils d'experts et actualités sur la certification ${sector.vocab.regulatorName}, la veille réglementaire et les appels d'offres formation professionnelle.`,
     url: `https://${sector.brand.domain}/blog/`,
     type: "website",
     images: [{ url: `https://${sector.brand.domain}/og-blog.jpg`, width: 1200, height: 630 }],
@@ -162,7 +162,7 @@ export default async function BlogPage() {
             "@context": "https://schema.org",
             "@type": "Blog",
             name: `Blog ${sector.brand.name}`,
-            description: "Guides et conseils pour les organismes de formation certifiés Qualiopi",
+            description: `Guides et conseils pour les ${sector.vocab.audience} certifiés ${sector.vocab.regulatorName}`,
             url: `https://${sector.brand.domain}/blog/`,
             publisher: {
               "@type": "Organization",
@@ -177,10 +177,10 @@ export default async function BlogPage() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">
-            Blog {sector.brand.name} — Veille Qualiopi
+            Blog {sector.brand.name} — Veille {sector.vocab.regulatorName}
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            Guides pratiques, conseils d&apos;experts et actualités pour les 45 000 organismes de formation certifiés Qualiopi
+            Guides pratiques, conseils d&apos;experts et actualités pour les 45 000 {sector.vocab.audience} certifiés {sector.vocab.regulatorName}
           </p>
         </div>
       </div>

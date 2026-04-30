@@ -45,8 +45,8 @@ const AUTHORS: Record<string, Author> = {
   "sophie-marchand": {
     slug: "sophie-marchand",
     name: "Sophie Marchand",
-    title: "Consultante Qualiopi & Formation Professionnelle",
-    bio: "11 ans d'expérience dans le conseil aux organismes de formation. Sophie a accompagné plus de 80 OF dans l'obtention de leur certification Qualiopi et la mise en conformité réglementaire. Ancienne responsable formation en entreprise, elle intervient régulièrement comme experte auprès d'OPCO et de France Compétences.",
+    title: `Consultante ${sector.vocab.regulatorName} & Formation Professionnelle`,
+    bio: `11 ans d'expérience dans le conseil aux ${sector.vocab.audience}. Sophie a accompagné plus de 80 ${sector.vocab.audienceShort} dans l'obtention de leur certification ${sector.vocab.regulatorName} et la mise en conformité réglementaire. Ancienne responsable formation en entreprise, elle intervient régulièrement comme experte auprès d'OPCO et de France Compétences.`,
     linkedin: "https://www.linkedin.com/",
     initials: "SM",
     color: "bg-blue-600",
@@ -55,7 +55,7 @@ const AUTHORS: Record<string, Author> = {
     slug: "marc-dubois",
     name: "Marc Dubois",
     title: "Expert Innovation Pédagogique & Digital Learning",
-    bio: "Formateur certifié e-learning depuis 2015 et spécialiste des outils digitaux pour organismes de formation. Marc accompagne les OF dans la transformation pédagogique liée aux indicateurs 25 et 26 du référentiel Qualiopi. Contributeur actif au FFFOD et observateur des tendances EdTech.",
+    bio: `Formateur certifié e-learning depuis 2015 et spécialiste des outils digitaux pour ${sector.vocab.audience}. Marc accompagne les ${sector.vocab.audienceShort} dans la transformation pédagogique liée aux indicateurs 25 et 26 du ${sector.vocab.regulatorRefName}. Contributeur actif au FFFOD et observateur des tendances EdTech.`,
     linkedin: "https://www.linkedin.com/",
     initials: "MD",
     color: "bg-teal-600",
@@ -283,7 +283,7 @@ export default async function BlogArticlePage({
       article.cluster,
       article.category !== article.cluster ? article.category : null,
       "formation professionnelle",
-      "Qualiopi",
+      sector.vocab.regulatorName,
       "organisme de formation",
     ].filter(Boolean).join(", "),
   };
@@ -533,7 +533,7 @@ export default async function BlogArticlePage({
 
             {/* CTA box */}
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 my-8 text-white">
-              <h3 className="text-lg font-bold mb-2">Automatisez votre veille Qualiopi</h3>
+              <h3 className="text-lg font-bold mb-2">Automatisez votre veille {sector.vocab.regulatorName}</h3>
               <p className="text-blue-100 text-sm mb-4">
                 Recevez chaque semaine les textes réglementaires résumés par IA, classifiés par
                 indicateur. Preuves d&apos;audit incluses.

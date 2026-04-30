@@ -52,7 +52,7 @@ export default function ConfidentialitePage() {
               <p className="mb-2">Les données traitées sont les suivantes :</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Inscription compte :</strong> email, prénom, nom, mot de passe (stocké chiffré via bcrypt)</li>
-                <li><strong>Profil organisme :</strong> nom de l&apos;entreprise, SIRET, NDE, adresse, responsable veille (facultatif, utilisé pour les exports PDF audit Qualiopi)</li>
+                <li><strong>Profil organisme :</strong> nom de l&apos;entreprise, SIRET, NDE, adresse, responsable veille (facultatif, utilisé pour les exports PDF {sector.vocab.auditName})</li>
                 <li><strong>Préférences :</strong> régions et indicateurs Qualiopi suivis</li>
                 <li><strong>Statut de lecture des articles :</strong> articles marqués comme lus, intéressants ou à exploiter</li>
                 <li><strong>Données transactionnelles :</strong> plan souscrit, historique de facturation (gérés via Stripe)</li>
@@ -67,7 +67,7 @@ export default function ConfidentialitePage() {
               <ul className="list-disc pl-5 space-y-1">
                 <li>Fourniture du service de veille réglementaire (collecte et classification IA d&apos;articles)</li>
                 <li>Envoi de la newsletter hebdomadaire</li>
-                <li>Génération du rapport d&apos;audit Qualiopi en PDF</li>
+                <li>Génération du rapport d&apos;{sector.vocab.auditName} en PDF</li>
                 <li>Gestion des abonnements payants et facturation</li>
                 <li>Support client et réponse aux demandes</li>
                 <li>Sécurité du service (détection de fraude, lutte contre les abus)</li>

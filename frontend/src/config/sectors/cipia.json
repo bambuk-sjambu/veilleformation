@@ -13,6 +13,7 @@
   "vocab": {
     "audience": "organismes de formation Qualiopi",
     "audienceShort": "OF",
+    "regulatorName": "Qualiopi",
     "auditName": "audit Qualiopi",
     "regulatorRefName": "référentiel Qualiopi"
   },

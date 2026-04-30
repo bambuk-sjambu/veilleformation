@@ -104,7 +104,7 @@ export default function PolitiqueDonneesPage() {
                       <td className="py-2 align-top">Identité, coordonnées facturation, historique Stripe</td>
                     </tr>
                     <tr className="border-b border-gray-100">
-                      <td className="py-2 align-top">Export audit Qualiopi</td>
+                      <td className="py-2 align-top">Export {sector.vocab.auditName}</td>
                       <td className="py-2 align-top">Exécution du contrat</td>
                       <td className="py-2 align-top">Profil organisme (SIRET, NDE, responsable)</td>
                     </tr>

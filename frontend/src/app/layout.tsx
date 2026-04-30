@@ -11,9 +11,8 @@ const inter = Inter({
 const siteUrl = `https://${sector.brand.domain}`;
 const titleDefault = `${sector.brand.name} · ${sector.brand.tagline}`;
 // Twitter description : variante plus orientee audience (vocab specifique au secteur).
-// Refactore en A.2 quand vocab.audience sera utilise ici.
 const twitterDescription =
-  "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA pour organismes de formation Qualiopi.";
+  `Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA pour ${sector.vocab.audience}.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -41,8 +40,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        // Alt avec vocab Qualiopi : refactore en A.2 quand vocab.* sera utilise ici.
-        alt: `${sector.brand.name} — veille Qualiopi automatisée par IA`,
+        alt: `${sector.brand.name} — veille ${sector.vocab.regulatorName} automatisée par IA`,
       },
     ],
   },

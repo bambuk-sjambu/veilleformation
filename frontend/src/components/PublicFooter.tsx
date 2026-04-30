@@ -15,7 +15,7 @@ export default function PublicFooter() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <BarChart3 className="w-4 h-4" />
-            <span>45 000 OF certifiés Qualiopi en France</span>
+            <span>45 000 {sector.vocab.audienceShort} certifiés {sector.vocab.regulatorName} en France</span>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">

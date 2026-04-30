@@ -458,7 +458,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
       <Page size="A4" style={styles.coverPage}>
         <Text style={styles.coverLogo}>{sector.brand.name}</Text>
         <Text style={styles.coverTitle}>Rapport de Veille Réglementaire</Text>
-        <Text style={styles.coverSubtitle}>Preuve de conformité Qualiopi - Indicateurs 23 à 26</Text>
+        <Text style={styles.coverSubtitle}>Preuve de conformité {sector.vocab.regulatorName} - Indicateurs 23 à 26</Text>
 
         <View style={styles.coverInfo}>
           <View style={styles.coverInfoRow}>
@@ -506,7 +506,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             {profile?.city && <Text style={styles.companyInfo}>{profile.city}</Text>}
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.reportTitle}>Rapport de Veille Qualiopi</Text>
+            <Text style={styles.reportTitle}>Rapport de Veille {sector.vocab.regulatorName}</Text>
             <Text style={styles.reportDate}>Période : {formatDate(dateStart)} - {formatDate(dateEnd)}</Text>
             <Text style={styles.reportDate}>Généré le : {formatDate(new Date().toISOString())}</Text>
           </View>
@@ -592,7 +592,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par {sector.brand.name} - Certification Qualiopi</Text>
+          <Text>Rapport généré par {sector.brand.name} - Certification {sector.vocab.regulatorName}</Text>
           <Text>Page 2</Text>
         </View>
       </Page>

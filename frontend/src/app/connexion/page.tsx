@@ -68,7 +68,7 @@ function ConnexionForm() {
             Connexion à votre compte
           </h1>
           <p className="text-gray-600 mt-1">
-            Accédez à votre veille Qualiopi
+            Accédez à votre veille {sector.vocab.regulatorName}
           </p>
         </div>
 

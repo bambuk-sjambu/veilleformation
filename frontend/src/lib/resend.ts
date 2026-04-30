@@ -78,7 +78,7 @@ export function teamInvitationEmail(params: {
   </p>
   <hr style="margin:32px 0;border:none;border-top:1px solid #e5e7eb;">
   <p style="font-size:12px;color:#9ca3af;text-align:center;">
-    ${brandName} — Veille Qualiopi automatisée par IA<br>
+    ${brandName} — Veille ${sector.vocab.regulatorName} automatisée par IA<br>
     <a href="${SITE_URL}" style="color:#6b7280;">${brandDomain}</a>
   </p>
 </body></html>`;
@@ -100,7 +100,7 @@ export function subscribeConfirmationEmail(params: {
   const greeting = params.firstName ? `Bonjour ${params.firstName}` : "Bonjour";
   const brandName = sector.brand.name;
   const brandDomain = sector.brand.domain;
-  const subject = `Bienvenue sur ${brandName} — votre veille Qualiopi commence ce mardi`;
+  const subject = `Bienvenue sur ${brandName} — votre veille ${sector.vocab.regulatorName} commence ce mardi`;
 
   const html = `<!DOCTYPE html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;color:#1a1a1a;">
@@ -117,7 +117,7 @@ export function subscribeConfirmationEmail(params: {
     Chaque mardi à 8h, vous recevrez :
   </p>
   <ul style="font-size:16px;line-height:1.8;color:#4b5563;">
-    <li>Les textes réglementaires qui impactent votre certification Qualiopi</li>
+    <li>Les textes réglementaires qui impactent votre certification ${sector.vocab.regulatorName}</li>
     <li>Les appels d'offres formation pertinents de la semaine</li>
     <li>Les veilles métier et handicap (indicateurs 23-26)</li>
   </ul>
@@ -126,7 +126,7 @@ export function subscribeConfirmationEmail(params: {
   </p>
   <hr style="margin:32px 0;border:none;border-top:1px solid #e5e7eb;">
   <p style="font-size:12px;color:#9ca3af;text-align:center;">
-    ${brandName} — Veille Qualiopi automatisée par IA<br>
+    ${brandName} — Veille ${sector.vocab.regulatorName} automatisée par IA<br>
     <a href="${SITE_URL}" style="color:#6b7280;">${brandDomain}</a>
   </p>
 </body></html>`;
@@ -136,7 +136,7 @@ export function subscribeConfirmationEmail(params: {
 Merci pour votre inscription à la newsletter ${brandName}.
 
 Chaque mardi à 8h, vous recevrez :
-- Les textes réglementaires qui impactent votre certification Qualiopi
+- Les textes réglementaires qui impactent votre certification ${sector.vocab.regulatorName}
 - Les appels d'offres formation pertinents de la semaine
 - Les veilles métier et handicap (indicateurs 23-26)
 

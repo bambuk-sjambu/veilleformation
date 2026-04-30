@@ -42,6 +42,7 @@ class BrandConfig:
 class VocabConfig:
     audience: str
     audienceShort: str
+    regulatorName: str
     auditName: str
     regulatorRefName: str
 

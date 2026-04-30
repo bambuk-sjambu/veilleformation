@@ -34,7 +34,7 @@ export default function CguPage() {
               </p>
               <p className="mt-2">
                 {sector.brand.name} est une plateforme de veille réglementaire automatisée par intelligence artificielle,
-                destinée aux organismes de formation certifiés Qualiopi et à leurs partenaires.
+                destinée aux {sector.vocab.audience} certifiés {sector.vocab.regulatorName} et à leurs partenaires.
               </p>
             </div>
 
@@ -63,7 +63,7 @@ export default function CguPage() {
                 <li>Résumé et classification par intelligence artificielle selon les indicateurs Qualiopi 23 à 26</li>
                 <li>Tableau de bord de veille personnalisable par région et thématique</li>
                 <li>Newsletter hebdomadaire</li>
-                <li>Export d&apos;un rapport d&apos;audit Qualiopi au format PDF (plans payants)</li>
+                <li>Export d&apos;un rapport d&apos;{sector.vocab.auditName} au format PDF (plans payants)</li>
                 <li>Gestion collaborative en équipe (plans Équipe et Agence)</li>
               </ul>
             </div>
@@ -95,7 +95,7 @@ export default function CguPage() {
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li>la consultation du contenu agrégé</li>
                 <li>la redistribution interne d&apos;extraits (newsletter interne, intranet)</li>
-                <li>l&apos;export de rapports d&apos;audit pour les besoins de la certification Qualiopi de l&apos;organisme abonné</li>
+                <li>l&apos;export de rapports d&apos;audit pour les besoins de la certification {sector.vocab.regulatorName} de l&apos;organisme abonné</li>
               </ul>
               <p className="mt-2">
                 La revente, la mise à disposition à des tiers non abonnés, le scraping automatisé du Service
@@ -137,20 +137,20 @@ export default function CguPage() {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                8. Nature du Service et responsabilité Qualiopi
+                8. Nature du Service et responsabilité {sector.vocab.regulatorName}
               </h2>
               <p>
                 {sector.brand.name} est un <strong>outil d&apos;aide à la veille réglementaire</strong>. Il facilite la collecte,
                 la classification et la traçabilité des sources nécessaires aux indicateurs Qualiopi 23 à 26.
               </p>
               <p className="mt-2">
-                La <strong>conformité à la certification Qualiopi</strong> demeure la responsabilité exclusive
+                La <strong>conformité à la certification {sector.vocab.regulatorName}</strong> demeure la responsabilité exclusive
                 de l&apos;organisme de formation. L&apos;utilisateur reste seul responsable :
               </p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li>de l&apos;analyse éditoriale finale des articles proposés</li>
                 <li>de la mise en œuvre opérationnelle des changements réglementaires détectés</li>
-                <li>de la production des preuves lors des audits Qualiopi</li>
+                <li>de la production des preuves lors des audits {sector.vocab.regulatorName}</li>
                 <li>du respect de ses obligations réglementaires propres</li>
               </ul>
               <p className="mt-2">

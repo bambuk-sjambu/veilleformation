@@ -71,7 +71,7 @@ export default function InscriptionPage() {
             Créer votre compte
           </h1>
           <p className="text-gray-600 mt-1">
-            Commencez votre veille Qualiopi en 30 secondes
+            Commencez votre veille {sector.vocab.regulatorName} en 30 secondes
           </p>
         </div>
 

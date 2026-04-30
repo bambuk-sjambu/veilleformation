@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { sector } from "@/config";
 
 interface Profile {
   company_name: string;
@@ -131,7 +132,7 @@ export default function ExportPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Export Audit Qualiopi</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Export {sector.vocab.auditName.charAt(0).toUpperCase() + sector.vocab.auditName.slice(1)}</h1>
             </div>
           </div>
         </div>
@@ -269,9 +270,9 @@ export default function ExportPage() {
 
         {/* Help */}
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-900 mb-2">Conseil pour l&apos;audit Qualiopi</h3>
+          <h3 className="text-sm font-medium text-blue-900 mb-2">Conseil pour l&apos;{sector.vocab.auditName}</h3>
           <p className="text-sm text-blue-700">
-            Ce rapport sert de preuve de veille pour les indicateurs 23 à 26 du référentiel Qualiopi.
+            Ce rapport sert de preuve de veille pour les indicateurs 23 à 26 du {sector.vocab.regulatorRefName}.
             Imprimez-le et conservez-le dans vos documents qualité. Il est recommandé de générer un
             rapport mensuel ou trimestriel selon votre frequence d&apos;audit.
           </p>

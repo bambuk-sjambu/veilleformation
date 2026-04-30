@@ -39,6 +39,8 @@ export interface VocabConfig {
   audience: string;
   /** Forme abrégée (ex: "OF", "restaurants"). */
   audienceShort: string;
+  /** Nom de la certification/régulation (ex: "Qualiopi", "HACCP", "RGPD"). */
+  regulatorName: string;
   /** Nom de l'audit cible (ex: "audit Qualiopi", "contrôle DDPP"). */
   auditName: string;
   /** Nom du référentiel (ex: "référentiel Qualiopi", "réglementation HACCP"). */

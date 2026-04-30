@@ -51,7 +51,7 @@ const plans = [
     price: 39,
     originalPrice: 56,
     period: "/mois",
-    description: "Pour les organismes de formation",
+    description: `Pour les ${sector.vocab.audience}`,
     features: [
       "5 utilisateurs inclus",
       "Toutes les fonctionnalités Solo",
@@ -155,10 +155,10 @@ export default function PricingPage() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">
-            Conformité Qualiopi simplifiée
+            Conformité {sector.vocab.regulatorName} simplifiée
           </h1>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            La veille réglementaire automatisée pour les 45 000 organismes de formation certifiés Qualiopi
+            La veille réglementaire automatisée pour les 45 000 {sector.vocab.audience} certifiés {sector.vocab.regulatorName}
           </p>
           {subscriberCount !== null && subscriberCount > 0 && (
             <p className="text-blue-100 mb-6">
@@ -290,10 +290,10 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Comment fonctionne l&apos;export PDF pour l&apos;audit Qualiopi ?
+                Comment fonctionne l&apos;export PDF pour l&apos;{sector.vocab.auditName} ?
               </h3>
               <p className="mt-2 text-gray-600">
-                En un clic, vous générez un document PDF complet prêt à présenter à votre auditeur Qualiopi,
+                En un clic, vous générez un document PDF complet prêt à présenter à votre auditeur {sector.vocab.regulatorName},
                 incluant tous les articles surveillés, les actions menées et votre méthodologie de veille.
               </p>
             </div>
@@ -305,7 +305,7 @@ export default function PricingPage() {
                 Nous collectons automatiquement les articles du BOAMP (appels d&apos;offres publics formation),
                 du Journal Officiel (JORF), de Centre Inffo, de France Travail, et de 6 OPCO sectoriels
                 (AKTO, OPCO 2i, OPCO EP, OPCO Santé, OPCOMMERCE, Uniformation). Tout est analysé
-                par IA pour ne vous présenter que ce qui impacte votre certification Qualiopi.
+                par IA pour ne vous présenter que ce qui impacte votre certification {sector.vocab.regulatorName}.
               </p>
             </div>
           </div>
@@ -319,7 +319,7 @@ export default function PricingPage() {
             Prêt à simplifier votre veille réglementaire ?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Rejoignez les organismes de formation qui font confiance à {sector.brand.name}
+            Rejoignez les {sector.vocab.audience} qui font confiance à {sector.brand.name}
           </p>
           <Link
             href="/inscription"

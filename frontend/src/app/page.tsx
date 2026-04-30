@@ -21,17 +21,17 @@ const faqItems = [
   {
     question: `Qu'est-ce que ${sector.brand.name} ?`,
     answer:
-      `${sector.brand.name} est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les organismes de formation certifiés Qualiopi. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.`,
+      `${sector.brand.name} est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les ${sector.vocab.audience} certifiés ${sector.vocab.regulatorName}. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.`,
   },
   {
     question: "Comment fonctionne la veille automatique ?",
     answer:
-      "Notre système collecté quotidiennement les publications du BOAMP, de Légifrance, des 11 OPCO, de France Travail et des Conseils Régionaux. L'IA Claude analysé chaque texte, en produit un résumé et le classifie automatiquement selon les indicateurs Qualiopi concernés.",
+      `Notre système collecté quotidiennement les publications du BOAMP, de Légifrance, des 11 OPCO, de France Travail et des Conseils Régionaux. L'IA Claude analysé chaque texte, en produit un résumé et le classifie automatiquement selon les indicateurs ${sector.vocab.regulatorName} concernés.`,
   },
   {
     question: "Quels indicateurs Qualiopi sont couverts ?",
     answer:
-      "Nous couvrons les 4 indicateurs de veille du référentiel Qualiopi : l'indicateur 23 (veille légale et réglementaire), l'indicateur 24 (veille compétences, métiers, emplois), l'indicateur 25 (veille innovations pédagogiques et technologiques) et l'indicateur 26 (veille handicap et compensations).",
+      `Nous couvrons les 4 indicateurs de veille du ${sector.vocab.regulatorRefName} : l'indicateur 23 (veille légale et réglementaire), l'indicateur 24 (veille compétences, métiers, emplois), l'indicateur 25 (veille innovations pédagogiques et technologiques) et l'indicateur 26 (veille handicap et compensations).`,
   },
   {
     question: "La newsletter est-elle vraiment gratuite ?",
@@ -41,12 +41,12 @@ const faqItems = [
   {
     question: "Comment est générée la classification IA ?",
     answer:
-      "Nous utilisons Claude (Anthropic), un modèle d'IA de dernière génération, pour analyser le contenu de chaque texte réglementaire et déterminer quels indicateurs Qualiopi sont impactés. La classification est vérifiée et affinée en continu pour garantir sa pertinence.",
+      `Nous utilisons Claude (Anthropic), un modèle d'IA de dernière génération, pour analyser le contenu de chaque texte réglementaire et déterminer quels indicateurs ${sector.vocab.regulatorName} sont impactés. La classification est vérifiée et affinée en continu pour garantir sa pertinence.`,
   },
   {
     question: "Puis-je exporter mes preuves pour l'audit ?",
     answer:
-      "Oui, les plans Solo, Équipe et Agence incluent l'export PDF de votre veille, formaté pour être présenté directement lors de votre audit Qualiopi. Ce document constitue une preuve tangible de votre démarche de veille pour les indicateurs 23 à 26.",
+      `Oui, les plans Solo, Équipe et Agence incluent l'export PDF de votre veille, formaté pour être présenté directement lors de votre ${sector.vocab.auditName}. Ce document constitue une preuve tangible de votre démarche de veille pour les indicateurs 23 à 26.`,
   },
   {
     question: "Comment résilier mon abonnement ?",
@@ -67,7 +67,7 @@ function JsonLd() {
     name: sector.brand.name,
     url: `https://${sector.brand.domain}`,
     description:
-      "Veille réglementaire automatisée par IA pour les organismes de formation certifiés Qualiopi.",
+      `Veille réglementaire automatisée par IA pour les ${sector.vocab.audience} certifiés ${sector.vocab.regulatorName}.`,
   };
   const softwareSchema = {
     "@context": "https://schema.org",
@@ -149,7 +149,7 @@ function Hero() {
             IA · Indicateurs 23-26 · Preuves prêtes pour l&apos;audit
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            Votre veille Qualiopi,{" "}
+            Votre veille {sector.vocab.regulatorName},{" "}
             <span className="text-primary">livrée chaque mardi à 8h.</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
@@ -164,7 +164,7 @@ function Hero() {
           <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-primary" />
-              <span><strong className="text-gray-900">45 000</strong> OF concernés</span>
+              <span><strong className="text-gray-900">45 000</strong> {sector.vocab.audienceShort} concernés</span>
             </div>
             <span className="text-gray-300">·</span>
             <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ function Hero() {
                 <span>Mardi 8h00</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900">
-                Votre veille Qualiopi - Semaine 11
+                Votre veille {sector.vocab.regulatorName} - Semaine 11
               </h3>
               <div className="space-y-3">
                 {[
@@ -204,7 +204,7 @@ function Hero() {
                     title:
                       "Décret n°2026-xxx : nouvelles obligations de traçabilité",
                     summary:
-                      "Les organismes de formation doivent désormais conserver les preuves de veille pendant 5 ans...",
+                      `Les ${sector.vocab.audience} doivent désormais conserver les preuves de veille pendant 5 ans...`,
                   },
                   {
                     badge: "Ind. 24",
@@ -269,7 +269,7 @@ function PainPoints() {
       icon: <ClipboardCheck className="w-8 h-8" />,
       title: "Audit préparé en 1 clic",
       description:
-        "Exportez un PDF daté et structuré qui prouve votre veille régulière aux auditeurs Qualiopi.",
+        `Exportez un PDF daté et structuré qui prouve votre veille régulière aux auditeurs ${sector.vocab.regulatorName}.`,
     },
   ];
 
@@ -278,10 +278,10 @@ function PainPoints() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            La veille Qualiopi sans effort
+            La veille {sector.vocab.regulatorName} sans effort
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            45 000 organismes de formation ont le même besoin. {sector.brand.name} le résout
+            45 000 {sector.vocab.audience} ont le même besoin. {sector.brand.name} le résout
             en une newsletter hebdomadaire.
           </p>
         </div>
@@ -314,15 +314,15 @@ function Solution() {
     },
     {
       icon: <Brain className="w-8 h-8" />,
-      title: "Classification IA par indicateur Qualiopi",
+      title: `Classification IA par indicateur ${sector.vocab.regulatorName}`,
       description:
-        "L'IA analysé chaque texte et le classe selon les indicateurs 23, 24, 25 et 26 du référentiel Qualiopi.",
+        `L'IA analysé chaque texte et le classe selon les indicateurs 23, 24, 25 et 26 du ${sector.vocab.regulatorRefName}.`,
     },
     {
       icon: <FileText className="w-8 h-8" />,
       title: "Export PDF prêt pour l'audit",
       description:
-        "Générez un document PDF structuré, daté et complet, à présenter directement à votre auditeur Qualiopi.",
+        `Générez un document PDF structuré, daté et complet, à présenter directement à votre auditeur ${sector.vocab.regulatorName}.`,
     },
   ];
 
@@ -389,7 +389,7 @@ function HowItWorks() {
             Comment ça marche
           </h2>
           <p className="text-lg text-gray-600">
-            En 3 étapes simples, votre veille Qualiopi est en place.
+            En 3 étapes simples, votre veille {sector.vocab.regulatorName} est en place.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -423,7 +423,7 @@ function Preview() {
             Voyez l&apos;outil avant de vous inscrire
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Pas de pitch, juste l&apos;outil tel qu&apos;il fonctionne pour les organismes de formation
+            Pas de pitch, juste l&apos;outil tel qu&apos;il fonctionne pour les {sector.vocab.audience}
             qui l&apos;utilisent en 2026.
           </p>
         </div>
@@ -481,7 +481,7 @@ function Preview() {
             </div>
             <div className="p-5 bg-gray-50 min-h-[260px]">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-gray-900">Plan d&apos;action Qualiopi</h3>
+                <h3 className="font-bold text-gray-900">Plan d&apos;action {sector.vocab.regulatorName}</h3>
                 <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">Prêt audit</span>
               </div>
               <div className="space-y-2">
@@ -583,7 +583,7 @@ function Preview() {
             </div>
             <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 min-h-[260px] flex flex-col items-center justify-center text-center">
               <div className="w-32 h-40 bg-white rounded-lg shadow-md p-3 mb-4 flex flex-col">
-                <div className="text-[8px] font-bold text-blue-700 mb-1">RAPPORT QUALIOPI</div>
+                <div className="text-[8px] font-bold text-blue-700 mb-1">RAPPORT {sector.vocab.regulatorName.toUpperCase()}</div>
                 <div className="text-[6px] text-gray-700 leading-tight">Veille réglementaire 2026</div>
                 <div className="border-t border-gray-200 my-1"></div>
                 <div className="space-y-0.5 flex-1">
@@ -596,7 +596,7 @@ function Preview() {
                   <div className="h-1 bg-gray-300 rounded w-4/5"></div>
                 </div>
               </div>
-              <h3 className="font-bold text-gray-900 mb-1">Export PDF audit Qualiopi</h3>
+              <h3 className="font-bold text-gray-900 mb-1">Export PDF {sector.vocab.auditName}</h3>
               <p className="text-sm text-gray-600 max-w-xs">
                 Rapport complet en 1 clic : sources surveillées, articles enrichis IA, plan d&apos;action,
                 signatures.
@@ -668,7 +668,7 @@ function Pricing() {
       features: [
         "Tout Solo +",
         "5 utilisateurs",
-        "Export Qualiopi complet",
+        `Export ${sector.vocab.regulatorName} complet`,
         "Newsletter personnalisée",
         "Support prioritaire",
       ],
@@ -701,7 +701,7 @@ function Pricing() {
           <span className="inline-flex items-center gap-2 flex-wrap justify-center px-4">
             <span className="bg-black text-yellow-400 px-2 py-0.5 rounded text-sm font-bold">LANCEMENT -30%</span>
             <span className="text-sm">
-              Tarif lancement jusqu&apos;aux 200 premiers organismes inscrits, puis prix plein.
+              Tarif lancement jusqu&apos;aux 200 premiers {sector.vocab.audienceShort} inscrits, puis prix plein.
             </span>
           </span>
         </div>
@@ -818,10 +818,10 @@ function FinalCTA() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <Shield className="w-12 h-12 text-white/80 mx-auto mb-6" />
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-          Prêt à automatiser votre veille Qualiopi ?
+          Prêt à automatiser votre veille {sector.vocab.regulatorName} ?
         </h2>
         <p className="text-lg text-blue-200 mb-8">
-          Rejoignez les organismes de formation qui gagnent du temps chaque
+          Rejoignez les {sector.vocab.audience} qui gagnent du temps chaque
           semaine.
         </p>
         <Link
@@ -853,7 +853,7 @@ function Footer() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <BarChart3 className="w-4 h-4" />
-            <span>45 000 OF certifiés Qualiopi en France</span>
+            <span>45 000 {sector.vocab.audienceShort} certifiés {sector.vocab.regulatorName} en France</span>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">

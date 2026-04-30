@@ -7,13 +7,13 @@ import { sector } from "@/config";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: `Exemple de newsletter ${sector.brand.name} — Veille Qualiopi`,
+  title: `Exemple de newsletter ${sector.brand.name} — Veille ${sector.vocab.regulatorName}`,
   description:
-    `Découvrez à quoi ressemble la newsletter hebdomadaire ${sector.brand.name} : décrets formation, appels d'offres OPCO, veille métiers — triés par IA, format prêt audit Qualiopi.`,
+    `Découvrez à quoi ressemble la newsletter hebdomadaire ${sector.brand.name} : décrets formation, appels d'offres OPCO, veille métiers — triés par IA, format prêt ${sector.vocab.auditName}.`,
   alternates: { canonical: `https://${sector.brand.domain}/exemple-newsletter/` },
   openGraph: {
     title: `Exemple de newsletter ${sector.brand.name}`,
-    description: "Décrets, AAP, veille métiers — triés par IA, format prêt audit Qualiopi.",
+    description: `Décrets, AAP, veille métiers — triés par IA, format prêt ${sector.vocab.auditName}.`,
     url: `https://${sector.brand.domain}/exemple-newsletter/`,
   },
   robots: { index: true, follow: true },
@@ -82,7 +82,7 @@ export default async function ExempleNewsletterPage() {
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Exemple de newsletter {sector.brand.name}</h1>
           <p className="text-lg text-blue-100 max-w-2xl mx-auto">
             Voici à quoi ressemble la newsletter que vous recevez chaque mardi à 8h. Décrets, appels
-            d&apos;offres, veille métiers — triés par IA, format prêt audit Qualiopi.
+            d&apos;offres, veille métiers — triés par IA, format prêt {sector.vocab.auditName}.
           </p>
         </div>
       </div>

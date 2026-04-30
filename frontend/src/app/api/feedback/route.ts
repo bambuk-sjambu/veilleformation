@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { getDb, dbExists } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { sector } from "@/config";
 
 export const dynamic = "force-dynamic";
 
@@ -66,7 +67,7 @@ function getTelegramCreds(): { token: string; chatId: string } | null {
 const PUBLIC_BASE_URL = (
   process.env.NEXT_PUBLIC_BASE_URL ||
   process.env.PUBLIC_BASE_URL ||
-  "https://cipia.fr"
+  `https://${sector.brand.domain}`
 ).replace(/\/$/, "");
 
 const MIME_BY_EXT: Record<string, string> = {
@@ -260,7 +261,7 @@ export async function POST(request: NextRequest) {
     const fullName = `${userRow.first_name || ""} ${userRow.last_name || ""}`.trim();
     const ratingLine = rating ? `\nNote : ${rating}/5` : "";
     const message =
-      `🔔 Nouveau feedback Cipia\n` +
+      `🔔 Nouveau feedback ${sector.brand.name}\n` +
       `De : ${fullName} (${userRow.email})\n` +
       `Page : ${page}\n` +
       `Type : ${category}` +

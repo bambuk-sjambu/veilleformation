@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BarChart3 } from "lucide-react";
+import { sector } from "@/config";
 
 export default function PublicFooter() {
   return (
@@ -8,9 +9,9 @@ export default function PublicFooter() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">C</span>
+              <span className="text-white font-bold text-xs">{sector.brand.name.charAt(0)}</span>
             </div>
-            <span className="font-semibold text-gray-300">Cipia</span>
+            <span className="font-semibold text-gray-300">{sector.brand.name}</span>
           </div>
           <div className="flex items-center gap-4 text-sm">
             <BarChart3 className="w-4 h-4" />
@@ -18,7 +19,7 @@ export default function PublicFooter() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+          <p>&copy; 2026 {sector.brand.name} &mdash; Haruna SARL</p>
           <div className="flex flex-wrap items-center gap-4 md:gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales

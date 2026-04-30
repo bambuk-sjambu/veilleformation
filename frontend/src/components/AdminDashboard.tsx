@@ -16,6 +16,7 @@ import {
   MessageCircle,
   X,
 } from "lucide-react";
+import { sector } from "@/config";
 
 interface KpisBlock {
   total_inscrits: number;
@@ -372,7 +373,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Admin Cipia
+                Admin {sector.brand.name}
               </h1>
               <p className="text-sm text-gray-500 mt-1">
                 Vue d&apos;ensemble super-admin — KPIs, abonnés, activité, sources
@@ -1175,7 +1176,7 @@ export default function AdminDashboard() {
         )}
 
         <p className="text-xs text-gray-400 text-center mt-8">
-          Cipia — vue admin réservée aux super-admins. Données live, non mises en cache.
+          {sector.brand.name} — vue admin réservée aux super-admins. Données live, non mises en cache.
         </p>
       </div>
     </div>

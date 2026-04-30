@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { sector } from "@/config";
 
 export default function PublicHeader() {
   return (
@@ -7,9 +8,9 @@ export default function PublicHeader() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">C</span>
+              <span className="text-white font-bold text-sm">{sector.brand.name.charAt(0)}</span>
             </div>
-            <span className="font-bold text-lg text-gray-900">Cipia</span>
+            <span className="font-bold text-lg text-gray-900">{sector.brand.name}</span>
           </Link>
           <Link
             href="/connexion"

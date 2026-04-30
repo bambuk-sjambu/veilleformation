@@ -2,18 +2,19 @@ import { Metadata } from "next";
 import Link from "next/link";
 import path from "path";
 import { ArrowLeft, Mail, CheckCircle } from "lucide-react";
+import { sector } from "@/config";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Exemple de newsletter Cipia — Veille Qualiopi",
+  title: `Exemple de newsletter ${sector.brand.name} — Veille Qualiopi`,
   description:
-    "Découvrez à quoi ressemble la newsletter hebdomadaire Cipia : décrets formation, appels d'offres OPCO, veille métiers — triés par IA, format prêt audit Qualiopi.",
-  alternates: { canonical: "https://cipia.fr/exemple-newsletter/" },
+    `Découvrez à quoi ressemble la newsletter hebdomadaire ${sector.brand.name} : décrets formation, appels d'offres OPCO, veille métiers — triés par IA, format prêt audit Qualiopi.`,
+  alternates: { canonical: `https://${sector.brand.domain}/exemple-newsletter/` },
   openGraph: {
-    title: "Exemple de newsletter Cipia",
+    title: `Exemple de newsletter ${sector.brand.name}`,
     description: "Décrets, AAP, veille métiers — triés par IA, format prêt audit Qualiopi.",
-    url: "https://cipia.fr/exemple-newsletter/",
+    url: `https://${sector.brand.domain}/exemple-newsletter/`,
   },
   robots: { index: true, follow: true },
 };
@@ -62,9 +63,9 @@ export default async function ExempleNewsletterPage() {
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
+                <span className="text-white font-bold text-sm">{sector.brand.name.charAt(0)}</span>
               </div>
-              <span className="font-bold text-lg text-gray-900">Cipia</span>
+              <span className="font-bold text-lg text-gray-900">{sector.brand.name}</span>
             </Link>
             <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 inline-flex items-center gap-1">
               <ArrowLeft className="w-4 h-4" />
@@ -78,7 +79,7 @@ export default async function ExempleNewsletterPage() {
       <div className="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Mail className="w-12 h-12 mx-auto mb-4 text-yellow-300" />
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">Exemple de newsletter Cipia</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Exemple de newsletter {sector.brand.name}</h1>
           <p className="text-lg text-blue-100 max-w-2xl mx-auto">
             Voici à quoi ressemble la newsletter que vous recevez chaque mardi à 8h. Décrets, appels
             d&apos;offres, veille métiers — triés par IA, format prêt audit Qualiopi.

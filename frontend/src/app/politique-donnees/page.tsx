@@ -1,10 +1,11 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import PublicFooter from "@/components/PublicFooter";
+import { sector } from "@/config";
 
 export const metadata = {
-  title: "Politique de gestion des données utilisateur | Cipia",
-  description: "Politique de gestion des données utilisateur de Cipia, conforme au RGPD et à la loi Informatique et Libertés (Haruna SARL).",
+  title: `Politique de gestion des données utilisateur | ${sector.brand.name}`,
+  description: `Politique de gestion des données utilisateur de ${sector.brand.name}, conforme au RGPD et à la loi Informatique et Libertés (Haruna SARL).`,
 };
 
 export default function PolitiqueDonneesPage() {
@@ -25,7 +26,7 @@ export default function PolitiqueDonneesPage() {
                 1. Cadre et engagements
               </h2>
               <p>
-                <strong>Haruna SARL</strong>, éditeur du service Cipia, traite les données personnelles de ses
+                <strong>Haruna SARL</strong>, éditeur du service {sector.brand.name}, traite les données personnelles de ses
                 utilisateurs conformément :
               </p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
@@ -63,7 +64,7 @@ export default function PolitiqueDonneesPage() {
               </h2>
               <ul className="space-y-1">
                 <li><strong>Responsable de traitement :</strong> Haruna SARL, représentée par son gérant Stéphane Jambu</li>
-                <li><strong>Contact données personnelles :</strong> <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a></li>
+                <li><strong>Contact données personnelles :</strong> <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a></li>
                 <li><strong>Coordonnées postales :</strong> voir <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link></li>
               </ul>
               <p className="mt-2">
@@ -272,7 +273,7 @@ export default function PolitiqueDonneesPage() {
               </ul>
               <p className="mt-2">
                 <strong>Modalités d&apos;exercice :</strong> toute demande peut être adressée par email à{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>,
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>,
                 accompagnée d&apos;une copie d&apos;une pièce d&apos;identité. Haruna SARL répond dans un délai
                 maximum d&apos;un mois, prolongeable de deux mois pour les demandes complexes (art. 12 RGPD).
                 L&apos;exercice des droits est gratuit, sauf demandes manifestement abusives.
@@ -302,7 +303,7 @@ export default function PolitiqueDonneesPage() {
                 10. Cookies et traceurs
               </h2>
               <p>
-                Cipia n&apos;utilise que des cookies strictement nécessaires au fonctionnement du Service
+                {sector.brand.name} n&apos;utilise que des cookies strictement nécessaires au fonctionnement du Service
                 (authentification, sécurité CSRF). Ces cookies sont exemptés de consentement au sens de
                 l&apos;article 82 de la loi Informatique et Libertés. Aucun cookie de mesure d&apos;audience,
                 aucun cookie publicitaire, aucun traceur tiers n&apos;est déposé.

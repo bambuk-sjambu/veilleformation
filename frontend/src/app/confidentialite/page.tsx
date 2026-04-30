@@ -1,10 +1,11 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import PublicFooter from "@/components/PublicFooter";
+import { sector } from "@/config";
 
 export const metadata = {
-  title: "Politique de confidentialité | Cipia",
-  description: "Politique de confidentialité et protection des données personnelles de Cipia, édité par Haruna SARL.",
+  title: `Politique de confidentialité | ${sector.brand.name}`,
+  description: `Politique de confidentialité et protection des données personnelles de ${sector.brand.name}, édité par Haruna SARL.`,
 };
 
 export default function ConfidentialitePage() {
@@ -24,7 +25,7 @@ export default function ConfidentialitePage() {
                 1. Introduction
               </h2>
               <p>
-                Haruna SARL, éditeur du service Cipia, s&apos;engage à protéger la vie privée
+                Haruna SARL, éditeur du service {sector.brand.name}, s&apos;engage à protéger la vie privée
                 des utilisateurs du service. Cette politique explique quelles données sont collectées,
                 à quelles fins, et quels sont vos droits conformément au Règlement Général sur la
                 Protection des Données (RGPD) et à la loi Informatique et Libertés.
@@ -40,7 +41,7 @@ export default function ConfidentialitePage() {
                 dont le siège social est situé en France (coordonnées complètes dans les{" "}
                 <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link>).
                 Pour toute question relative à vos données personnelles :{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>.
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.
               </p>
             </div>
 
@@ -131,7 +132,7 @@ export default function ConfidentialitePage() {
               </ul>
               <p className="mt-2">
                 Pour exercer ces droits, écrivez à{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>{" "}
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>{" "}
                 avec une copie d&apos;une pièce d&apos;identité. Réponse sous 30 jours.
               </p>
             </div>
@@ -153,7 +154,7 @@ export default function ConfidentialitePage() {
                 10. Cookies
               </h2>
               <p>
-                Cipia utilise uniquement des cookies strictement nécessaires au fonctionnement du service
+                {sector.brand.name} utilise uniquement des cookies strictement nécessaires au fonctionnement du service
                 (cookie de session d&apos;authentification, cookie CSRF). Ces cookies ne nécessitent pas de
                 consentement au titre de l&apos;article 82 de la loi Informatique et Libertés. Aucun cookie
                 publicitaire ni de tracking tiers n&apos;est déposé.

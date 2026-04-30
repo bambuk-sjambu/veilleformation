@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, CheckCircle2, AlertCircle, Users } from "lucide-react";
+import { sector } from "@/config";
 
 type InvitationDetails = {
   email: string;
@@ -82,9 +83,9 @@ function InvitationAcceptInner() {
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold">C</span>
+            <span className="text-white font-bold">{sector.brand.name.charAt(0)}</span>
           </div>
-          <span className="text-xl font-bold text-gray-900">Cipia</span>
+          <span className="text-xl font-bold text-gray-900">{sector.brand.name}</span>
         </div>
 
         {loading ? (
@@ -147,13 +148,13 @@ function InvitationAcceptInner() {
               {invitation.inviterName ? (
                 <>
                   <strong>{invitation.inviterName}</strong> vous invite à rejoindre l&apos;équipe{" "}
-                  <strong>{invitation.teamName}</strong> sur Cipia en tant que{" "}
+                  <strong>{invitation.teamName}</strong> sur {sector.brand.name} en tant que{" "}
                   <strong>{invitation.role === "admin" ? "administrateur" : "membre"}</strong>.
                 </>
               ) : (
                 <>
                   Vous êtes invité à rejoindre l&apos;équipe{" "}
-                  <strong>{invitation.teamName}</strong> sur Cipia.
+                  <strong>{invitation.teamName}</strong> sur {sector.brand.name}.
                 </>
               )}
             </p>

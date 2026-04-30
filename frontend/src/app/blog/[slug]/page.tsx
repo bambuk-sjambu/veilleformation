@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import path from "path";
+import { sector } from "@/config";
 
 export const dynamic = "force-dynamic";
 
@@ -194,7 +195,7 @@ export async function generateMetadata({
   const article = getArticle(slug);
   if (!article) return { title: "Article non trouvé" };
 
-  const canonicalUrl = `https://cipia.fr/blog/${slug}/`;
+  const canonicalUrl = `https://${sector.brand.domain}/blog/${slug}/`;
 
   // Use full title in HTML tags — browsers/Google truncate for display automatically.
   // Only breadcrumb JSON-LD item uses a shorter version to avoid generic labels in SERPs.
@@ -210,7 +211,7 @@ export async function generateMetadata({
       publishedTime: article.published_at,
       images: [
         {
-          url: `https://cipia.fr/og-blog-${slug}.jpg`,
+          url: `https://${sector.brand.domain}/og-blog-${slug}.jpg`,
           width: 1200,
           height: 630,
           alt: article.title,
@@ -243,7 +244,7 @@ export default async function BlogArticlePage({
   const toc = extractToc(article.content_html);
   const contentWithIds = injectH2Ids(article.content_html);
 
-  const canonicalUrl = `https://cipia.fr/blog/${slug}/`;
+  const canonicalUrl = `https://${sector.brand.domain}/blog/${slug}/`;
   const publishedDate = new Date(article.published_at).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
@@ -255,22 +256,22 @@ export default async function BlogArticlePage({
     "@type": "Article",
     headline: article.title,
     description: article.meta_description,
-    image: `https://cipia.fr/og-blog-${slug}.jpg`,
+    image: `https://${sector.brand.domain}/og-blog-${slug}.jpg`,
     datePublished: article.published_at,
     dateModified: article.updated_at || article.published_at,
     author: {
       "@type": "Person",
       name: author.name,
       jobTitle: author.title,
-      url: `https://cipia.fr/blog/auteurs/${author.slug}/`,
+      url: `https://${sector.brand.domain}/blog/auteurs/${author.slug}/`,
     },
     publisher: {
       "@type": "Organization",
-      name: "Cipia",
-      url: "https://cipia.fr",
+      name: sector.brand.name,
+      url: `https://${sector.brand.domain}`,
       logo: {
         "@type": "ImageObject",
-        url: "https://cipia.fr/logo.png",
+        url: `https://${sector.brand.domain}/logo.png`,
         width: 200,
         height: 60,
       },
@@ -308,13 +309,13 @@ export default async function BlogArticlePage({
         "@type": "ListItem",
         position: 1,
         name: "Accueil",
-        item: "https://cipia.fr/",
+        item: `https://${sector.brand.domain}/`,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Blog",
-        item: "https://cipia.fr/blog/",
+        item: `https://${sector.brand.domain}/blog/`,
       },
       {
         "@type": "ListItem",
@@ -361,7 +362,7 @@ export default async function BlogArticlePage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-xl font-bold text-blue-600">
-              Cipia
+              {sector.brand.name}
             </Link>
             <div className="flex items-center space-x-4">
               <Link href="/connexion" className="text-sm text-gray-600 hover:text-gray-900">
@@ -649,7 +650,7 @@ export default async function BlogArticlePage({
       <footer className="bg-gray-900 text-gray-400 py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+            <p>&copy; 2026 {sector.brand.name} &mdash; Haruna SARL</p>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-4 md:mt-0 text-sm">
               <Link href="/blog" className="hover:text-white">Blog</Link>
               <Link href="/mentions-legales" className="hover:text-white">Mentions légales</Link>

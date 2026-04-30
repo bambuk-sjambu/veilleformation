@@ -15,12 +15,13 @@ import {
   BarChart3,
 } from "lucide-react";
 import NewsletterForm from "@/components/NewsletterForm";
+import { sector } from "@/config";
 
 const faqItems = [
   {
-    question: "Qu'est-ce que Cipia ?",
+    question: `Qu'est-ce que ${sector.brand.name} ?`,
     answer:
-      "Cipia est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les organismes de formation certifiés Qualiopi. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.",
+      `${sector.brand.name} est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les organismes de formation certifiés Qualiopi. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.`,
   },
   {
     question: "Comment fonctionne la veille automatique ?",
@@ -63,15 +64,15 @@ function JsonLd() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Cipia",
-    url: "https://cipia.fr",
+    name: sector.brand.name,
+    url: `https://${sector.brand.domain}`,
     description:
       "Veille réglementaire automatisée par IA pour les organismes de formation certifiés Qualiopi.",
   };
   const softwareSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Cipia",
+    name: sector.brand.name,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: [
@@ -120,10 +121,10 @@ function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">C</span>
+              <span className="text-white font-bold text-sm">{sector.brand.name.charAt(0)}</span>
             </div>
             <span className="font-bold text-lg text-gray-900">
-              Cipia
+              {sector.brand.name}
             </span>
           </Link>
           <Link
@@ -188,7 +189,7 @@ function Hero() {
             </div>
             <div className="p-6 sm:p-8 space-y-4">
               <div className="flex items-center gap-3 text-sm text-gray-500">
-                <span>De : Cipia</span>
+                <span>De : {sector.brand.name}</span>
                 <span>|</span>
                 <span>Mardi 8h00</span>
               </div>
@@ -280,7 +281,7 @@ function PainPoints() {
             La veille Qualiopi sans effort
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            45 000 organismes de formation ont le même besoin. Cipia le résout
+            45 000 organismes de formation ont le même besoin. {sector.brand.name} le résout
             en une newsletter hebdomadaire.
           </p>
         </div>
@@ -330,7 +331,7 @@ function Solution() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Cipia automatise tout
+            {sector.brand.name} automatise tout
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Concentrez-vous sur votre coeur de métier. On s&apos;occupe de la
@@ -434,7 +435,7 @@ function Preview() {
               <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-              <span className="ml-3 text-xs text-gray-600 font-mono">cipia.fr/dashboard/veille</span>
+              <span className="ml-3 text-xs text-gray-600 font-mono">{sector.brand.domain}/dashboard/veille</span>
             </div>
             <div className="p-5 bg-gray-50 min-h-[260px]">
               <div className="flex items-center justify-between mb-4">
@@ -476,7 +477,7 @@ function Preview() {
               <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-              <span className="ml-3 text-xs text-gray-600 font-mono">cipia.fr/dashboard/plan-action</span>
+              <span className="ml-3 text-xs text-gray-600 font-mono">{sector.brand.domain}/dashboard/plan-action</span>
             </div>
             <div className="p-5 bg-gray-50 min-h-[260px]">
               <div className="flex items-center justify-between mb-4">
@@ -518,7 +519,7 @@ function Preview() {
               <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-              <span className="ml-3 text-xs text-gray-600 font-mono">cipia.fr/dashboard/appels-offres</span>
+              <span className="ml-3 text-xs text-gray-600 font-mono">{sector.brand.domain}/dashboard/appels-offres</span>
             </div>
             <div className="p-5 bg-gray-50 min-h-[260px]">
               <div className="flex items-center justify-between mb-4">
@@ -578,7 +579,7 @@ function Preview() {
               <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-              <span className="ml-3 text-xs text-gray-600 font-mono">cipia.fr/dashboard/export</span>
+              <span className="ml-3 text-xs text-gray-600 font-mono">{sector.brand.domain}/dashboard/export</span>
             </div>
             <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 min-h-[260px] flex flex-col items-center justify-center text-center">
               <div className="w-32 h-40 bg-white rounded-lg shadow-md p-3 mb-4 flex flex-col">
@@ -844,10 +845,10 @@ function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">C</span>
+              <span className="text-white font-bold text-xs">{sector.brand.name.charAt(0)}</span>
             </div>
             <span className="font-semibold text-gray-300">
-              Cipia
+              {sector.brand.name}
             </span>
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -856,7 +857,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+          <p>&copy; 2026 {sector.brand.name} &mdash; Haruna SARL</p>
           <div className="flex flex-wrap items-center gap-4 md:gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition-colors">
               Mentions légales

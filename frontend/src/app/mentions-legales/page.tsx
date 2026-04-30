@@ -1,10 +1,11 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import PublicFooter from "@/components/PublicFooter";
+import { sector } from "@/config";
 
 export const metadata = {
-  title: "Mentions légales | Cipia",
-  description: "Mentions légales du service Cipia édité par Haruna SARL.",
+  title: `Mentions légales | ${sector.brand.name}`,
+  description: `Mentions légales du service ${sector.brand.name} édité par Haruna SARL.`,
 };
 
 export default function MentionsLegalesPage() {
@@ -23,7 +24,7 @@ export default function MentionsLegalesPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 1. Éditeur du service
               </h2>
-              <p>Le service Cipia est édité par :</p>
+              <p>Le service {sector.brand.name} est édité par :</p>
               <ul className="mt-2 space-y-1">
                 <li><strong>Raison sociale :</strong> Haruna SARL</li>
                 <li><strong>Forme juridique :</strong> Société à responsabilité limitée (SARL) de droit français</li>
@@ -34,7 +35,7 @@ export default function MentionsLegalesPage() {
                 <li><strong>SIRET :</strong> 752 912 022 00015</li>
                 <li><strong>Code APE :</strong> 6202A — Conseils en systèmes et logiciels informatiques</li>
                 <li><strong>N° TVA intracommunautaire :</strong> FR92 752 912 022</li>
-                <li><strong>Email :</strong> contact@cipia.fr</li>
+                <li><strong>Email :</strong> {`contact@${sector.brand.domain}`}</li>
               </ul>
             </div>
 
@@ -77,7 +78,7 @@ export default function MentionsLegalesPage() {
                 4. Propriété intellectuelle
               </h2>
               <p>
-                L&apos;ensemble des contenus présents sur Cipia (textes, résumés générés par IA, interfaces,
+                L&apos;ensemble des contenus présents sur {sector.brand.name} (textes, résumés générés par IA, interfaces,
                 graphismes, logo, icônes, code source) sont la propriété exclusive de Haruna SARL, à l&apos;exception
                 des contenus provenant de sources officielles (BOAMP, Légifrance, OPCO, Régions) qui restent soumis
                 à leurs licences respectives (Licence Ouverte Etalab v2.0 pour les données publiques françaises).
@@ -117,7 +118,7 @@ export default function MentionsLegalesPage() {
                 7. Cookies
               </h2>
               <p>
-                Cipia utilise uniquement des cookies strictement nécessaires au fonctionnement du service
+                {sector.brand.name} utilise uniquement des cookies strictement nécessaires au fonctionnement du service
                 (session d&apos;authentification, sécurité CSRF). Aucun cookie publicitaire ni de tracking tiers
                 n&apos;est déposé sans votre consentement.
               </p>
@@ -128,8 +129,8 @@ export default function MentionsLegalesPage() {
                 8. Contact
               </h2>
               <ul className="mt-2 space-y-1">
-                <li><strong>Email :</strong> contact@cipia.fr</li>
-                <li><strong>Support :</strong> support@cipia.fr</li>
+                <li><strong>Email :</strong> {`contact@${sector.brand.domain}`}</li>
+                <li><strong>Support :</strong> {`support@${sector.brand.domain}`}</li>
               </ul>
             </div>
           </section>

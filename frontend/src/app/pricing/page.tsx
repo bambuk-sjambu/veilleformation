@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { sector } from "@/config";
 
 // Tarif lancement -30% sur le prix plein post-lancement.
 // Le prix plein s'applique apres 200 inscriptions au tarif lancement.
@@ -118,7 +119,7 @@ export default function PricingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-2xl font-bold text-blue-600">
-              Cipia
+              {sector.brand.name}
             </Link>
             <div className="flex items-center space-x-4">
               <Link href="/connexion" className="text-gray-600 hover:text-gray-900">
@@ -318,7 +319,7 @@ export default function PricingPage() {
             Prêt à simplifier votre veille réglementaire ?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Rejoignez les organismes de formation qui font confiance à Cipia
+            Rejoignez les organismes de formation qui font confiance à {sector.brand.name}
           </p>
           <Link
             href="/inscription"
@@ -333,7 +334,7 @@ export default function PricingPage() {
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+            <p>&copy; 2026 {sector.brand.name} &mdash; Haruna SARL</p>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-4 md:mt-0">
               <Link href="/mentions-legales" className="hover:text-white">Mentions légales</Link>
               <Link href="/confidentialite" className="hover:text-white">Confidentialité</Link>

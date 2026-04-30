@@ -1,10 +1,11 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import PublicFooter from "@/components/PublicFooter";
+import { sector } from "@/config";
 
 export const metadata = {
-  title: "Conditions Générales d'Utilisation | Cipia",
-  description: "Conditions Générales d'Utilisation du service Cipia édité par Haruna SARL.",
+  title: `Conditions Générales d'Utilisation | ${sector.brand.name}`,
+  description: `Conditions Générales d'Utilisation du service ${sector.brand.name} édité par Haruna SARL.`,
 };
 
 export default function CguPage() {
@@ -26,13 +27,13 @@ export default function CguPage() {
               </h2>
               <p>
                 Les présentes Conditions Générales d&apos;Utilisation (ci-après « CGU ») ont pour objet
-                de définir les modalités d&apos;accès et d&apos;utilisation du service Cipia (ci-après le « Service »),
+                de définir les modalités d&apos;accès et d&apos;utilisation du service {sector.brand.name} (ci-après le « Service »),
                 édité par <strong>Haruna SARL</strong>, société à responsabilité limitée de droit français
                 dont le siège est situé en France (coordonnées détaillées dans les{" "}
                 <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link>).
               </p>
               <p className="mt-2">
-                Cipia est une plateforme de veille réglementaire automatisée par intelligence artificielle,
+                {sector.brand.name} est une plateforme de veille réglementaire automatisée par intelligence artificielle,
                 destinée aux organismes de formation certifiés Qualiopi et à leurs partenaires.
               </p>
             </div>
@@ -56,7 +57,7 @@ export default function CguPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 3. Description du Service
               </h2>
-              <p>Cipia propose les fonctionnalités suivantes :</p>
+              <p>{sector.brand.name} propose les fonctionnalités suivantes :</p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li>Collecte automatisée d&apos;articles réglementaires issus de sources publiques officielles (BOAMP, Légifrance, OPCO, France Travail, Conseils Régionaux)</li>
                 <li>Résumé et classification par intelligence artificielle selon les indicateurs Qualiopi 23 à 26</li>
@@ -113,7 +114,7 @@ export default function CguPage() {
               </p>
               <p className="mt-2">
                 Les contenus issus de sources publiques (BOAMP, Légifrance, données administratives) restent
-                soumis à leurs licences d&apos;origine (Licence Ouverte Etalab v2.0 notamment). Cipia agit en
+                soumis à leurs licences d&apos;origine (Licence Ouverte Etalab v2.0 notamment). {sector.brand.name} agit en
                 tant qu&apos;agrégateur et enrichisseur de ces données.
               </p>
               <p className="mt-2">
@@ -139,7 +140,7 @@ export default function CguPage() {
                 8. Nature du Service et responsabilité Qualiopi
               </h2>
               <p>
-                Cipia est un <strong>outil d&apos;aide à la veille réglementaire</strong>. Il facilite la collecte,
+                {sector.brand.name} est un <strong>outil d&apos;aide à la veille réglementaire</strong>. Il facilite la collecte,
                 la classification et la traçabilité des sources nécessaires aux indicateurs Qualiopi 23 à 26.
               </p>
               <p className="mt-2">
@@ -220,7 +221,7 @@ export default function CguPage() {
               <p className="mt-2">
                 Conformément à l&apos;article L.616-1 du Code de la consommation, l&apos;utilisateur consommateur
                 peut recourir gratuitement à un médiateur de la consommation en cas de litige (coordonnées
-                disponibles sur demande à <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>).
+                disponibles sur demande à <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>).
                 La plateforme européenne de règlement en ligne des litiges est accessible à{" "}
                 <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ec.europa.eu/consumers/odr</a>.
               </p>
@@ -231,8 +232,8 @@ export default function CguPage() {
                 13. Contact
               </h2>
               <ul className="mt-2 space-y-1">
-                <li><strong>Email :</strong> contact@cipia.fr</li>
-                <li><strong>Support :</strong> support@cipia.fr</li>
+                <li><strong>Email :</strong> {`contact@${sector.brand.domain}`}</li>
+                <li><strong>Support :</strong> {`support@${sector.brand.domain}`}</li>
               </ul>
             </div>
           </section>

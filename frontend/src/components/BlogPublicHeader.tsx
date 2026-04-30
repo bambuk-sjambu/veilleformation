@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { sector } from "@/config";
 
 export default function BlogPublicHeader() {
   return (
@@ -7,7 +8,7 @@ export default function BlogPublicHeader() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-2xl font-bold text-blue-600">
-              Cipia
+              {sector.brand.name}
             </Link>
             <div className="flex items-center space-x-4">
               <Link href="/connexion" className="text-gray-600 hover:text-gray-900">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
+import { sector } from "@/config";
 
 export default function InscriptionPage() {
   const router = useRouter();
@@ -60,10 +61,10 @@ export default function InscriptionPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">C</span>
+              <span className="text-white font-bold">{sector.brand.name.charAt(0)}</span>
             </div>
             <span className="font-bold text-xl text-gray-900">
-              Cipia
+              {sector.brand.name}
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">

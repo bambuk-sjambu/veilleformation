@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
 } from "@react-pdf/renderer";
+import { sector } from "@/config";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -455,7 +456,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
-        <Text style={styles.coverLogo}>Cipia</Text>
+        <Text style={styles.coverLogo}>{sector.brand.name}</Text>
         <Text style={styles.coverTitle}>Rapport de Veille Réglementaire</Text>
         <Text style={styles.coverSubtitle}>Preuve de conformité Qualiopi - Indicateurs 23 à 26</Text>
 
@@ -492,7 +493,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
           )}
         </View>
 
-        <Text style={styles.coverFooter}>Document généré automatiquement par Cipia</Text>
+        <Text style={styles.coverFooter}>Document généré automatiquement par {sector.brand.name}</Text>
       </Page>
 
       {/* Content Page */}
@@ -591,7 +592,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par Cipia - Certification Qualiopi</Text>
+          <Text>Rapport généré par {sector.brand.name} - Certification Qualiopi</Text>
           <Text>Page 2</Text>
         </View>
       </Page>
@@ -669,7 +670,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         </View>
 
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par Cipia</Text>
+          <Text>Rapport généré par {sector.brand.name}</Text>
           <Text>Page 3</Text>
         </View>
       </Page>
@@ -709,7 +710,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         ))}
 
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par Cipia</Text>
+          <Text>Rapport généré par {sector.brand.name}</Text>
           <Text>Page 4</Text>
         </View>
       </Page>

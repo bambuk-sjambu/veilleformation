@@ -1,10 +1,11 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import PublicFooter from "@/components/PublicFooter";
+import { sector } from "@/config";
 
 export const metadata = {
-  title: "Conditions Générales de Vente | Cipia",
-  description: "Conditions Générales de Vente des abonnements Cipia, édités par Haruna SARL.",
+  title: `Conditions Générales de Vente | ${sector.brand.name}`,
+  description: `Conditions Générales de Vente des abonnements ${sector.brand.name}, édités par Haruna SARL.`,
 };
 
 export default function CgvPage() {
@@ -26,7 +27,7 @@ export default function CgvPage() {
               </h2>
               <p>
                 Les présentes Conditions Générales de Vente (ci-après « CGV ») régissent la souscription,
-                la facturation et la résiliation des abonnements payants au service Cipia (ci-après le « Service »),
+                la facturation et la résiliation des abonnements payants au service {sector.brand.name} (ci-après le « Service »),
                 édité par <strong>Haruna SARL</strong>, société à responsabilité limitée de droit français
                 (coordonnées complètes dans les{" "}
                 <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link>).
@@ -159,7 +160,7 @@ export default function CgvPage() {
               </p>
               <p className="mt-2">
                 Pour exercer son droit de rétractation dans le délai, le client peut adresser sa demande par email à{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>.
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.
                 Dans le cas d&apos;un usage déjà commencé, le montant remboursé sera proportionnel à la période
                 non consommée.
               </p>
@@ -178,7 +179,7 @@ export default function CgvPage() {
               <p>
                 Le client peut résilier son abonnement à tout moment depuis son espace personnel (Dashboard &gt;
                 Abonnement &gt; Gérer via Stripe) ou par email à{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>.
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.
               </p>
               <p className="mt-2">
                 La résiliation prend effet à la fin de la période de facturation en cours : le client conserve
@@ -243,7 +244,7 @@ export default function CgvPage() {
               <p className="mt-2">
                 En cas d&apos;erreur manifeste de facturation, le client dispose d&apos;un délai de 30 jours à compter
                 de la réception de la facture pour formuler une réclamation écrite à{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>.
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.
               </p>
             </div>
 
@@ -283,7 +284,7 @@ export default function CgvPage() {
                 En cas de différend, les parties privilégient la résolution amiable. Le client consommateur peut
                 recourir gratuitement à un médiateur de la consommation conformément à l&apos;article L.616-1 du
                 Code de la consommation. Coordonnées du médiateur disponibles sur demande à{" "}
-                <a href="mailto:contact@cipia.fr" className="text-primary hover:underline">contact@cipia.fr</a>.
+                <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.
               </p>
               <p className="mt-2">
                 Plateforme européenne de Règlement en Ligne des Litiges (RLL) :{" "}

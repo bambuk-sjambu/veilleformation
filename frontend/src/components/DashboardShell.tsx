@@ -22,6 +22,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import FeedbackWidget from "./FeedbackWidget";
+import { sector } from "@/config";
 
 const primaryNav = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -92,10 +93,10 @@ export default function DashboardShell({
             <div className="flex items-center gap-6">
               <Link href="/dashboard" className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
+                  <span className="text-white font-bold text-sm">{sector.brand.name.charAt(0)}</span>
                 </div>
                 <span className="font-bold text-lg text-gray-900 hidden sm:inline">
-                  Cipia
+                  {sector.brand.name}
                 </span>
               </Link>
             </div>

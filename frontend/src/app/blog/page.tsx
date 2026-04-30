@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { Metadata } from "next";
 import path from "path";
+import { sector } from "@/config";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Blog Cipia — Veille Qualiopi | Guides et Conseils Experts",
+  title: `Blog ${sector.brand.name} — Veille Qualiopi | Guides et Conseils Experts`,
   description: "Guides pratiques, conseils d'experts et actualités sur la certification Qualiopi, la veille réglementaire et les appels d'offres formation professionnelle.",
   alternates: {
-    canonical: "https://cipia.fr/blog/",
+    canonical: `https://${sector.brand.domain}/blog/`,
   },
   openGraph: {
-    title: "Blog Cipia — Veille Qualiopi | Guides et Conseils Experts",
+    title: `Blog ${sector.brand.name} — Veille Qualiopi | Guides et Conseils Experts`,
     description: "Guides pratiques, conseils d'experts et actualités sur la certification Qualiopi, la veille réglementaire et les appels d'offres formation professionnelle.",
-    url: "https://cipia.fr/blog/",
+    url: `https://${sector.brand.domain}/blog/`,
     type: "website",
-    images: [{ url: "https://cipia.fr/og-blog.jpg", width: 1200, height: 630 }],
+    images: [{ url: `https://${sector.brand.domain}/og-blog.jpg`, width: 1200, height: 630 }],
   },
 };
 
@@ -160,13 +161,13 @@ export default async function BlogPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Blog",
-            name: "Blog Cipia",
+            name: `Blog ${sector.brand.name}`,
             description: "Guides et conseils pour les organismes de formation certifiés Qualiopi",
-            url: "https://cipia.fr/blog/",
+            url: `https://${sector.brand.domain}/blog/`,
             publisher: {
               "@type": "Organization",
-              name: "Cipia",
-              url: "https://cipia.fr",
+              name: sector.brand.name,
+              url: `https://${sector.brand.domain}`,
             },
           }),
         }}
@@ -176,7 +177,7 @@ export default async function BlogPage() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">
-            Blog Cipia — Veille Qualiopi
+            Blog {sector.brand.name} — Veille Qualiopi
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
             Guides pratiques, conseils d&apos;experts et actualités pour les 45 000 organismes de formation certifiés Qualiopi
@@ -252,7 +253,7 @@ export default async function BlogPage() {
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>&copy; 2026 Cipia &mdash; Haruna SARL</p>
+            <p>&copy; 2026 {sector.brand.name} &mdash; Haruna SARL</p>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-4 md:mt-0">
               <Link href="/mentions-legales" className="hover:text-white">Mentions légales</Link>
               <Link href="/confidentialite" className="hover:text-white">Confidentialité</Link>

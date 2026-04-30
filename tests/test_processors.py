@@ -438,6 +438,91 @@ class TestProcessArticle:
         indicators = json.loads(updated["qualiopi_indicators"])
         assert indicators == ["23", "24"]
 
+    def test_taxonomy_indicators_dual_write(self, db_path, conn):
+        """A.4.b : apres UPDATE par le pipeline IA, taxonomy_indicators et
+        taxonomy_justification doivent avoir la meme valeur que les
+        anciennes colonnes qualiopi_*."""
+        article_data = _sample_legifrance_article()
+        insert_article(conn, article_data)
+        row = conn.execute(
+            "SELECT * FROM articles WHERE source_id = ?",
+            (article_data["source_id"],),
+        ).fetchone()
+        article = dict(row)
+
+        mock_response = _create_mock_anthropic_response(
+            _mock_claude_response_reglementaire()
+        )
+
+        processor = AIProcessor(db_path=db_path, api_key="test-key")
+        processor.client = MagicMock()
+        processor.client.messages.create.return_value = mock_response
+
+        processor.process_article(article)
+
+        updated = conn.execute(
+            """SELECT qualiopi_indicators, taxonomy_indicators,
+                      qualiopi_justification, taxonomy_justification
+               FROM articles WHERE id = ?""",
+            (article["id"],),
+        ).fetchone()
+        # Les deux colonnes doivent etre strictement egales
+        assert updated["taxonomy_indicators"] == updated["qualiopi_indicators"]
+        assert updated["taxonomy_justification"] == updated["qualiopi_justification"]
+        # Et bien sur non-null
+        assert updated["taxonomy_indicators"] is not None
+        assert json.loads(updated["taxonomy_indicators"]) == ["23", "24"]
+
+    def test_extra_meta_built_on_insert(self, db_path, conn):
+        """A.4.b : INSERT initial d'un article BOAMP doit peupler extra_meta
+        avec les champs AO presents (cpv_code, acheteur, region, montant,
+        date_limite)."""
+        article_data = _sample_boamp_article()
+        insert_article(conn, article_data)
+        row = conn.execute(
+            "SELECT extra_meta FROM articles WHERE source_id = ?",
+            (article_data["source_id"],),
+        ).fetchone()
+        assert row["extra_meta"] is not None
+        meta = json.loads(row["extra_meta"])
+        # Les 5 champs presents dans _sample_boamp_article doivent etre la
+        assert meta.get("acheteur") == "Mairie de Lyon"
+        assert meta.get("region") == "Auvergne-Rhone-Alpes"
+        assert meta.get("montant_estime") == 75000.0
+        assert meta.get("date_limite") == "2026-04-15"
+        assert meta.get("cpv_code") == "80500000"
+
+    def test_extra_meta_built_on_update(self, db_path, conn):
+        """A.4.b : UPDATE par le pipeline IA doit recalculer extra_meta avec
+        les champs AO existants (poses a l'INSERT par le collector) +
+        ceux que l'IA ajoute (theme_formation, typologie_ao)."""
+        article_data = _sample_boamp_article()
+        insert_article(conn, article_data)
+        row = conn.execute(
+            "SELECT * FROM articles WHERE source_id = ?",
+            (article_data["source_id"],),
+        ).fetchone()
+        article = dict(row)
+
+        # Reponse IA AO inclut typologie_ao mais pas theme_formation
+        mock_response = _create_mock_anthropic_response(_mock_claude_response_ao())
+        processor = AIProcessor(db_path=db_path, api_key="test-key")
+        processor.client = MagicMock()
+        processor.client.messages.create.return_value = mock_response
+        processor.process_article(article)
+
+        updated = conn.execute(
+            "SELECT extra_meta FROM articles WHERE id = ?",
+            (article["id"],),
+        ).fetchone()
+        meta = json.loads(updated["extra_meta"])
+        # Champs AO du collector preserves
+        assert meta.get("acheteur") == "Mairie de Lyon"
+        assert meta.get("region") == "Auvergne-Rhone-Alpes"
+        assert meta.get("cpv_code") == "80500000"
+        # Champ ajoute par l'IA
+        assert meta.get("typologie_ao") == "formation"
+
 
 # ---------------------------------------------------------------------------
 # Tests: retry_failed

@@ -15,6 +15,7 @@ import anthropic
 
 from processors.prompts import build_user_prompt, get_system_prompt
 from storage.database import (
+    build_extra_meta,
     get_connection,
     get_articles,
     get_articles_round_robin,
@@ -225,6 +226,19 @@ class AIProcessor:
                 else None
             )
 
+            # Dual-write (A.4.b) : on prepare le JSON extra_meta a partir
+            # de la fusion des champs AO existants en DB + ceux retournes
+            # par l'IA. theme_formation et typologie_ao viennent de l'IA ;
+            # cpv_code/acheteur/region/montant_estime/date_limite ont ete
+            # poses a l'INSERT par les collectors (BOAMP) et sont donc
+            # deja dans `article` (charge depuis la DB en amont).
+            merged_for_meta = dict(article)
+            if data.get("theme_formation") is not None:
+                merged_for_meta["theme_formation"] = data.get("theme_formation")
+            if data.get("typologie_ao") is not None:
+                merged_for_meta["typologie_ao"] = data.get("typologie_ao")
+            extra_meta_json = build_extra_meta(merged_for_meta)
+
             update_sql = """
                 UPDATE articles SET
                     summary = ?,
@@ -233,12 +247,15 @@ class AIProcessor:
                     impact_justification = ?,
                     qualiopi_indicators = ?,
                     qualiopi_justification = ?,
+                    taxonomy_indicators = ?,
+                    taxonomy_justification = ?,
                     relevance_score = ?,
                     category = ?,
                     typologie_ao = ?,
                     mots_cles = ?,
                     date_entree_vigueur = ?,
                     theme_formation = ?,
+                    extra_meta = ?,
                     status = 'done',
                     processed_at = ?
                 WHERE id = ?
@@ -252,12 +269,15 @@ class AIProcessor:
                     data["impact_justification"],
                     qualiopi_indicators,
                     data["qualiopi_justification"],
+                    qualiopi_indicators,                  # taxonomy_indicators (dual-write)
+                    data["qualiopi_justification"],       # taxonomy_justification (dual-write)
                     int(data["relevance_score"]),
                     data["category"],
                     data.get("typologie_ao"),
                     mots_cles,
                     data.get("date_entree_vigueur"),
                     data.get("theme_formation"),
+                    extra_meta_json,                      # extra_meta (dual-write)
                     datetime.now().isoformat(),
                     article_id,
                 ),

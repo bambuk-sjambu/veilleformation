@@ -3,11 +3,48 @@
 Aligned with Cahier des Charges v1.2.
 """
 
+import json
 import os
 import sqlite3
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+
+
+# ------------------------------------------------------------
+# Multi-sector dual-write helpers (refactor A.4.b)
+# ------------------------------------------------------------
+# Anciennes colonnes "AO / sector-specific" qui sont regroupees dans le
+# JSON `extra_meta` (nouveau schema additif). Le code continue de LIRE
+# les anciennes colonnes (A.4.c basculera les reads) mais ECRIT
+# desormais aussi dans extra_meta a chaque INSERT/UPDATE qui modifie
+# l'un de ces champs.
+EXTRA_META_FIELDS = [
+    "theme_formation",
+    "typologie_ao",
+    "cpv_code",
+    "acheteur",
+    "montant_estime",
+    "region",
+    "date_limite",
+]
+
+
+def build_extra_meta(article: dict) -> str:
+    """Construit le JSON `extra_meta` a partir des champs AO non-null.
+
+    Aligne avec le backfill de scripts/migrate_004_taxonomy_extra_meta.py :
+    - parcourt EXTRA_META_FIELDS,
+    - garde uniquement les valeurs non-null et non vides,
+    - serialise en JSON (UTF-8, default=str pour les dates/datetime).
+    Si aucun champ n'est present, retourne '{}'.
+    """
+    meta = {}
+    for field in EXTRA_META_FIELDS:
+        value = article.get(field)
+        if value is not None and value != "":
+            meta[field] = value
+    return json.dumps(meta, ensure_ascii=False, default=str)
 
 
 # Complete schema aligned with Cahier des Charges v1.2
@@ -42,6 +79,10 @@ CREATE TABLE IF NOT EXISTS articles (
   montant_estime REAL,
   date_limite DATE,
   cpv_code TEXT,
+  -- Multi-secteur (refactor A.4.a) : colonnes additives
+  taxonomy_indicators TEXT,
+  taxonomy_justification TEXT,
+  extra_meta TEXT,
   processed_at DATETIME,
   sent_in_newsletter_id INTEGER,
   is_read INTEGER DEFAULT 0,
@@ -266,6 +307,12 @@ def init_db(db_path: str) -> None:
 def insert_article(conn: sqlite3.Connection, article: dict) -> bool:
     """Insert an article, ignoring duplicates (dedup by source_id).
     Returns True if the article was inserted, False if it already existed.
+
+    Dual-write (A.4.b) : a chaque INSERT, on ecrit aussi :
+    - taxonomy_indicators       <- copie de qualiopi_indicators (s'il est present)
+    - taxonomy_justification    <- copie de qualiopi_justification (idem)
+    - extra_meta                <- JSON regroupant les champs AO non-null
+    Les anciennes colonnes restent ecrites en premier (read-switch en A.4.c).
     """
     # Only include columns that are in the schema
     schema_columns = [
@@ -274,8 +321,25 @@ def insert_article(conn: sqlite3.Connection, article: dict) -> bool:
         "impact_phrase", "qualiopi_indicators", "qualiopi_justification",
         "relevance_score", "theme_formation", "mots_cles", "date_entree_vigueur", "typologie_ao",
         "acheteur", "region", "montant_estime", "date_limite", "cpv_code",
+        # Nouvelles colonnes additives (A.4.a)
+        "taxonomy_indicators", "taxonomy_justification", "extra_meta",
     ]
     present = {k: v for k, v in article.items() if k in schema_columns and v is not None}
+
+    # Dual-write : taxonomy_* derive de qualiopi_*
+    if "qualiopi_indicators" in present and "taxonomy_indicators" not in present:
+        present["taxonomy_indicators"] = present["qualiopi_indicators"]
+    if "qualiopi_justification" in present and "taxonomy_justification" not in present:
+        present["taxonomy_justification"] = present["qualiopi_justification"]
+
+    # Dual-write : extra_meta calcule a partir des champs AO presents dans
+    # l'article (meme s'ils sont None, on les ignore via build_extra_meta)
+    if "extra_meta" not in present:
+        extra_meta_json = build_extra_meta(article)
+        # On ecrit toujours extra_meta (au pire '{}'), pour rester coherent
+        # avec le backfill (toutes les lignes ont extra_meta non-null).
+        present["extra_meta"] = extra_meta_json
+
     cols = ", ".join(present.keys())
     placeholders = ", ".join(["?"] * len(present))
     sql = f"INSERT OR IGNORE INTO articles ({cols}) VALUES ({placeholders})"

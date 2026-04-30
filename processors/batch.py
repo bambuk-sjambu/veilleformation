@@ -20,7 +20,7 @@ from typing import Optional
 import anthropic
 
 from processors.prompts import build_user_prompt, get_system_prompt
-from storage.database import get_connection
+from storage.database import build_extra_meta, get_connection
 
 logger = logging.getLogger("veille.batch")
 
@@ -408,6 +408,24 @@ def run_batch_pipeline(
                     qualiopi_indicators = json.dumps(
                         result.data.get("qualiopi_indicators", []), ensure_ascii=False
                     )
+                    qualiopi_justification = result.data.get("qualiopi_justification")
+
+                    # Dual-write (A.4.b) : recharger les champs AO existants
+                    # (poses par l'INSERT du collector) et fusionner avec
+                    # ceux que l'IA aurait pu ajouter (theme_formation,
+                    # typologie_ao) pour reconstruire extra_meta proprement.
+                    row = conn.execute(
+                        """SELECT theme_formation, typologie_ao, cpv_code,
+                                  acheteur, montant_estime, region, date_limite
+                           FROM articles WHERE id = ?""",
+                        (result.article_id,),
+                    ).fetchone()
+                    merged_for_meta = dict(row) if row else {}
+                    if result.data.get("theme_formation") is not None:
+                        merged_for_meta["theme_formation"] = result.data.get("theme_formation")
+                    if result.data.get("typologie_ao") is not None:
+                        merged_for_meta["typologie_ao"] = result.data.get("typologie_ao")
+                    extra_meta_json = build_extra_meta(merged_for_meta)
 
                     conn.execute(
                         """UPDATE articles SET
@@ -416,6 +434,9 @@ def run_batch_pipeline(
                             impact_justification = ?,
                             qualiopi_indicators = ?,
                             qualiopi_justification = ?,
+                            taxonomy_indicators = ?,
+                            taxonomy_justification = ?,
+                            extra_meta = ?,
                             relevance_score = ?,
                             category = ?,
                             status = 'done',
@@ -426,7 +447,10 @@ def run_batch_pipeline(
                             result.data.get("impact_level"),
                             result.data.get("impact_phrase") or result.data.get("impact_justification"),
                             qualiopi_indicators,
-                            result.data.get("qualiopi_justification"),
+                            qualiopi_justification,
+                            qualiopi_indicators,        # taxonomy_indicators (dual-write)
+                            qualiopi_justification,     # taxonomy_justification (dual-write)
+                            extra_meta_json,            # extra_meta (dual-write)
                             int(result.data.get("relevance_score", 5)),
                             result.data.get("category", "reglementaire"),
                             datetime.now().isoformat(),

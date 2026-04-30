@@ -60,7 +60,10 @@ class SectorConfig:
     taxonomy: TaxonomyConfig
 
 
-_SECTORS_DIR = Path(__file__).parent / "sectors"
+# Le JSON est physiquement dans frontend/ (Next.js refuse les imports hors
+# de sa racine). Le loader Python lit le meme fichier pour garantir l'unicite
+# de la source de verite.
+_SECTORS_DIR = Path(__file__).parent.parent / "frontend" / "src" / "config" / "sectors"
 
 
 def load_sector(sector_id: str | None = None) -> SectorConfig:

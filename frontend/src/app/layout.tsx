@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { sector } from "@/config";
 import "./globals.css";
 
 const inter = Inter({
@@ -7,29 +8,32 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const siteUrl = "https://cipia.fr";
+const siteUrl = `https://${sector.brand.domain}`;
+const titleDefault = `${sector.brand.name} · ${sector.brand.tagline}`;
+// Twitter description : variante plus orientee audience (vocab specifique au secteur).
+// Refactore en A.2 quand vocab.audience sera utilise ici.
+const twitterDescription =
+  "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA pour organismes de formation Qualiopi.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Cipia · Veille Qualiopi IA livrée chaque mardi à 8h",
-    template: "%s · Cipia",
+    default: titleDefault,
+    template: `%s · ${sector.brand.name}`,
   },
-  description:
-    "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA selon les indicateurs Qualiopi 23-26. Export PDF prêt pour l'audit.",
-  applicationName: "Cipia",
+  description: sector.brand.description,
+  applicationName: sector.brand.name,
   authors: [{ name: "Stéphane Jambu", url: "https://www.linkedin.com/in/stephane-jambu/" }],
   creator: "Stéphane Jambu",
-  publisher: "Cipia",
+  publisher: sector.brand.name,
   alternates: {
     canonical: siteUrl,
   },
   openGraph: {
-    title: "Cipia · Veille Qualiopi IA livrée chaque mardi à 8h",
-    description:
-      "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA selon les indicateurs Qualiopi 23-26. Export PDF prêt pour l'audit.",
+    title: titleDefault,
+    description: sector.brand.description,
     url: siteUrl,
-    siteName: "Cipia",
+    siteName: sector.brand.name,
     locale: "fr_FR",
     type: "website",
     images: [
@@ -37,15 +41,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Cipia — veille Qualiopi automatisée par IA",
+        // Alt avec vocab Qualiopi : refactore en A.2 quand vocab.* sera utilise ici.
+        alt: `${sector.brand.name} — veille Qualiopi automatisée par IA`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cipia · Veille Qualiopi IA livrée chaque mardi à 8h",
-    description:
-      "Textes réglementaires, appels d'offres et innovations pédagogiques classés par IA pour organismes de formation Qualiopi.",
+    title: titleDefault,
+    description: twitterDescription,
     images: ["/og-image.png"],
   },
   robots: {

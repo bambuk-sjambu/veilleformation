@@ -5,11 +5,15 @@
 // chargement dynamique a runtime, donc tree-shakable et SSR-safe.
 //
 // Pour ajouter un nouveau secteur :
-//   1. Creer `/config/sectors/<id>.json` conforme a SectorConfig.
+//   1. Creer `frontend/src/config/sectors/<id>.json` conforme a SectorConfig.
 //   2. Ajouter une entree dans le switch ci-dessous.
 //   3. Au deploy, fixer `SECTOR=<id>` dans les env vars.
+//
+// Le JSON est volontairement dans frontend/ (Next.js Turbopack refuse les
+// imports hors de la racine du projet). Le loader Python (`config/loader.py`)
+// lit le meme fichier via chemin relatif pour garantir l'unicite.
 
-import cipiaConfig from "../../../config/sectors/cipia.json";
+import cipiaConfig from "./sectors/cipia.json";
 import type { SectorConfig } from "./types";
 
 const SECTORS: Record<string, SectorConfig> = {

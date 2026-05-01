@@ -30,4 +30,4 @@ if (!active) {
 }
 
 export const sector: SectorConfig = active;
-export type { SectorConfig, BrandConfig, VocabConfig, TaxonomyConfig, TaxonomyIndicator } from "./types";
+export type { SectorConfig, BrandConfig, VocabConfig, TaxonomyConfig, TaxonomyIndicator, AuditPdfConfig } from "./types";

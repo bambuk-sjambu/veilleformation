@@ -380,21 +380,36 @@ const formatDate = (dateStr: string | null) => {
   return new Date(dateStr).toLocaleDateString("fr-FR");
 };
 
+// Petit helper pour les placeholders {var} -> value (pas de lib externe).
+const renderTemplate = (tpl: string, vars: Record<string, string | number>): string => {
+  return tpl.replace(/\{(\w+)\}/g, (_, key) =>
+    vars[key] !== undefined ? String(vars[key]) : `{${key}}`
+  );
+};
+
+// Fallback hardcoded pour les sources qui ne seraient pas listees dans
+// `sector.audit_pdf.sourceLabels`. Refactor multi-secteur A.5 : la config
+// secteur est lue en priorite.
+const FALLBACK_SOURCE_LABELS: Record<string, string> = {
+  boamp: "BOAMP",
+  legifrance: "Legifrance",
+  opco_atlas: "OPCO Atlas",
+  opco_akto: "OPCO Akto",
+  opco_ep: "OPCO EP",
+  opco_mobilites: "OPCO Mobilites",
+  constructys: "Constructys",
+  opcommerce: "OP Commerce",
+  ocaopiat: "Ocapiat",
+  france_travail: "France Travail",
+  region: "Region",
+};
+
 const getSourceLabel = (source: string) => {
-  const labels: Record<string, string> = {
-    boamp: "BOAMP",
-    legifrance: "Legifrance",
-    opco_atlas: "OPCO Atlas",
-    opco_akto: "OPCO Akto",
-    opco_ep: "OPCO EP",
-    opco_mobilites: "OPCO Mobilites",
-    constructys: "Constructys",
-    opcommerce: "OP Commerce",
-    ocaopiat: "Ocapiat",
-    france_travail: "France Travail",
-    region: "Region",
-  };
-  return labels[source] || source;
+  return (
+    sector.audit_pdf.sourceLabels[source] ||
+    FALLBACK_SOURCE_LABELS[source] ||
+    source
+  );
 };
 
 export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: AuditPDFProps) {
@@ -459,13 +474,28 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
   const totalArticles = articles.length;
   const maxImpact = Math.max(impactCounts.fort, impactCounts.moyen, impactCounts.faible, 1);
 
+  // Variables de templating utilisees dans les chaines parametrables.
+  const firstIndicatorId = sector.taxonomy.indicators[0]?.id ?? "";
+  const lastIndicatorId =
+    sector.taxonomy.indicators[sector.taxonomy.indicators.length - 1]?.id ?? "";
+  const tplVars = {
+    brandName: sector.brand.name,
+    regulatorName: sector.vocab.regulatorName,
+    firstIndicatorId,
+    lastIndicatorId,
+  };
+  const pdf = sector.audit_pdf;
+  const reportTitle = renderTemplate(pdf.reportTitle, tplVars);
+  const pageFooter = renderTemplate(pdf.pageFooter, tplVars);
+  const pageFooterShort = renderTemplate(pdf.pageFooterShort, tplVars);
+
   return (
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
         <Text style={styles.coverLogo}>{sector.brand.name}</Text>
-        <Text style={styles.coverTitle}>Rapport de Veille Réglementaire</Text>
-        <Text style={styles.coverSubtitle}>Preuve de conformité {sector.vocab.regulatorName} - Indicateurs {sector.taxonomy.indicators[0]?.id} à {sector.taxonomy.indicators[sector.taxonomy.indicators.length - 1]?.id}</Text>
+        <Text style={styles.coverTitle}>{renderTemplate(pdf.coverTitle, tplVars)}</Text>
+        <Text style={styles.coverSubtitle}>{renderTemplate(pdf.coverSubtitle, tplVars)}</Text>
 
         <View style={styles.coverInfo}>
           <View style={styles.coverInfoRow}>
@@ -500,7 +530,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
           )}
         </View>
 
-        <Text style={styles.coverFooter}>Document généré automatiquement par {sector.brand.name}</Text>
+        <Text style={styles.coverFooter}>{renderTemplate(pdf.coverFooter, tplVars)}</Text>
       </Page>
 
       {/* Content Page */}
@@ -513,7 +543,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             {profile?.city && <Text style={styles.companyInfo}>{profile.city}</Text>}
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.reportTitle}>Rapport de Veille {sector.vocab.regulatorName}</Text>
+            <Text style={styles.reportTitle}>{reportTitle}</Text>
             <Text style={styles.reportDate}>Période : {formatDate(dateStart)} - {formatDate(dateEnd)}</Text>
             <Text style={styles.reportDate}>Généré le : {formatDate(new Date().toISOString())}</Text>
           </View>
@@ -521,28 +551,28 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Summary */}
         <View style={styles.summaryBox}>
-          <Text style={styles.summaryTitle}>Résumé Exécutif</Text>
+          <Text style={styles.summaryTitle}>{pdf.sections.summary}</Text>
           <View style={styles.summaryGrid}>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{totalArticles}</Text>
-              <Text style={styles.summaryLabel}>Articles surveillés</Text>
+              <Text style={styles.summaryLabel}>{pdf.summaryLabels.articles}</Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{actionsDone.length}</Text>
-              <Text style={styles.summaryLabel}>Actions complétées</Text>
+              <Text style={styles.summaryLabel}>{pdf.summaryLabels.actionsDone}</Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{actionsInProgress.length}</Text>
-              <Text style={styles.summaryLabel}>En cours</Text>
+              <Text style={styles.summaryLabel}>{pdf.summaryLabels.actionsInProgress}</Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryValue}>{actionsTodo.length}</Text>
-              <Text style={styles.summaryLabel}>À faire</Text>
+              <Text style={styles.summaryLabel}>{pdf.summaryLabels.actionsTodo}</Text>
             </View>
             {sector.taxonomy.indicators[0] && (
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryValue}>{articlesByIndicator[sector.taxonomy.indicators[0].id]?.length ?? 0}</Text>
-                <Text style={styles.summaryLabel}>Ind. {sector.taxonomy.indicators[0].id}</Text>
+                <Text style={styles.summaryLabel}>{renderTemplate(pdf.summaryLabels.firstIndicator, { indicatorId: sector.taxonomy.indicators[0].id })}</Text>
               </View>
             )}
           </View>
@@ -550,23 +580,23 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Impact Distribution */}
         <View style={styles.impactBox}>
-          <Text style={{ fontSize: 10, fontWeight: "bold", color: "#374151", marginBottom: 8 }}>Répartition par niveau d'impact</Text>
+          <Text style={{ fontSize: 10, fontWeight: "bold", color: "#374151", marginBottom: 8 }}>{pdf.sections.impactDistribution}</Text>
           <View style={styles.impactRow}>
-            <Text style={styles.impactLabel}>Fort</Text>
+            <Text style={styles.impactLabel}>{pdf.impactLabels.fort}</Text>
             <View style={styles.impactBar}>
               <View style={[styles.impactBarFill, styles.impactBarFort, { width: `${(impactCounts.fort / maxImpact) * 100}%` }]} />
             </View>
             <Text style={styles.impactCount}>{impactCounts.fort} articles</Text>
           </View>
           <View style={styles.impactRow}>
-            <Text style={styles.impactLabel}>Moyen</Text>
+            <Text style={styles.impactLabel}>{pdf.impactLabels.moyen}</Text>
             <View style={styles.impactBar}>
               <View style={[styles.impactBarFill, styles.impactBarMoyen, { width: `${(impactCounts.moyen / maxImpact) * 100}%` }]} />
             </View>
             <Text style={styles.impactCount}>{impactCounts.moyen} articles</Text>
           </View>
           <View style={styles.impactRow}>
-            <Text style={styles.impactLabel}>Faible</Text>
+            <Text style={styles.impactLabel}>{pdf.impactLabels.faible}</Text>
             <View style={styles.impactBar}>
               <View style={[styles.impactBarFill, styles.impactBarFaible, { width: `${(impactCounts.faible / maxImpact) * 100}%` }]} />
             </View>
@@ -576,7 +606,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
         {/* Sources */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sources de Veille</Text>
+          <Text style={styles.sectionTitle}>{pdf.sections.sources}</Text>
           <View style={styles.sourcesTable}>
             <View style={[styles.sourceRow, { backgroundColor: "#f3f4f6" }]}>
               <Text style={[styles.sourceName, { fontWeight: "bold" }]}>Source</Text>
@@ -594,14 +624,14 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         {/* Methodology */}
         {profile?.methodology_notes && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Méthodologie de Veille</Text>
+            <Text style={styles.sectionTitle}>{pdf.sections.methodology}</Text>
             <Text style={{ fontSize: 9, color: "#4b5563", lineHeight: 1.4 }}>{profile.methodology_notes}</Text>
           </View>
         )}
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par {sector.brand.name} - Certification {sector.vocab.regulatorName}</Text>
+          <Text>{pageFooter}</Text>
           <Text>Page 2</Text>
         </View>
       </Page>
@@ -613,14 +643,14 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             <Text style={styles.companyName}>{profile?.company_name || "Organisme de Formation"}</Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.reportTitle}>Actions Menées</Text>
+            <Text style={styles.reportTitle}>{pdf.sections.actions}</Text>
           </View>
         </View>
 
         <View style={styles.section}>
           {actionsDone.length > 0 && (
             <View style={styles.actionSection}>
-              <Text style={[styles.actionGroupTitle, { color: "#059669" }]}>Actions complétées ({actionsDone.length})</Text>
+              <Text style={[styles.actionGroupTitle, { color: "#059669" }]}>{renderTemplate(pdf.actionStatusLabels.done, { count: actionsDone.length })}</Text>
               {actionsDone.slice(0, 8).map((action) => (
                 <View key={action.id} style={styles.action}>
                   <Text style={styles.actionDescription}>{action.action_description}</Text>
@@ -637,7 +667,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
           {actionsInProgress.length > 0 && (
             <View style={styles.actionSection}>
-              <Text style={[styles.actionGroupTitle, { color: "#d97706" }]}>Actions en cours ({actionsInProgress.length})</Text>
+              <Text style={[styles.actionGroupTitle, { color: "#d97706" }]}>{renderTemplate(pdf.actionStatusLabels.inProgress, { count: actionsInProgress.length })}</Text>
               {actionsInProgress.slice(0, 5).map((action) => (
                 <View key={action.id} style={[styles.action, styles.actionInProgress]}>
                   <Text style={styles.actionDescription}>{action.action_description}</Text>
@@ -651,7 +681,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
 
           {actionsTodo.length > 0 && (
             <View style={styles.actionSection}>
-              <Text style={[styles.actionGroupTitle, { color: "#6b7280" }]}>Actions planifiées ({actionsTodo.length})</Text>
+              <Text style={[styles.actionGroupTitle, { color: "#6b7280" }]}>{renderTemplate(pdf.actionStatusLabels.todo, { count: actionsTodo.length })}</Text>
               {actionsTodo.slice(0, 5).map((action) => (
                 <View key={action.id} style={[styles.action, styles.actionTodo]}>
                   <Text style={styles.actionDescription}>{action.action_description}</Text>
@@ -667,19 +697,19 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         {/* Signature */}
         <View style={styles.signatureSection}>
           <View style={styles.signatureBox}>
-            <Text style={styles.signatureLabel}>Le responsable veille</Text>
+            <Text style={styles.signatureLabel}>{pdf.signatureLabels.responsibleRole}</Text>
             <View style={styles.signatureLine} />
-            <Text style={styles.signatureLabel}>{profile?.responsible_name || "Nom et signature"}</Text>
+            <Text style={styles.signatureLabel}>{profile?.responsible_name || pdf.signatureLabels.nameAndSignaturePlaceholder}</Text>
           </View>
           <View style={styles.signatureBox}>
-            <Text style={styles.signatureLabel}>Le directeur</Text>
+            <Text style={styles.signatureLabel}>{pdf.signatureLabels.directorRole}</Text>
             <View style={styles.signatureLine} />
-            <Text style={styles.signatureLabel}>Nom et signature</Text>
+            <Text style={styles.signatureLabel}>{pdf.signatureLabels.nameAndSignaturePlaceholder}</Text>
           </View>
         </View>
 
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par {sector.brand.name}</Text>
+          <Text>{pageFooterShort}</Text>
           <Text>Page 3</Text>
         </View>
       </Page>
@@ -691,7 +721,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
             <Text style={styles.companyName}>{profile?.company_name || "Organisme de Formation"}</Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={styles.reportTitle}>Détail par Indicateur</Text>
+            <Text style={styles.reportTitle}>{pdf.sections.detailByIndicator}</Text>
           </View>
         </View>
 
@@ -719,7 +749,7 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
         ))}
 
         <View style={styles.footer} fixed>
-          <Text>Rapport généré par {sector.brand.name}</Text>
+          <Text>{pageFooterShort}</Text>
           <Text>Page 4</Text>
         </View>
       </Page>

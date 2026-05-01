@@ -49,5 +49,56 @@
       }
     ],
     "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]
+  },
+  "audit_pdf": {
+    "coverTitle": "Rapport de Veille Réglementaire",
+    "coverSubtitle": "Preuve de conformité {regulatorName} - Indicateurs {firstIndicatorId} à {lastIndicatorId}",
+    "coverFooter": "Document généré automatiquement par {brandName}",
+    "reportTitle": "Rapport de Veille {regulatorName}",
+    "pageFooter": "Rapport généré par {brandName} - Certification {regulatorName}",
+    "pageFooterShort": "Rapport généré par {brandName}",
+    "sections": {
+      "summary": "Résumé Exécutif",
+      "impactDistribution": "Répartition par niveau d'impact",
+      "sources": "Sources de Veille",
+      "methodology": "Méthodologie de Veille",
+      "actions": "Actions Menées",
+      "detailByIndicator": "Détail par Indicateur"
+    },
+    "summaryLabels": {
+      "articles": "Articles surveillés",
+      "actionsDone": "Actions complétées",
+      "actionsInProgress": "En cours",
+      "actionsTodo": "À faire",
+      "firstIndicator": "Ind. {indicatorId}"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "actionStatusLabels": {
+      "done": "Actions complétées ({count})",
+      "inProgress": "Actions en cours ({count})",
+      "todo": "Actions planifiées ({count})"
+    },
+    "signatureLabels": {
+      "responsibleRole": "Le responsable veille",
+      "directorRole": "Le directeur",
+      "nameAndSignaturePlaceholder": "Nom et signature"
+    },
+    "sourceLabels": {
+      "boamp": "BOAMP",
+      "legifrance": "Legifrance",
+      "opco_atlas": "OPCO Atlas",
+      "opco_akto": "OPCO Akto",
+      "opco_ep": "OPCO EP",
+      "opco_mobilites": "OPCO Mobilites",
+      "constructys": "Constructys",
+      "opcommerce": "OP Commerce",
+      "ocaopiat": "Ocapiat",
+      "france_travail": "France Travail",
+      "region": "Region"
+    }
   }
 }

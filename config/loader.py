@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 
 @dataclass(frozen=True)
@@ -55,11 +55,68 @@ class TaxonomyConfig:
 
 
 @dataclass(frozen=True)
+class AuditPdfSectionsConfig:
+    summary: str
+    impactDistribution: str
+    sources: str
+    methodology: str
+    actions: str
+    detailByIndicator: str
+
+
+@dataclass(frozen=True)
+class AuditPdfSummaryLabelsConfig:
+    articles: str
+    actionsDone: str
+    actionsInProgress: str
+    actionsTodo: str
+    firstIndicator: str
+
+
+@dataclass(frozen=True)
+class AuditPdfImpactLabelsConfig:
+    fort: str
+    moyen: str
+    faible: str
+
+
+@dataclass(frozen=True)
+class AuditPdfActionStatusLabelsConfig:
+    done: str
+    inProgress: str
+    todo: str
+
+
+@dataclass(frozen=True)
+class AuditPdfSignatureLabelsConfig:
+    responsibleRole: str
+    directorRole: str
+    nameAndSignaturePlaceholder: str
+
+
+@dataclass(frozen=True)
+class AuditPdfConfig:
+    coverTitle: str
+    coverSubtitle: str
+    coverFooter: str
+    reportTitle: str
+    pageFooter: str
+    pageFooterShort: str
+    sections: AuditPdfSectionsConfig
+    summaryLabels: AuditPdfSummaryLabelsConfig
+    impactLabels: AuditPdfImpactLabelsConfig
+    actionStatusLabels: AuditPdfActionStatusLabelsConfig
+    signatureLabels: AuditPdfSignatureLabelsConfig
+    sourceLabels: Dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
 class SectorConfig:
     id: str
     brand: BrandConfig
     vocab: VocabConfig
     taxonomy: TaxonomyConfig
+    audit_pdf: AuditPdfConfig
 
 
 # Le JSON est physiquement dans frontend/ (Next.js refuse les imports hors
@@ -102,4 +159,27 @@ def load_sector(sector_id: str | None = None) -> SectorConfig:
         indicators=[TaxonomyIndicator(**i) for i in raw["taxonomy"]["indicators"]],
         categories=list(raw["taxonomy"]["categories"]),
     )
-    return SectorConfig(id=raw["id"], brand=brand, vocab=vocab, taxonomy=taxonomy)
+    pdf_raw = raw["audit_pdf"]
+    audit_pdf = AuditPdfConfig(
+        coverTitle=pdf_raw["coverTitle"],
+        coverSubtitle=pdf_raw["coverSubtitle"],
+        coverFooter=pdf_raw["coverFooter"],
+        reportTitle=pdf_raw["reportTitle"],
+        pageFooter=pdf_raw["pageFooter"],
+        pageFooterShort=pdf_raw["pageFooterShort"],
+        sections=AuditPdfSectionsConfig(**pdf_raw["sections"]),
+        summaryLabels=AuditPdfSummaryLabelsConfig(**pdf_raw["summaryLabels"]),
+        impactLabels=AuditPdfImpactLabelsConfig(**pdf_raw["impactLabels"]),
+        actionStatusLabels=AuditPdfActionStatusLabelsConfig(
+            **pdf_raw["actionStatusLabels"]
+        ),
+        signatureLabels=AuditPdfSignatureLabelsConfig(**pdf_raw["signatureLabels"]),
+        sourceLabels=dict(pdf_raw.get("sourceLabels", {})),
+    )
+    return SectorConfig(
+        id=raw["id"],
+        brand=brand,
+        vocab=vocab,
+        taxonomy=taxonomy,
+        audit_pdf=audit_pdf,
+    )

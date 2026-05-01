@@ -57,10 +57,83 @@ export interface TaxonomyConfig {
   categories: string[];
 }
 
+export interface AuditPdfSectionsConfig {
+  /** Titre de la section "Résumé Exécutif". */
+  summary: string;
+  /** Titre de la section "Répartition par niveau d'impact". */
+  impactDistribution: string;
+  /** Titre de la section "Sources de Veille". */
+  sources: string;
+  /** Titre de la section "Méthodologie de Veille". */
+  methodology: string;
+  /** Titre de la page "Actions Menées". */
+  actions: string;
+  /** Titre de la page "Détail par Indicateur". */
+  detailByIndicator: string;
+}
+
+export interface AuditPdfSummaryLabelsConfig {
+  /** Ex: "Articles surveillés". */
+  articles: string;
+  /** Ex: "Actions complétées". */
+  actionsDone: string;
+  /** Ex: "En cours". */
+  actionsInProgress: string;
+  /** Ex: "À faire". */
+  actionsTodo: string;
+  /** Template avec {indicatorId}, ex: "Ind. {indicatorId}". */
+  firstIndicator: string;
+}
+
+export interface AuditPdfImpactLabelsConfig {
+  fort: string;
+  moyen: string;
+  faible: string;
+}
+
+export interface AuditPdfActionStatusLabelsConfig {
+  /** Templates avec {count}. */
+  done: string;
+  inProgress: string;
+  todo: string;
+}
+
+export interface AuditPdfSignatureLabelsConfig {
+  /** Ex: "Le responsable veille". */
+  responsibleRole: string;
+  /** Ex: "Le directeur". */
+  directorRole: string;
+  /** Ex: "Nom et signature". */
+  nameAndSignaturePlaceholder: string;
+}
+
+export interface AuditPdfConfig {
+  /** Titre principal sur la page de garde (ex: "Rapport de Veille Réglementaire"). */
+  coverTitle: string;
+  /** Sous-titre cover. Placeholders: {regulatorName} {firstIndicatorId} {lastIndicatorId}. */
+  coverSubtitle: string;
+  /** Texte de bas de page de cover. Placeholders: {brandName}. */
+  coverFooter: string;
+  /** Titre du rapport (header de chaque page de contenu). Placeholders: {regulatorName}. */
+  reportTitle: string;
+  /** Footer page principale (longue). Placeholders: {brandName} {regulatorName}. */
+  pageFooter: string;
+  /** Footer pages secondaires (courte). Placeholders: {brandName}. */
+  pageFooterShort: string;
+  sections: AuditPdfSectionsConfig;
+  summaryLabels: AuditPdfSummaryLabelsConfig;
+  impactLabels: AuditPdfImpactLabelsConfig;
+  actionStatusLabels: AuditPdfActionStatusLabelsConfig;
+  signatureLabels: AuditPdfSignatureLabelsConfig;
+  /** Labels lisibles des sources (clé = `articles.source` en DB). */
+  sourceLabels: Record<string, string>;
+}
+
 export interface SectorConfig {
   /** ID stable du secteur (ex: "cipia", "haccp", "avocats"). */
   id: string;
   brand: BrandConfig;
   vocab: VocabConfig;
   taxonomy: TaxonomyConfig;
+  audit_pdf: AuditPdfConfig;
 }

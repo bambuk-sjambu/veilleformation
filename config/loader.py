@@ -111,12 +111,93 @@ class AuditPdfConfig:
 
 
 @dataclass(frozen=True)
+class NewsletterSubjectConfig:
+    template: str
+    highImpactPrefix: str
+
+
+@dataclass(frozen=True)
+class NewsletterHeaderConfig:
+    title: str
+    editionLine: str
+    viewOnlineLabel: str
+
+
+@dataclass(frozen=True)
+class NewsletterSectionConfig:
+    title: str
+    subtitle: str
+    readMoreLabel: str
+
+
+@dataclass(frozen=True)
+class NewsletterSectionsConfig:
+    reglementaire: NewsletterSectionConfig
+    ao: NewsletterSectionConfig
+    metier: NewsletterSectionConfig
+    handicap: NewsletterSectionConfig
+
+
+@dataclass(frozen=True)
+class NewsletterAoLabelsConfig:
+    deadline: str
+    amount: str
+    region: str
+    score: str
+
+
+@dataclass(frozen=True)
+class NewsletterImpactLabelsConfig:
+    fort: str
+    moyen: str
+    faible: str
+
+
+@dataclass(frozen=True)
+class NewsletterStatBlockConfig:
+    label: str
+    caption: str
+
+
+@dataclass(frozen=True)
+class NewsletterCtaConfig:
+    label: str
+    urlTemplate: str
+
+
+@dataclass(frozen=True)
+class NewsletterFooterConfig:
+    disclaimer: str
+    unsubscribeLabel: str
+    unsubscribeUrlTemplate: str
+    contactLabel: str
+    contactEmail: str
+    siteLabel: str
+    siteUrl: str
+
+
+@dataclass(frozen=True)
+class NewsletterConfig:
+    subject: NewsletterSubjectConfig
+    header: NewsletterHeaderConfig
+    intro: str
+    sections: NewsletterSectionsConfig
+    aoOpportunityWord: str
+    aoLabels: NewsletterAoLabelsConfig
+    impactLabels: NewsletterImpactLabelsConfig
+    statBlock: NewsletterStatBlockConfig
+    cta: NewsletterCtaConfig
+    footer: NewsletterFooterConfig
+
+
+@dataclass(frozen=True)
 class SectorConfig:
     id: str
     brand: BrandConfig
     vocab: VocabConfig
     taxonomy: TaxonomyConfig
     audit_pdf: AuditPdfConfig
+    newsletter: NewsletterConfig
 
 
 # Le JSON est physiquement dans frontend/ (Next.js refuse les imports hors
@@ -176,10 +257,32 @@ def load_sector(sector_id: str | None = None) -> SectorConfig:
         signatureLabels=AuditPdfSignatureLabelsConfig(**pdf_raw["signatureLabels"]),
         sourceLabels=dict(pdf_raw.get("sourceLabels", {})),
     )
+
+    nl_raw = raw["newsletter"]
+    sections_raw = nl_raw["sections"]
+    newsletter = NewsletterConfig(
+        subject=NewsletterSubjectConfig(**nl_raw["subject"]),
+        header=NewsletterHeaderConfig(**nl_raw["header"]),
+        intro=nl_raw["intro"],
+        sections=NewsletterSectionsConfig(
+            reglementaire=NewsletterSectionConfig(**sections_raw["reglementaire"]),
+            ao=NewsletterSectionConfig(**sections_raw["ao"]),
+            metier=NewsletterSectionConfig(**sections_raw["metier"]),
+            handicap=NewsletterSectionConfig(**sections_raw["handicap"]),
+        ),
+        aoOpportunityWord=nl_raw["aoOpportunityWord"],
+        aoLabels=NewsletterAoLabelsConfig(**nl_raw["aoLabels"]),
+        impactLabels=NewsletterImpactLabelsConfig(**nl_raw["impactLabels"]),
+        statBlock=NewsletterStatBlockConfig(**nl_raw["statBlock"]),
+        cta=NewsletterCtaConfig(**nl_raw["cta"]),
+        footer=NewsletterFooterConfig(**nl_raw["footer"]),
+    )
+
     return SectorConfig(
         id=raw["id"],
         brand=brand,
         vocab=vocab,
         taxonomy=taxonomy,
         audit_pdf=audit_pdf,
+        newsletter=newsletter,
     )

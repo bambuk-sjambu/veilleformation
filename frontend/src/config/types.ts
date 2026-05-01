@@ -129,6 +129,110 @@ export interface AuditPdfConfig {
   sourceLabels: Record<string, string>;
 }
 
+// ---------------------------------------------------------------------------
+// Newsletter (email hebdomadaire) — A.6
+// ---------------------------------------------------------------------------
+
+export interface NewsletterSectionConfig {
+  /** Titre de la section (ex: "Veille réglementaire"). */
+  title: string;
+  /** Sous-titre / hint sous le titre (ex: "Indicateur 23 Qualiopi").
+   *  Peut être vide. Placeholders : {count}. */
+  subtitle: string;
+  /** Texte du lien "lire" sous chaque article (ex: "Lire le texte original →"). */
+  readMoreLabel: string;
+}
+
+export interface NewsletterAoLabelsConfig {
+  /** Label "Limite :" devant la date limite. */
+  deadline: string;
+  /** Label "Montant :" devant le montant estimé. */
+  amount: string;
+  /** Label "Région :" devant la région. */
+  region: string;
+  /** Label "Score :" devant le score de pertinence. */
+  score: string;
+}
+
+export interface NewsletterFooterConfig {
+  /** Texte du bloc disclaimer (peut contenir <br/>). */
+  disclaimer: string;
+  /** Label du lien de désabonnement. */
+  unsubscribeLabel: string;
+  /** URL de désabonnement (template avec {unsubscribeToken}). */
+  unsubscribeUrlTemplate: string;
+  /** Label du lien contact. */
+  contactLabel: string;
+  /** Email de contact (template avec {domain}). */
+  contactEmail: string;
+  /** Label du lien vers le site. */
+  siteLabel: string;
+  /** URL du site (template avec {domain}). */
+  siteUrl: string;
+}
+
+export interface NewsletterStatBlockConfig {
+  /** Label en haut du bloc "chiffre de la semaine" (ex: "Le chiffre de la semaine"). */
+  label: string;
+  /** Légende sous le chiffre. Placeholders: {regulatorName}. */
+  caption: string;
+}
+
+export interface NewsletterCtaConfig {
+  /** Texte du bouton principal CTA en bas du mail. */
+  label: string;
+  /** URL de destination (template avec {domain}). */
+  urlTemplate: string;
+}
+
+export interface NewsletterSubjectConfig {
+  /** Template du sujet. Placeholders : {brandName} {edition} {nbTextes} {textesPlural} {nbAo} {aoPlural}. */
+  template: string;
+  /** Préfixe ajouté quand un article fort impact est présent (ex: "⚠️ Impact fort — "). */
+  highImpactPrefix: string;
+}
+
+export interface NewsletterHeaderConfig {
+  /** Titre principal du header (en gros, ex: "Cipia"). */
+  title: string;
+  /** Sous-titre du header avec édition + dates.
+   *  Placeholders : {edition} {dateStart} {dateEnd}. */
+  editionLine: string;
+  /** Label du lien "Voir en ligne". */
+  viewOnlineLabel: string;
+}
+
+export interface NewsletterConfig {
+  /** Configuration du sujet d'email. */
+  subject: NewsletterSubjectConfig;
+  /** Header (haut du mail). */
+  header: NewsletterHeaderConfig;
+  /** Paragraphe d'intro juste sous le header.
+   *  Placeholders : {audience}. Peut contenir <br/>. */
+  intro: string;
+  /** Sections principales — clés alignées avec les categories DB. */
+  sections: {
+    reglementaire: NewsletterSectionConfig;
+    ao: NewsletterSectionConfig;
+    metier: NewsletterSectionConfig;
+    handicap: NewsletterSectionConfig;
+  };
+  /** Pluriel de l'unité d'opportunité utilisé dans `sections.ao.subtitle`
+   *  (ex: "opportunité"). Mis à part car invariant à l'AO et nécessite
+   *  un test de pluriel automatique. */
+  aoOpportunityWord: string;
+  /** Labels du bloc "appels d'offres". */
+  aoLabels: NewsletterAoLabelsConfig;
+  /** Labels des badges d'impact. */
+  impactLabels: AuditPdfImpactLabelsConfig;
+  /** Bloc "le chiffre de la semaine". */
+  statBlock: NewsletterStatBlockConfig;
+  /** Bouton CTA principal. */
+  cta: NewsletterCtaConfig;
+  /** Footer (bas du mail). */
+  footer: NewsletterFooterConfig;
+}
+
 export interface SectorConfig {
   /** ID stable du secteur (ex: "cipia", "haccp", "avocats"). */
   id: string;
@@ -136,4 +240,5 @@ export interface SectorConfig {
   vocab: VocabConfig;
   taxonomy: TaxonomyConfig;
   audit_pdf: AuditPdfConfig;
+  newsletter: NewsletterConfig;
 }

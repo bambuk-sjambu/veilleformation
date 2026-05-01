@@ -1,7 +1,11 @@
-"""Newsletter generator for Cipia.
+"""Newsletter generator (paramétrable par secteur).
 
 Selects processed articles, renders a responsive HTML email,
 and marks articles as sent once the newsletter is dispatched.
+
+Refactor multi-secteur A.6 : tous les libellés utilisateur (sujet, header,
+sections, footer, CTA) sont lus depuis `sector.newsletter` plutôt que
+hardcodés. Les couleurs (CSS) restent en dur — non user-facing.
 """
 
 import json
@@ -12,6 +16,7 @@ from typing import Optional
 
 from jinja2 import Template
 
+from config import load_sector
 from storage.database import get_connection
 
 logger = logging.getLogger("veille.newsletter")
@@ -22,17 +27,38 @@ logger = logging.getLogger("veille.newsletter")
 # ---------------------------------------------------------------------------
 IMPACT_ORDER = {"fort": 0, "moyen": 1, "faible": 2}
 
+# Couleurs CSS — pas user-facing donc hardcodées (cohérent avec les classes
+# Tailwind/styles utilisés par le frontend).
 IMPACT_COLORS = {
     "fort": "#DC2626",
     "moyen": "#F59E0B",
     "faible": "#10B981",
 }
 
+# Fallback hardcoded — la source de vérité est `sector.newsletter.impactLabels`.
+# Ce dict est conservé pour des cas où la config ne serait pas disponible
+# (tests bas niveau, scripts utilitaires).
 IMPACT_LABELS = {
     "fort": "Fort",
     "moyen": "Moyen",
     "faible": "Faible",
 }
+
+
+# ---------------------------------------------------------------------------
+# Templating helper
+# ---------------------------------------------------------------------------
+
+def _render_tpl(tpl: str, **kwargs) -> str:
+    """Substitution {placeholder} -> value, robuste aux placeholders inconnus.
+
+    Évite str.format() qui crashe sur un placeholder inattendu, et qui n'aime
+    pas les accolades littérales dans le texte.
+    """
+    out = tpl
+    for key, value in kwargs.items():
+        out = out.replace("{" + key + "}", str(value))
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -165,16 +191,28 @@ def generate_newsletter_subject(
 ) -> str:
     """Generate the email subject line.
 
-    Format: 'Cipia #N -- X textes, Y appels d'offres'
-    Prefixed with a warning emoji when a high-impact text is present.
+    Sujet et pr\u00e9fixe haut-impact lus depuis `sector.newsletter.subject`.
+    Format Cipia par d\u00e9faut : "Cipia #N \u2014 X textes, Y appels d'offres"
+    avec pr\u00e9fixe "\u26a0\ufe0f Impact fort \u2014 " quand has_high_impact.
     """
+    sector = load_sector()
+    nl_subject = sector.newsletter.subject
+
     nb_textes = stats.get("reglementaire", 0) + stats.get("metier", 0) + stats.get("handicap", 0)
     nb_ao = stats.get("ao", 0)
 
-    subject = f"Cipia #{edition_number} \u2014 {nb_textes} texte{'s' if nb_textes != 1 else ''}, {nb_ao} appel{'s' if nb_ao != 1 else ''} d'offres"
+    subject = _render_tpl(
+        nl_subject.template,
+        brandName=sector.brand.name,
+        edition=edition_number,
+        nbTextes=nb_textes,
+        textesPlural="s" if nb_textes != 1 else "",
+        nbAo=nb_ao,
+        aoPlural="s" if nb_ao != 1 else "",
+    )
 
     if has_high_impact:
-        subject = f"\u26a0\ufe0f Impact fort \u2014 {subject}"
+        subject = nl_subject.highImpactPrefix + subject
 
     return subject
 
@@ -192,7 +230,7 @@ NEWSLETTER_TEMPLATE = """\
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Cipia #{{ edition_number }}</title>
+<title>{{ header_title }} #{{ edition_number }}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F3F4F6;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 
@@ -206,12 +244,12 @@ NEWSLETTER_TEMPLATE = """\
 <!-- ===== HEADER ===== -->
 <tr>
 <td style="background-color:#1E40AF;padding:28px 32px;text-align:center;">
-  <h1 style="margin:0;font-size:24px;color:#FFFFFF;font-weight:700;">Cipia</h1>
+  <h1 style="margin:0;font-size:24px;color:#FFFFFF;font-weight:700;">{{ header_title }}</h1>
   <p style="margin:8px 0 0;font-size:14px;color:#BFDBFE;">
-    Edition #{{ edition_number }} &mdash; {{ date_debut_fmt }} au {{ date_fin_fmt }}
+    {{ header_edition_line }}
   </p>
   <p style="margin:10px 0 0;font-size:12px;">
-    <a href="{{ archive_url }}" style="color:#93C5FD;text-decoration:underline;">Voir en ligne</a>
+    <a href="{{ archive_url }}" style="color:#93C5FD;text-decoration:underline;">{{ header_view_online_label }}</a>
   </p>
 </td>
 </tr>
@@ -220,8 +258,7 @@ NEWSLETTER_TEMPLATE = """\
 <tr>
 <td style="padding:24px 32px 8px;">
   <p style="margin:0;font-size:14px;color:#6B7280;line-height:1.5;">
-    Bonjour,<br/>Voici votre veille réglementaire et appels d'offres de la semaine
-    pour les organismes de formation certifiés Qualiopi.
+    {{ intro_html|safe }}
   </p>
 </td>
 </tr>
@@ -233,8 +270,8 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #1E40AF;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#1E40AF;">Veille réglementaire</h2>
-      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Indicateur 23 Qualiopi</p>
+      <h2 style="margin:0;font-size:18px;color:#1E40AF;">{{ section_reglementaire.title }}</h2>
+      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ section_reglementaire.subtitle }}</p>
     </td>
   </tr>
   </table>
@@ -251,7 +288,7 @@ NEWSLETTER_TEMPLATE = """\
     <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#111827;line-height:1.3;">{{ art.title }}</p>
     <p style="margin:0 0 6px;font-size:13px;color:#374151;line-height:1.5;">{{ art.summary or '' }}</p>
     {% if art.url %}
-    <p style="margin:0;font-size:12px;"><a href="{{ art.url }}" style="color:#1E40AF;text-decoration:underline;">Lire le texte original &rarr;</a></p>
+    <p style="margin:0;font-size:12px;"><a href="{{ art.url }}" style="color:#1E40AF;text-decoration:underline;">{{ section_reglementaire.readMoreLabel }}</a></p>
     {% endif %}
   </td></tr>
   </table>
@@ -267,8 +304,8 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #F59E0B;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#92400E;">Appels d'offres formation</h2>
-      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ ao|length }} opportunité{{ 's' if ao|length != 1 else '' }} cette semaine</p>
+      <h2 style="margin:0;font-size:18px;color:#92400E;">{{ section_ao.title }}</h2>
+      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ section_ao_subtitle }}</p>
     </td>
   </tr>
   </table>
@@ -284,21 +321,21 @@ NEWSLETTER_TEMPLATE = """\
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:12px;color:#6B7280;">
     <tr>
       {% if art.date_limite %}
-      <td style="padding-right:16px;"><strong>Limite :</strong> {{ art.date_limite }}</td>
+      <td style="padding-right:16px;"><strong>{{ ao_labels.deadline }}</strong> {{ art.date_limite }}</td>
       {% endif %}
       {% if art.montant_estime %}
-      <td style="padding-right:16px;"><strong>Montant :</strong> {{ "%.0f"|format(art.montant_estime) }} &euro;</td>
+      <td style="padding-right:16px;"><strong>{{ ao_labels.amount }}</strong> {{ "%.0f"|format(art.montant_estime) }} &euro;</td>
       {% endif %}
       {% if art.region %}
-      <td style="padding-right:16px;"><strong>Région :</strong> {{ art.region }}</td>
+      <td style="padding-right:16px;"><strong>{{ ao_labels.region }}</strong> {{ art.region }}</td>
       {% endif %}
       {% if art.relevance_score %}
-      <td><strong>Score :</strong> {{ art.relevance_score }}/10</td>
+      <td><strong>{{ ao_labels.score }}</strong> {{ art.relevance_score }}/10</td>
       {% endif %}
     </tr>
     </table>
     {% if art.url %}
-    <p style="margin:8px 0 0;font-size:12px;"><a href="{{ art.url }}" style="color:#92400E;text-decoration:underline;">Voir le marché &rarr;</a></p>
+    <p style="margin:8px 0 0;font-size:12px;"><a href="{{ art.url }}" style="color:#92400E;text-decoration:underline;">{{ section_ao.readMoreLabel }}</a></p>
     {% endif %}
   </td></tr>
   </table>
@@ -314,8 +351,8 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #10B981;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#065F46;">Veille métier &amp; innovation</h2>
-      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Indicateurs 24 &amp; 25 Qualiopi</p>
+      <h2 style="margin:0;font-size:18px;color:#065F46;">{{ section_metier.title }}</h2>
+      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ section_metier.subtitle }}</p>
     </td>
   </tr>
   </table>
@@ -329,7 +366,7 @@ NEWSLETTER_TEMPLATE = """\
     <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#111827;line-height:1.3;">{{ art.title }}</p>
     <p style="margin:0 0 6px;font-size:13px;color:#374151;line-height:1.5;">{{ art.summary or '' }}</p>
     {% if art.url %}
-    <p style="margin:0;font-size:12px;"><a href="{{ art.url }}" style="color:#065F46;text-decoration:underline;">En savoir plus &rarr;</a></p>
+    <p style="margin:0;font-size:12px;"><a href="{{ art.url }}" style="color:#065F46;text-decoration:underline;">{{ section_metier.readMoreLabel }}</a></p>
     {% endif %}
   </td></tr>
   </table>
@@ -345,8 +382,8 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="border-bottom:3px solid #7C3AED;padding-bottom:6px;">
-      <h2 style="margin:0;font-size:18px;color:#5B21B6;">Handicap &amp; accessibilité</h2>
-      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">Indicateur 26 Qualiopi</p>
+      <h2 style="margin:0;font-size:18px;color:#5B21B6;">{{ section_handicap.title }}</h2>
+      <p style="margin:2px 0 0;font-size:12px;color:#6B7280;">{{ section_handicap.subtitle }}</p>
     </td>
   </tr>
   </table>
@@ -360,7 +397,7 @@ NEWSLETTER_TEMPLATE = """\
     <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#111827;line-height:1.3;">{{ art.title }}</p>
     <p style="margin:0 0 6px;font-size:13px;color:#374151;line-height:1.5;">{{ art.summary or '' }}</p>
     {% if art.url %}
-    <p style="margin:0;font-size:12px;"><a href="{{ art.url }}" style="color:#5B21B6;text-decoration:underline;">En savoir plus &rarr;</a></p>
+    <p style="margin:0;font-size:12px;"><a href="{{ art.url }}" style="color:#5B21B6;text-decoration:underline;">{{ section_handicap.readMoreLabel }}</a></p>
     {% endif %}
   </td></tr>
   </table>
@@ -374,9 +411,9 @@ NEWSLETTER_TEMPLATE = """\
 <td style="padding:24px 32px 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EFF6FF;border-radius:8px;text-align:center;padding:20px;">
   <tr><td style="padding:20px;">
-    <p style="margin:0;font-size:12px;color:#1E40AF;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Le chiffre de la semaine</p>
+    <p style="margin:0;font-size:12px;color:#1E40AF;font-weight:700;text-transform:uppercase;letter-spacing:1px;">{{ stat_block_label }}</p>
     <p style="margin:8px 0;font-size:36px;font-weight:700;color:#1E40AF;">{{ stats.total }}</p>
-    <p style="margin:0;font-size:13px;color:#374151;">textes et appels d'offres analysés par notre IA pour vous faire gagner du temps sur votre veille Qualiopi.</p>
+    <p style="margin:0;font-size:13px;color:#374151;">{{ stat_block_caption }}</p>
   </td></tr>
   </table>
 </td>
@@ -388,7 +425,7 @@ NEWSLETTER_TEMPLATE = """\
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
   <tr>
     <td style="background-color:#1E40AF;border-radius:6px;">
-      <a href="https://cipia.fr" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">Découvrir tous les articles</a>
+      <a href="{{ cta_url }}" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">{{ cta_label }}</a>
     </td>
   </tr>
   </table>
@@ -399,15 +436,14 @@ NEWSLETTER_TEMPLATE = """\
 <tr>
 <td style="background-color:#F9FAFB;padding:20px 32px;border-top:1px solid #E5E7EB;">
   <p style="margin:0 0 6px;font-size:12px;color:#9CA3AF;text-align:center;">
-    Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>
-    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas un avis juridique.
+    {{ footer_disclaimer_html|safe }}
   </p>
   <p style="margin:8px 0 0;font-size:12px;color:#9CA3AF;text-align:center;">
-    <a href="{{ unsubscribe_url }}" style="color:#6B7280;text-decoration:underline;">Se désabonner</a>
+    <a href="{{ unsubscribe_url }}" style="color:#6B7280;text-decoration:underline;">{{ footer_unsubscribe_label }}</a>
     &nbsp;&bull;&nbsp;
-    <a href="mailto:contact@cipia.fr" style="color:#6B7280;text-decoration:underline;">Contact</a>
+    <a href="mailto:{{ footer_contact_email }}" style="color:#6B7280;text-decoration:underline;">{{ footer_contact_label }}</a>
     &nbsp;&bull;&nbsp;
-    <a href="https://cipia.fr" style="color:#6B7280;text-decoration:underline;">Cipia</a>
+    <a href="{{ footer_site_url }}" style="color:#6B7280;text-decoration:underline;">{{ footer_site_label }}</a>
   </p>
 </td>
 </tr>
@@ -453,13 +489,26 @@ def generate_newsletter_html(
     if stats.get("total", 0) == 0:
         raise ValueError("Impossible de generer une newsletter sans articles.")
 
+    sector = load_sector()
+    nl = sector.newsletter
+    domain = sector.brand.domain
+    audience = sector.vocab.audience
+    brand_name = sector.brand.name
+    regulator_name = sector.vocab.regulatorName
+
     template = Template(NEWSLETTER_TEMPLATE)
+
+    nl_impact_labels = {
+        "fort": nl.impactLabels.fort,
+        "moyen": nl.impactLabels.moyen,
+        "faible": nl.impactLabels.faible,
+    }
 
     def _impact_color(level: Optional[str]) -> str:
         return IMPACT_COLORS.get(level or "faible", "#10B981")
 
     def _impact_label(level: Optional[str]) -> str:
-        return IMPACT_LABELS.get(level or "faible", "Faible")
+        return nl_impact_labels.get(level or "faible", nl.impactLabels.faible)
 
     # Format dates in French style (DD/MM/YYYY)
     from datetime import datetime as _dt
@@ -470,6 +519,50 @@ def generate_newsletter_html(
     date_debut_fmt = date_debut.strftime("%d/%m/%Y")
     date_fin_fmt = date_fin.strftime("%d/%m/%Y")
 
+    # Templates rendus côté Python pour éviter de fuiter Jinja dans la config.
+    header_edition_line = _render_tpl(
+        nl.header.editionLine,
+        edition=edition_number,
+        dateStart=date_debut_fmt,
+        dateEnd=date_fin_fmt,
+    )
+    intro_html = _render_tpl(nl.intro, audience=audience)
+
+    nb_ao = len(articles.get("ao", []))
+    section_ao_subtitle = _render_tpl(
+        nl.sections.ao.subtitle,
+        count=nb_ao,
+        plural="s" if nb_ao != 1 else "",
+    )
+
+    cta_url = _render_tpl(nl.cta.urlTemplate, domain=domain, brandName=brand_name)
+    stat_block_caption = _render_tpl(
+        nl.statBlock.caption,
+        regulatorName=regulator_name,
+        brandName=brand_name,
+    )
+
+    # Si l'appelant fournit un `unsubscribe_url` non-default, on garde sa valeur ;
+    # sinon on utilise le template footer (qui par défaut redonne la balise Brevo).
+    if unsubscribe_url == "{{unsubscribe}}":
+        unsubscribe_url_final = _render_tpl(
+            nl.footer.unsubscribeUrlTemplate,
+            unsubscribeToken="{{unsubscribe}}",
+        )
+    else:
+        unsubscribe_url_final = unsubscribe_url
+
+    footer_contact_email = _render_tpl(nl.footer.contactEmail, domain=domain)
+    footer_site_url = _render_tpl(nl.footer.siteUrl, domain=domain)
+
+    # Conversion des dataclasses sections en dicts pour Jinja (accès .title etc.)
+    def _section_to_dict(s):
+        return {
+            "title": s.title,
+            "subtitle": s.subtitle,
+            "readMoreLabel": s.readMoreLabel,
+        }
+
     html = template.render(
         reglementaire=articles.get("reglementaire", []),
         ao=articles.get("ao", []),
@@ -477,12 +570,42 @@ def generate_newsletter_html(
         handicap=articles.get("handicap", []),
         stats=stats,
         edition_number=edition_number,
-        date_debut_fmt=date_debut_fmt,
-        date_fin_fmt=date_fin_fmt,
-        unsubscribe_url=unsubscribe_url,
+        unsubscribe_url=unsubscribe_url_final,
         archive_url=archive_url,
         impact_color=_impact_color,
         impact_label=_impact_label,
+        # Header
+        header_title=nl.header.title,
+        header_edition_line=header_edition_line,
+        header_view_online_label=nl.header.viewOnlineLabel,
+        # Intro
+        intro_html=intro_html,
+        # Sections
+        section_reglementaire=_section_to_dict(nl.sections.reglementaire),
+        section_ao=_section_to_dict(nl.sections.ao),
+        section_ao_subtitle=section_ao_subtitle,
+        section_metier=_section_to_dict(nl.sections.metier),
+        section_handicap=_section_to_dict(nl.sections.handicap),
+        # AO labels
+        ao_labels={
+            "deadline": nl.aoLabels.deadline,
+            "amount": nl.aoLabels.amount,
+            "region": nl.aoLabels.region,
+            "score": nl.aoLabels.score,
+        },
+        # Stat block
+        stat_block_label=nl.statBlock.label,
+        stat_block_caption=stat_block_caption,
+        # CTA
+        cta_label=nl.cta.label,
+        cta_url=cta_url,
+        # Footer
+        footer_disclaimer_html=nl.footer.disclaimer,
+        footer_unsubscribe_label=nl.footer.unsubscribeLabel,
+        footer_contact_email=footer_contact_email,
+        footer_contact_label=nl.footer.contactLabel,
+        footer_site_url=footer_site_url,
+        footer_site_label=nl.footer.siteLabel,
     )
 
     return html

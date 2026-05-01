@@ -100,5 +100,68 @@
       "france_travail": "France Travail",
       "region": "Region"
     }
+  },
+  "newsletter": {
+    "subject": {
+      "template": "{brandName} #{edition} — {nbTextes} texte{textesPlural}, {nbAo} appel{aoPlural} d'offres",
+      "highImpactPrefix": "⚠️ Impact fort — "
+    },
+    "header": {
+      "title": "Cipia",
+      "editionLine": "Edition #{edition} &mdash; {dateStart} au {dateEnd}",
+      "viewOnlineLabel": "Voir en ligne"
+    },
+    "intro": "Bonjour,<br/>Voici votre veille réglementaire et appels d'offres de la semaine\n    pour les organismes de formation certifiés Qualiopi.",
+    "sections": {
+      "reglementaire": {
+        "title": "Veille réglementaire",
+        "subtitle": "Indicateur 23 Qualiopi",
+        "readMoreLabel": "Lire le texte original &rarr;"
+      },
+      "ao": {
+        "title": "Appels d'offres formation",
+        "subtitle": "{count} opportunité{plural} cette semaine",
+        "readMoreLabel": "Voir le marché &rarr;"
+      },
+      "metier": {
+        "title": "Veille métier &amp; innovation",
+        "subtitle": "Indicateurs 24 &amp; 25 Qualiopi",
+        "readMoreLabel": "En savoir plus &rarr;"
+      },
+      "handicap": {
+        "title": "Handicap &amp; accessibilité",
+        "subtitle": "Indicateur 26 Qualiopi",
+        "readMoreLabel": "En savoir plus &rarr;"
+      }
+    },
+    "aoOpportunityWord": "opportunité",
+    "aoLabels": {
+      "deadline": "Limite :",
+      "amount": "Montant :",
+      "region": "Région :",
+      "score": "Score :"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "statBlock": {
+      "label": "Le chiffre de la semaine",
+      "caption": "textes et appels d'offres analysés par notre IA pour vous faire gagner du temps sur votre veille Qualiopi."
+    },
+    "cta": {
+      "label": "Découvrir tous les articles",
+      "urlTemplate": "https://{domain}"
+    },
+    "footer": {
+      "disclaimer": "Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>\n    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas un avis juridique.",
+      "unsubscribeLabel": "Se désabonner",
+      "unsubscribeUrlTemplate": "{unsubscribeToken}",
+      "contactLabel": "Contact",
+      "contactEmail": "contact@{domain}",
+      "siteLabel": "Cipia",
+      "siteUrl": "https://{domain}"
+    }
   }
 }

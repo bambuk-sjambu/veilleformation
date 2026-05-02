@@ -24,8 +24,6 @@ interface Article {
   url: string | null;
   published_date: string | null;
   impact_level: string | null;
-  qualiopi_indicators: string | null;
-  // Refactor multi-secteur A.4.c : nouvelle colonne lue en priorite.
   taxonomy_indicators: string | null;
   relevance_score: number | null;
   source: string;

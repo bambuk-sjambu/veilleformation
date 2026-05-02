@@ -62,8 +62,8 @@ def _make_article(**overrides) -> dict:
         "summary": "Resume du texte reglementaire.",
         "impact_level": "moyen",
         "impact_justification": "Impact moyen sur les OF.",
-        "qualiopi_indicators": json.dumps(["23"]),
-        "qualiopi_justification": "Veille reglementaire.",
+        "taxonomy_indicators": json.dumps(["23"]),
+        "taxonomy_justification": "Veille reglementaire.",
         "relevance_score": 7,
     }
     base.update(overrides)
@@ -127,7 +127,7 @@ class TestSelectArticles:
             source_id="legi-m1",
             category="metier",
             title="Etude metiers numeriques",
-            qualiopi_indicators=json.dumps(["24"]),
+            taxonomy_indicators=json.dumps(["24"]),
         ))
 
         result = select_articles_for_newsletter(db_path, WEEK_START, WEEK_END)

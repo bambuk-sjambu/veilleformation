@@ -41,14 +41,10 @@ export async function GET(request: NextRequest) {
       // Table doesn't exist yet
     }
 
-    // Get articles in date range.
-    // Refactor multi-secteur A.4.c : on selectionne aussi taxonomy_indicators
-    // (nouvelle colonne) ; le PDF preferera celle-ci avec fallback sur
-    // qualiopi_indicators.
     const articles = db
       .prepare(`
         SELECT id, title, source, category, published_date, summary, impact_level,
-               qualiopi_indicators, taxonomy_indicators, collected_at
+               taxonomy_indicators, collected_at
         FROM articles
         WHERE date(collected_at) >= date(?) AND date(collected_at) <= date(?)
         ORDER BY collected_at DESC

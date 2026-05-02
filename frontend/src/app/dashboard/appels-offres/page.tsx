@@ -20,14 +20,6 @@ interface AoArticle {
   summary: string | null;
   url: string | null;
   published_date: string | null;
-  // Anciennes colonnes dediees (toujours peuplees pour Cipia, possiblement
-  // null pour les futurs secteurs).
-  acheteur: string | null;
-  region: string | null;
-  montant_estime: number | null;
-  date_limite: string | null;
-  // Refactor multi-secteur A.4.c : nouveau champ JSON groupant les meta AO.
-  // Lecture preferentielle via getMetaField() depuis @/lib/extra-meta.
   extra_meta: string | null;
   relevance_score: number | null;
   source: string;

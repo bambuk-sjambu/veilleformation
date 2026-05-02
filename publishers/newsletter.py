@@ -96,6 +96,17 @@ def select_articles_for_newsletter(
     finally:
         conn.close()
 
+    # Unpack extra_meta fields into each article dict so that
+    # template variables (art.date_limite, art.region, etc.) resolve.
+    for art in articles:
+        try:
+            meta = json.loads(art.get("extra_meta") or "{}")
+        except (json.JSONDecodeError, TypeError):
+            meta = {}
+        for field, value in meta.items():
+            if art.get(field) is None:
+                art[field] = value
+
     # ----- Group into sections -----
 
     reglementaire = []
@@ -104,7 +115,7 @@ def select_articles_for_newsletter(
     handicap = []
 
     for art in articles:
-        indicators = _parse_indicators(art.get("qualiopi_indicators"))
+        indicators = _parse_indicators(art.get("taxonomy_indicators"))
 
         # Handicap section: indicator 26, any relevant category
         if 26 in indicators and art.get("category") in ("metier", "reglementaire"):
@@ -162,7 +173,7 @@ def select_articles_for_newsletter(
 
 
 def _parse_indicators(raw: Optional[str]) -> set[int]:
-    """Parse qualiopi_indicators stored as JSON list or comma-separated string."""
+    """Parse taxonomy_indicators stored as JSON list or comma-separated string."""
     if not raw:
         return set()
     try:

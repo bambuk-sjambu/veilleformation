@@ -12,13 +12,11 @@ from typing import Optional
 
 
 # ------------------------------------------------------------
-# Multi-sector dual-write helpers (refactor A.4.b)
+# Multi-sector extra_meta helpers
 # ------------------------------------------------------------
-# Anciennes colonnes "AO / sector-specific" qui sont regroupees dans le
-# JSON `extra_meta` (nouveau schema additif). Le code continue de LIRE
-# les anciennes colonnes (A.4.c basculera les reads) mais ECRIT
-# desormais aussi dans extra_meta a chaque INSERT/UPDATE qui modifie
-# l'un de ces champs.
+# Champs AO / sector-specific regroupes dans le JSON `extra_meta`.
+# Ces champs ne sont PAS des colonnes DB depuis A.4.d — ils vivent
+# uniquement dans extra_meta.
 EXTRA_META_FIELDS = [
     "theme_formation",
     "typologie_ao",
@@ -67,19 +65,10 @@ CREATE TABLE IF NOT EXISTS articles (
   impact_level TEXT CHECK(impact_level IN ('fort', 'moyen', 'faible')),
   impact_justification TEXT,
   impact_phrase TEXT,
-  qualiopi_indicators TEXT,
-  qualiopi_justification TEXT,
   relevance_score INTEGER CHECK(relevance_score BETWEEN 1 AND 10),
-  theme_formation TEXT,
   mots_cles TEXT,
   date_entree_vigueur DATE,
-  typologie_ao TEXT CHECK(typologie_ao IN ('formation', 'bilan_competences', 'vae', 'conseil', NULL)),
-  acheteur TEXT,
-  region TEXT,
-  montant_estime REAL,
-  date_limite DATE,
-  cpv_code TEXT,
-  -- Multi-secteur (refactor A.4.a) : colonnes additives
+  -- Multi-secteur (A.4.a+) : colonnes generiques remplacant les 9 legacy
   taxonomy_indicators TEXT,
   taxonomy_justification TEXT,
   extra_meta TEXT,
@@ -94,7 +83,6 @@ CREATE INDEX IF NOT EXISTS idx_articles_status on articles(status);
 CREATE INDEX IF NOT EXISTS idx_articles_category on articles(category);
 CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published_date DESC);
 CREATE INDEX IF NOT EXISTS idx_articles_impact on articles(impact_level);
-CREATE INDEX IF NOT EXISTS idx_articles_deadline on articles(date_limite);
 CREATE INDEX IF NOT EXISTS idx_articles_source_id ON articles(source_id);
 
 -- Newsletters(weekly editions)
@@ -307,38 +295,20 @@ def init_db(db_path: str) -> None:
 def insert_article(conn: sqlite3.Connection, article: dict) -> bool:
     """Insert an article, ignoring duplicates (dedup by source_id).
     Returns True if the article was inserted, False if it already existed.
-
-    Dual-write (A.4.b) : a chaque INSERT, on ecrit aussi :
-    - taxonomy_indicators       <- copie de qualiopi_indicators (s'il est present)
-    - taxonomy_justification    <- copie de qualiopi_justification (idem)
-    - extra_meta                <- JSON regroupant les champs AO non-null
-    Les anciennes colonnes restent ecrites en premier (read-switch en A.4.c).
     """
-    # Only include columns that are in the schema
     schema_columns = [
         "source", "source_id", "title", "url", "content", "published_date",
-        "category", "status", "summary", "impact_level", "impact_justification",
-        "impact_phrase", "qualiopi_indicators", "qualiopi_justification",
-        "relevance_score", "theme_formation", "mots_cles", "date_entree_vigueur", "typologie_ao",
-        "acheteur", "region", "montant_estime", "date_limite", "cpv_code",
-        # Nouvelles colonnes additives (A.4.a)
+        "category", "status", "summary", "titre_reformule", "impact_level",
+        "impact_justification", "impact_phrase",
+        "relevance_score", "mots_cles", "date_entree_vigueur",
         "taxonomy_indicators", "taxonomy_justification", "extra_meta",
     ]
     present = {k: v for k, v in article.items() if k in schema_columns and v is not None}
 
-    # Dual-write : taxonomy_* derive de qualiopi_*
-    if "qualiopi_indicators" in present and "taxonomy_indicators" not in present:
-        present["taxonomy_indicators"] = present["qualiopi_indicators"]
-    if "qualiopi_justification" in present and "taxonomy_justification" not in present:
-        present["taxonomy_justification"] = present["qualiopi_justification"]
-
-    # Dual-write : extra_meta calcule a partir des champs AO presents dans
-    # l'article (meme s'ils sont None, on les ignore via build_extra_meta)
+    # Build extra_meta from any AO/sector fields present in the article dict
+    # (e.g. acheteur, region, montant_estime, date_limite, cpv_code from BOAMP collector)
     if "extra_meta" not in present:
-        extra_meta_json = build_extra_meta(article)
-        # On ecrit toujours extra_meta (au pire '{}'), pour rester coherent
-        # avec le backfill (toutes les lignes ont extra_meta non-null).
-        present["extra_meta"] = extra_meta_json
+        present["extra_meta"] = build_extra_meta(article)
 
     cols = ", ".join(present.keys())
     placeholders = ", ".join(["?"] * len(present))

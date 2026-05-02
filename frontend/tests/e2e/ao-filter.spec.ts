@@ -10,7 +10,7 @@ function countAoByRegion(regionName: string): number {
   try {
     const row = db
       .prepare(
-        "SELECT COUNT(*) as n FROM articles WHERE category='ao' AND status='done' AND (region = ? OR region LIKE ?)",
+        "SELECT COUNT(*) as n FROM articles WHERE category='ao' AND status='done' AND (json_extract(extra_meta,'$.region') = ? OR json_extract(extra_meta,'$.region') LIKE ?)",
       )
       .get(regionName, `${regionName}%`) as { n: number };
     return row.n;

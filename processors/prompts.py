@@ -4,10 +4,11 @@ Aligned with Cipia Cahier des Charges v1.2.
 
 Les listes d'indicateurs et leurs descriptions courtes sont generees
 dynamiquement depuis `sector.taxonomy.indicators` (champ `promptHint`).
-Le nom du champ JSON `qualiopi_indicators` reste fige pour preserver le
-pipeline IA et la compatibilite DB (renommage en A.4+).
+Le champ JSON `qualiopi_indicators` est le nom dans la reponse IA — il est
+stocke dans la colonne DB `taxonomy_indicators`.
 """
 
+import json
 from typing import Optional
 
 from config import load_sector
@@ -92,6 +93,7 @@ def build_user_prompt(article: dict) -> str:
     """Build the user prompt with article content and metadata.
 
     Includes all relevant fields for AO articles (acheteur, montant, region, deadline).
+    AO fields are read from direct dict keys first, then from extra_meta JSON.
     """
     title = article.get("title", "Sans titre")
     content = article.get("content", "")
@@ -111,19 +113,33 @@ Contenu :
 {content}
 """
 
+    # Parse extra_meta for AO fields (articles read from DB no longer have
+    # direct columns for these; collectors still pass them as dict keys)
+    meta: dict = {}
+    try:
+        meta = json.loads(article.get("extra_meta") or "{}")
+    except (json.JSONDecodeError, TypeError):
+        meta = {}
+
+    def _ao(field: str):
+        return article.get(field) or meta.get(field)
+
     # Add AO-specific fields if available
     extra_parts = []
-
-    if article.get("acheteur"):
-        extra_parts.append(f"Acheteur : {article['acheteur']}")
-    if article.get("montant_estime"):
-        extra_parts.append(f"Montant estime : {article['montant_estime']:,.0f} EUR")
-    if article.get("region"):
-        extra_parts.append(f"Region d'execution : {article['region']}")
-    if article.get("date_limite"):
-        extra_parts.append(f"Date limite de reponse : {article['date_limite']}")
-    if article.get("cpv_code"):
-        extra_parts.append(f"Code CPV : {article['cpv_code']}")
+    if _ao("acheteur"):
+        extra_parts.append(f"Acheteur : {_ao('acheteur')}")
+    montant = _ao("montant_estime")
+    if montant:
+        try:
+            extra_parts.append(f"Montant estime : {float(montant):,.0f} EUR")
+        except (ValueError, TypeError):
+            extra_parts.append(f"Montant estime : {montant}")
+    if _ao("region"):
+        extra_parts.append(f"Region d'execution : {_ao('region')}")
+    if _ao("date_limite"):
+        extra_parts.append(f"Date limite de reponse : {_ao('date_limite')}")
+    if _ao("cpv_code"):
+        extra_parts.append(f"Code CPV : {_ao('cpv_code')}")
 
     if extra_parts:
         prompt += "\n\nInformations complementaires :\n" + "\n".join(extra_parts)

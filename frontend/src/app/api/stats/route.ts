@@ -108,19 +108,16 @@ export async function GET() {
       }
     }
 
-    // By indicator - stored as comma-separated string like "23,24".
-    // Refactor multi-secteur A.4.c : prefere taxonomy_indicators (nouvelle
-    // colonne), fallback sur qualiopi_indicators (ancienne).
+    // By indicator - stored in taxonomy_indicators as JSON list or CSV.
     const byIndicator: Record<string, number> = initialByIndicator();
     for (const ind of sector.taxonomy.indicators.map((i) => i.id)) {
       const row = db
         .prepare(
           `SELECT COUNT(*) as cnt FROM articles
            WHERE status = 'done'
-             AND (taxonomy_indicators LIKE ?
-                  OR (taxonomy_indicators IS NULL AND qualiopi_indicators LIKE ?))`
+             AND taxonomy_indicators LIKE ?`
         )
-        .get(`%${ind}%`, `%${ind}%`) as { cnt: number };
+        .get(`%${ind}%`) as { cnt: number };
       byIndicator[ind] = row.cnt;
     }
 

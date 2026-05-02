@@ -20,7 +20,7 @@ from typing import Optional
 import anthropic
 
 from processors.prompts import build_user_prompt, get_system_prompt
-from storage.database import build_extra_meta, get_connection
+from storage.database import get_connection
 
 logger = logging.getLogger("veille.batch")
 
@@ -405,35 +405,31 @@ def run_batch_pipeline(
             if result.success and result.data:
                 try:
                     # Update article with AI results
-                    qualiopi_indicators = json.dumps(
+                    taxonomy_indicators_json = json.dumps(
                         result.data.get("qualiopi_indicators", []), ensure_ascii=False
                     )
-                    qualiopi_justification = result.data.get("qualiopi_justification")
+                    taxonomy_justification = result.data.get("qualiopi_justification")
 
-                    # Dual-write (A.4.b) : recharger les champs AO existants
-                    # (poses par l'INSERT du collector) et fusionner avec
-                    # ceux que l'IA aurait pu ajouter (theme_formation,
-                    # typologie_ao) pour reconstruire extra_meta proprement.
+                    # Merge existing extra_meta with AI-added fields
                     row = conn.execute(
-                        """SELECT theme_formation, typologie_ao, cpv_code,
-                                  acheteur, montant_estime, region, date_limite
-                           FROM articles WHERE id = ?""",
+                        "SELECT extra_meta FROM articles WHERE id = ?",
                         (result.article_id,),
                     ).fetchone()
-                    merged_for_meta = dict(row) if row else {}
+                    existing_meta = json.loads((row["extra_meta"] if row else None) or "{}")
                     if result.data.get("theme_formation") is not None:
-                        merged_for_meta["theme_formation"] = result.data.get("theme_formation")
+                        existing_meta["theme_formation"] = result.data.get("theme_formation")
                     if result.data.get("typologie_ao") is not None:
-                        merged_for_meta["typologie_ao"] = result.data.get("typologie_ao")
-                    extra_meta_json = build_extra_meta(merged_for_meta)
+                        existing_meta["typologie_ao"] = result.data.get("typologie_ao")
+                    extra_meta_json = json.dumps(
+                        {k: v for k, v in existing_meta.items() if v is not None},
+                        ensure_ascii=False, default=str
+                    )
 
                     conn.execute(
                         """UPDATE articles SET
                             summary = ?,
                             impact_level = ?,
                             impact_justification = ?,
-                            qualiopi_indicators = ?,
-                            qualiopi_justification = ?,
                             taxonomy_indicators = ?,
                             taxonomy_justification = ?,
                             extra_meta = ?,
@@ -446,11 +442,9 @@ def run_batch_pipeline(
                             result.data.get("resume") or result.data.get("summary"),
                             result.data.get("impact_level"),
                             result.data.get("impact_phrase") or result.data.get("impact_justification"),
-                            qualiopi_indicators,
-                            qualiopi_justification,
-                            qualiopi_indicators,        # taxonomy_indicators (dual-write)
-                            qualiopi_justification,     # taxonomy_justification (dual-write)
-                            extra_meta_json,            # extra_meta (dual-write)
+                            taxonomy_indicators_json,
+                            taxonomy_justification,
+                            extra_meta_json,
                             int(result.data.get("relevance_score", 5)),
                             result.data.get("category", "reglementaire"),
                             datetime.now().isoformat(),

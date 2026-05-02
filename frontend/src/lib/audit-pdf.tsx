@@ -336,9 +336,7 @@ interface Article {
   published_date: string | null;
   summary: string | null;
   impact_level: string | null;
-  qualiopi_indicators: string | null;
-  // Refactor multi-secteur A.4.c : nouvelle colonne lue en priorite.
-  taxonomy_indicators?: string | null;
+  taxonomy_indicators: string | null;
   collected_at: string;
 }
 
@@ -420,8 +418,6 @@ export function AuditPDF({ profile, articles, actions, dateStart, dateEnd }: Aud
   // ID par defaut pour les articles sans indicateur explicite (1er de la liste).
   const defaultIndicatorId = sector.taxonomy.indicators[0]?.id ?? "";
   articles.forEach((article) => {
-    // Refactor multi-secteur A.4.c : prefere taxonomy_indicators (nouvelle
-    // colonne), fallback sur qualiopi_indicators (ancienne).
     const rawIndicators = getIndicators(article);
     if (rawIndicators) {
       let indicators: string[] = [];

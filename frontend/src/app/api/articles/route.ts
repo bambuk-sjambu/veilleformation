@@ -56,13 +56,8 @@ export async function GET(request: NextRequest) {
     }
 
     if (indicator) {
-      // Refactor multi-secteur A.4.c : prefere taxonomy_indicators (nouvelle
-      // colonne), fallback sur qualiopi_indicators (ancienne, toujours peuplee
-      // pour Cipia tant que A.4.d n'a pas drop).
-      conditions.push(
-        "(taxonomy_indicators LIKE ? OR (taxonomy_indicators IS NULL AND qualiopi_indicators LIKE ?))"
-      );
-      values.push(`%${indicator}%`, `%${indicator}%`);
+      conditions.push("taxonomy_indicators LIKE ?");
+      values.push(`%${indicator}%`);
     }
 
     const where = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
@@ -75,7 +70,7 @@ export async function GET(request: NextRequest) {
     // Determine sort order
     let orderBy = "published_date DESC";
     if (sort === "deadline") {
-      orderBy = "date_limite ASC";
+      orderBy = "json_extract(extra_meta, '$.date_limite') ASC";
     } else if (sort === "relevance") {
       // Show most recent first (collected_at), then by relevance
       orderBy = "collected_at DESC, relevance_score DESC";

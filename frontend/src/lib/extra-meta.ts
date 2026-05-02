@@ -1,13 +1,8 @@
-// Helpers pour la lecture multi-secteur (refactor A.4.c).
+// Helpers pour la lecture multi-secteur (refactor A.4.c → A.4.d).
 //
-// Le frontend doit lire preferentiellement les nouvelles colonnes
-// (`taxonomy_indicators`, `taxonomy_justification`, `extra_meta`) avec
-// fallback sur les anciennes (`qualiopi_indicators`, `qualiopi_justification`,
-// colonnes AO dediees comme `acheteur`, `region`, etc.).
-//
-// Pour Cipia : les deux jeux de colonnes sont peuples (dual-write Python),
-// donc le comportement est identique. Pour les futurs secteurs (HACCP,
-// avocats), seules les nouvelles colonnes seront peuplees.
+// Depuis A.4.d, les 9 colonnes legacy (qualiopi_*, acheteur, region, etc.)
+// sont supprimées. Toutes les données AO vivent dans `extra_meta` (JSON)
+// et les indicateurs dans `taxonomy_indicators`.
 
 export interface ExtraMeta {
   theme_formation?: string | null;
@@ -37,17 +32,13 @@ export function parseExtraMeta(raw: string | null | undefined): ExtraMeta {
 }
 
 /**
- * Lit un champ AO en preferant `extra_meta`, fallback sur la colonne dediee
- * (acheteur, region, montant_estime, date_limite, cpv_code, typologie_ao,
- * theme_formation). Retourne null si rien n'est trouve.
+ * Lit un champ AO depuis `extra_meta`.
+ * Retourne null si rien n'est trouve.
  */
-// Strip undefined+null wrapping pour le type retour : meme si ExtraMeta[K]
-// inclut undefined (champ optionnel), getMetaField ne renvoie jamais
-// undefined — uniquement le type "valeur" ou null.
 type NonNil<T> = Exclude<T, null | undefined>;
 
 export function getMetaField<K extends keyof ExtraMeta>(
-  article: { extra_meta?: string | null } & Partial<Record<K, ExtraMeta[K]>>,
+  article: { extra_meta?: string | null },
   field: K
 ): NonNil<ExtraMeta[K]> | null {
   const meta = parseExtraMeta(article.extra_meta);
@@ -55,32 +46,24 @@ export function getMetaField<K extends keyof ExtraMeta>(
   if (fromMeta !== undefined && fromMeta !== null) {
     return fromMeta as NonNil<ExtraMeta[K]>;
   }
-  const fromColumn = article[field];
-  if (fromColumn !== undefined && fromColumn !== null) {
-    return fromColumn as NonNil<ExtraMeta[K]>;
-  }
   return null;
 }
 
 /**
- * Lit la liste des indicateurs taxonomiques en preferant la nouvelle colonne
- * `taxonomy_indicators`, fallback sur `qualiopi_indicators`. Retourne la
- * chaine brute (CSV ou JSON), c'est au consumer de la parser.
+ * Lit la liste des indicateurs taxonomiques depuis `taxonomy_indicators`.
+ * Retourne la chaine brute (CSV ou JSON), c'est au consumer de la parser.
  */
 export function getIndicators(article: {
   taxonomy_indicators?: string | null;
-  qualiopi_indicators?: string | null;
 }): string | null {
-  return article.taxonomy_indicators ?? article.qualiopi_indicators ?? null;
+  return article.taxonomy_indicators ?? null;
 }
 
 /**
- * Lit la justification taxonomique en preferant la nouvelle colonne
- * `taxonomy_justification`, fallback sur `qualiopi_justification`.
+ * Lit la justification taxonomique depuis `taxonomy_justification`.
  */
 export function getJustification(article: {
   taxonomy_justification?: string | null;
-  qualiopi_justification?: string | null;
 }): string | null {
-  return article.taxonomy_justification ?? article.qualiopi_justification ?? null;
+  return article.taxonomy_justification ?? null;
 }

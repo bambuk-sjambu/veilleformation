@@ -321,7 +321,8 @@ class TestProcessArticle:
         assert updated["relevance_score"] == 8
         assert updated["summary"] is not None
         assert updated["processed_at"] is not None
-        assert updated["typologie_ao"] == "formation"
+        extra = json.loads(updated["extra_meta"] or "{}")
+        assert extra.get("typologie_ao") == "formation"
 
     def test_process_legifrance_article_success(self, db_path, conn):
         """Process a Legifrance article and verify DB is updated."""
@@ -413,8 +414,8 @@ class TestProcessArticle:
         assert processor.total_input_tokens == 400
         assert processor.total_output_tokens == 120
 
-    def test_qualiopi_indicators_stored_as_json(self, db_path, conn):
-        """qualiopi_indicators should be stored as a JSON string."""
+    def test_taxonomy_indicators_stored_as_json(self, db_path, conn):
+        """taxonomy_indicators should be stored as a JSON string after IA processing."""
         article_data = _sample_legifrance_article()
         insert_article(conn, article_data)
         row = conn.execute("SELECT * FROM articles WHERE source_id = ?",
@@ -432,46 +433,12 @@ class TestProcessArticle:
         processor.process_article(article)
 
         updated = conn.execute(
-            "SELECT qualiopi_indicators FROM articles WHERE id = ?",
+            "SELECT taxonomy_indicators, taxonomy_justification FROM articles WHERE id = ?",
             (article["id"],),
         ).fetchone()
-        indicators = json.loads(updated["qualiopi_indicators"])
-        assert indicators == ["23", "24"]
-
-    def test_taxonomy_indicators_dual_write(self, db_path, conn):
-        """A.4.b : apres UPDATE par le pipeline IA, taxonomy_indicators et
-        taxonomy_justification doivent avoir la meme valeur que les
-        anciennes colonnes qualiopi_*."""
-        article_data = _sample_legifrance_article()
-        insert_article(conn, article_data)
-        row = conn.execute(
-            "SELECT * FROM articles WHERE source_id = ?",
-            (article_data["source_id"],),
-        ).fetchone()
-        article = dict(row)
-
-        mock_response = _create_mock_anthropic_response(
-            _mock_claude_response_reglementaire()
-        )
-
-        processor = AIProcessor(db_path=db_path, api_key="test-key")
-        processor.client = MagicMock()
-        processor.client.messages.create.return_value = mock_response
-
-        processor.process_article(article)
-
-        updated = conn.execute(
-            """SELECT qualiopi_indicators, taxonomy_indicators,
-                      qualiopi_justification, taxonomy_justification
-               FROM articles WHERE id = ?""",
-            (article["id"],),
-        ).fetchone()
-        # Les deux colonnes doivent etre strictement egales
-        assert updated["taxonomy_indicators"] == updated["qualiopi_indicators"]
-        assert updated["taxonomy_justification"] == updated["qualiopi_justification"]
-        # Et bien sur non-null
         assert updated["taxonomy_indicators"] is not None
         assert json.loads(updated["taxonomy_indicators"]) == ["23", "24"]
+        assert updated["taxonomy_justification"] is not None
 
     def test_extra_meta_built_on_insert(self, db_path, conn):
         """A.4.b : INSERT initial d'un article BOAMP doit peupler extra_meta

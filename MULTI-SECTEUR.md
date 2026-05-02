@@ -25,6 +25,12 @@ le site sur d'autres secteurs (HACCP, avocats, etc.) sans dupliquer le code.
 
 Total estimé : ~20h de travail focused, soit ~3 jours.
 
+## ✅ Phase A clôturée — 2026-05-02
+
+- A.0 → A.6 + A.4.d : tous commités, déployés prod, validés runtime
+- A.7 régression validée : schema A.4.d (26 cols, 0 legacy `qualiopi_*`), 1213/1293 articles taxonomy peuplée, cron auto 06:00 UTC OK 8 sources, manual collect+process 04:26 UTC 0 erreur, smoke prod (home 200, dashboard 307, pricing 200) OK
+- Prochaine étape : Phase B — skill `regveille-bootstrap`
+
 ## Règles
 
 1. **Une sous-étape = un commit + un push + un déploiement quand pertinent.**

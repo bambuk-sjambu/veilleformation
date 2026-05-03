@@ -121,8 +121,8 @@ def cmd_collect(args):
         UniformationCollector(db_path, logger),
         # Phase pivot multi-secteurs (2026-05-03) — collectors V2
         RappelConsoCollector(db_path, logger, days_back=days_back),
-        ANSMCollector(db_path, logger, days_back=days_back),
-        BOFiPCollector(db_path, logger, days_back=days_back),
+        ANSMCollector(db_path, logger),  # pas de days_back, RSS du jour
+        BOFiPCollector(db_path, logger),  # pas de days_back, RSS plafonne maxR=50
         JudilibreCollector(db_path, logger, days_back=days_back),
     ]
 

@@ -11,6 +11,7 @@ import {
   Check,
   ChevronDown,
   Shield,
+  Sparkles,
   Zap,
   BarChart3,
   ArrowRight,
@@ -24,32 +25,32 @@ const faqItems = [
   {
     question: `Qu'est-ce que ${sector.brand.name} ?`,
     answer:
-      `${sector.brand.name} est un service de veille réglementaire automatisée par intelligence artificielle, conçu spécifiquement pour les ${sector.vocab.audience} certifiés ${sector.vocab.regulatorName}. Nous collectons, analysons et classifions automatiquement les textes réglementaires, appels d'offres et évolutions sectorielles pertinentes.`,
+      `${sector.brand.name} est un service de veille réglementaire automatisée par intelligence artificielle, conçu pour 596 000 indépendants et cabinets français. Nous couvrons 5 secteurs : organismes de formation Qualiopi, restauration/agroalimentaire (HACCP), médical libéral (kinés, médecins, ostéos), avocats indépendants et experts-comptables indépendants.`,
   },
   {
     question: "Comment fonctionne la veille automatique ?",
     answer:
-      `Notre système collecté quotidiennement les publications du BOAMP, de Légifrance, des 11 OPCO, de France Travail et des Conseils Régionaux. L'IA Claude analysé chaque texte, en produit un résumé et le classifie automatiquement selon les indicateurs ${sector.vocab.regulatorName} concernés.`,
+      "Notre système collecte quotidiennement les sources officielles de votre secteur — Légifrance, BOAMP, JORF, RappelConso (DGCCRF), ANSM, BOFiP, Judilibre, Cassation, OPCO, France Travail, etc. L'IA Anthropic Claude analyse chaque texte, en produit un résumé et le classe selon la taxonomie de votre métier.",
   },
   {
-    question: "Quels indicateurs Qualiopi sont couverts ?",
+    question: "Combien ça coûte ?",
     answer:
-      `Nous couvrons les 4 indicateurs de veille du ${sector.vocab.regulatorRefName} : l'indicateur 23 (veille légale et réglementaire), l'indicateur 24 (veille compétences, métiers, emplois), l'indicateur 25 (veille innovations pédagogiques et technologiques) et l'indicateur 26 (veille handicap et compensations).`,
+      "19€/an pour Cipia Solo (indépendants, TPE) — soit 50 fois moins cher que Lefebvre ou Dalloz qui facturent 800 à 5 000€/an. Pour les cabinets et structures, Cipia Cabinet à 199€/an pour 10 utilisateurs avec audit blanc-marque, white-label newsletter et API.",
   },
   {
     question: "La newsletter est-elle vraiment gratuite ?",
     answer:
-      "Oui, le plan Gratuit vous donne accès à la newsletter hebdomadaire sur un thème de votre choix, sans engagement et sans carte bancaire. Vous pouvez upgrader à tout moment pour accéder à tous les thèmes et fonctionnalités avancées.",
+      "Oui, le plan Newsletter vous donne accès à la newsletter hebdomadaire sur 1 secteur de votre choix, sans engagement et sans carte bancaire. Vous pouvez upgrader à Cipia Solo (19€/an) ou Cipia Cabinet (199€/an) à tout moment.",
   },
   {
     question: "Comment est générée la classification IA ?",
     answer:
-      `Nous utilisons Claude (Anthropic), un modèle d'IA de dernière génération, pour analyser le contenu de chaque texte réglementaire et déterminer quels indicateurs ${sector.vocab.regulatorName} sont impactés. La classification est vérifiée et affinée en continu pour garantir sa pertinence.`,
+      "Nous utilisons Claude (Anthropic), un modèle d'IA de dernière génération, pour analyser le contenu de chaque texte officiel et déterminer son rattachement à votre taxonomie métier — indicateurs Qualiopi 23-26 pour les OF, principes HACCP pour la restauration, recommandations HAS pour le médical, jurisprudences par chambre pour les avocats, BOFiP pour les experts-comptables.",
   },
   {
     question: "Puis-je exporter mes preuves pour l'audit ?",
     answer:
-      `Oui, les plans Solo, Équipe et Agence incluent l'export PDF de votre veille, formaté pour être présenté directement lors de votre ${sector.vocab.auditName}. Ce document constitue une preuve tangible de votre démarche de veille pour les indicateurs 23 à 26.`,
+      "Oui, les plans Solo et Cabinet incluent l'export PDF de votre veille, formaté pour être présenté directement lors de votre audit Qualiopi, contrôle DDPP, audit HACCP, ou inspection sectorielle. Cipia Cabinet inclut en plus un audit blanc-marque avec votre logo.",
   },
   {
     question: "Comment résilier mon abonnement ?",
@@ -338,21 +339,21 @@ function Solution() {
   const solutions = [
     {
       icon: <Clock className="w-8 h-8" />,
-      title: "Collecte automatique quotidienne",
+      title: "Sources élargies",
       description:
-        "BOAMP, Légifrance, 11 OPCO, France Travail, Conseils Régionaux : tout est collecté chaque jour, automatiquement.",
+        "Légifrance, BOAMP, RappelConso, ANSM, BOFiP, Judilibre, Cassation, OPCO, France Travail : nous agrégeons les sources officielles de vos 5 secteurs.",
     },
     {
       icon: <Brain className="w-8 h-8" />,
-      title: `Classification IA par indicateur ${sector.vocab.regulatorName}`,
+      title: "Classification IA par taxonomie de votre secteur",
       description:
-        `L'IA analysé chaque texte et le classe selon les indicateurs 23, 24, 25 et 26 du ${sector.vocab.regulatorRefName}.`,
+        "L'IA Anthropic Claude classe chaque texte selon la taxonomie de votre métier — indicateurs Qualiopi 23-26 pour les OF, principes HACCP, recommandations HAS, jurisprudence par chambre, BOFiP fiscal...",
     },
     {
       icon: <FileText className="w-8 h-8" />,
       title: "Export PDF prêt pour l'audit",
       description:
-        `Générez un document PDF structuré, daté et complet, à présenter directement à votre auditeur ${sector.vocab.regulatorName}.`,
+        "Générez un document PDF structuré, daté et complet, à présenter à votre auditeur Qualiopi, contrôle DDPP, audit HACCP, ou inspection ANSM selon votre secteur.",
     },
   ];
 
@@ -361,7 +362,7 @@ function Solution() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            {sector.brand.name} automatise tout
+            {sector.brand.name} automatise tout, peu importe votre secteur
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Concentrez-vous sur votre coeur de métier. On s&apos;occupe de la
@@ -419,7 +420,7 @@ function HowItWorks() {
             Comment ça marche
           </h2>
           <p className="text-lg text-gray-600">
-            En 3 étapes simples, votre veille {sector.vocab.regulatorName} est en place.
+            En 3 étapes simples, votre veille réglementaire (Qualiopi, HACCP, médical, avocats ou EC) est en place.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -453,9 +454,16 @@ function Preview() {
             Voyez l&apos;outil avant de vous inscrire
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Pas de pitch, juste l&apos;outil tel qu&apos;il fonctionne pour les {sector.vocab.audience}
+            Pas de pitch, juste l&apos;outil tel qu&apos;il fonctionne pour les pros
             qui l&apos;utilisent en 2026.
           </p>
+        </div>
+
+        <div className="text-center mb-8">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm">
+            <Sparkles className="w-4 h-4" />
+            Exemple ci-dessous : secteur OF Qualiopi. Disponible aussi pour HACCP, médical, avocats, experts-comptables.
+          </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -823,7 +831,8 @@ function FinalCTA() {
           Prêt à automatiser votre veille réglementaire ?
         </h2>
         <p className="text-lg text-blue-200 mb-8">
-          Rejoignez les indépendants et TPE qui gagnent du temps chaque
+          Rejoignez les indépendants et TPE des 5 secteurs (Qualiopi, HACCP,
+          médical, avocats, experts-comptables) qui gagnent du temps chaque
           semaine avec Cipia Solo.
         </p>
         <Link

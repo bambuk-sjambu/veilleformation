@@ -659,94 +659,73 @@ function Preview() {
 function Pricing() {
   const plans = [
     {
-      name: "Gratuit",
+      name: "Newsletter",
       price: "0",
-      originalPrice: "0",
-      period: "",
-      description: "Pour découvrir la veille automatique",
+      period: "/an",
+      description: "Pour découvrir, sans engagement",
       features: [
-        "Newsletter hebdomadaire",
-        "1 thème au choix",
-        "Résumés IA",
-        "Accès web",
+        "Newsletter hebdomadaire (mardi 8h)",
+        "1 secteur au choix (Qualiopi, HACCP, médical, avocats ou EC)",
+        "Résumés IA des textes officiels",
+        "Désinscription en 1 clic",
       ],
-      cta: "Commencer gratuitement",
+      cta: "Recevoir la newsletter gratuite",
+      ctaHref: "#newsletter",
       highlighted: false,
+      sticker: null,
     },
     {
-      name: "Solo",
-      price: "15",
-      originalPrice: "22",
-      period: "/mois",
-      description: "Pour le responsable qualité autonome",
+      name: "Cipia Solo",
+      price: "19",
+      period: "/an",
+      perMonth: "soit 1,58€/mois",
+      description: "Pour les indépendants et TPE — 50× moins cher que Lefebvre",
       features: [
-        "Tous les thèmes",
-        "Appels d'offres (AO)",
-        "Alertes personnalisées",
-        "Export PDF audit",
+        "Tous les secteurs (5 verticaux)",
+        "Dashboard avec alertes mots-clés",
+        "Export PDF audit avec votre nom",
         "Historique complet",
+        "Support email 72h",
       ],
-      cta: "Démarrer l'essai 14 jours",
+      cta: "Choisir Cipia Solo (19€/an)",
+      ctaHref: "/inscription",
       highlighted: true,
+      sticker: "Le meilleur prix du marché",
     },
     {
-      name: "Équipe",
-      price: "39",
-      originalPrice: "56",
-      period: "/mois",
-      description: "Pour les équipes qualité",
+      name: "Cipia Cabinet",
+      price: "199",
+      period: "/an",
+      perMonth: "10 utilisateurs inclus",
+      description: "Pour les structures, cabinets et OF organisés",
       features: [
-        "Tout Solo +",
-        "5 utilisateurs",
-        `Export ${sector.vocab.regulatorName} complet`,
-        "Newsletter personnalisée",
-        "Support prioritaire",
+        "Tout Solo, partagé entre 10 utilisateurs",
+        "Audit blanc-marque (PDF avec logo cabinet)",
+        "White-label newsletter pour vos clients",
+        "API d'intégration",
+        "Support prioritaire 24h + onboarding visio",
       ],
-      cta: "Démarrer l'essai 14 jours",
+      cta: "Voir Cipia Cabinet",
+      ctaHref: "/cabinet",
       highlighted: false,
-    },
-    {
-      name: "Agence",
-      price: "79",
-      originalPrice: "113",
-      period: "/mois",
-      description: "Pour les cabinets et réseaux",
-      features: [
-        "Tout Équipe +",
-        "20 utilisateurs",
-        "Multi-sites",
-        "Accès API",
-        "Account manager dédié",
-      ],
-      cta: "Nous contacter",
-      highlighted: false,
+      sticker: null,
     },
   ];
 
   return (
     <section id="tarifs" className="py-20 bg-white">
-      {/* Bandeau Lancement -30% */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="bg-yellow-400 text-black py-3 text-center font-medium rounded-lg">
-          <span className="inline-flex items-center gap-2 flex-wrap justify-center px-4">
-            <span className="bg-black text-yellow-400 px-2 py-0.5 rounded text-sm font-bold">LANCEMENT -30%</span>
-            <span className="text-sm">
-              Tarif lancement jusqu&apos;aux 200 premiers {sector.vocab.audienceShort} inscrits, puis prix plein.
-            </span>
-          </span>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Tarifs simples et transparents
+            Tarifs simples, divisés par 50 vs le marché
           </h2>
-          <p className="text-lg text-gray-600">
-            Commencez gratuitement, évoluez selon vos besoins.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Lefebvre, Dalloz, Editions Législatives facturent 800 à 5 000€/an
+            pour la veille réglementaire. Cipia industrialise par IA et reverse
+            l&apos;économie au client.
           </p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan, i) => (
             <div
               key={i}
@@ -756,9 +735,9 @@ function Pricing() {
                   : "border-gray-200 bg-white"
               }`}
             >
-              {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  Populaire
+              {plan.sticker && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                  {plan.sticker}
                 </div>
               )}
               <h3 className="text-lg font-bold text-gray-900 mb-1">
@@ -766,36 +745,29 @@ function Pricing() {
               </h3>
               <p className="text-sm text-gray-500 mb-4">{plan.description}</p>
               <div className="mb-6">
-                {plan.price !== "0" && plan.originalPrice !== plan.price && (
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-base text-gray-400 line-through">
-                      {plan.originalPrice}&#8364;
-                    </span>
-                    <span className="bg-yellow-100 text-yellow-900 text-[10px] font-bold px-2 py-0.5 rounded">
-                      −30% lancement
-                    </span>
-                  </div>
-                )}
                 <span className="text-4xl font-extrabold text-gray-900">
                   {plan.price}&#8364;
                 </span>
                 <span className="text-gray-500">{plan.period}</span>
+                {plan.perMonth && (
+                  <p className="text-xs text-gray-500 mt-1">{plan.perMonth}</p>
+                )}
                 {plan.price !== "0" && (
                   <p className="text-xs text-gray-500 mt-2">
-                    14 jours d&apos;essai · Sans engagement
+                    Sans engagement · Annulation en 1 clic
                   </p>
                 )}
               </div>
               <ul className="space-y-2 mb-6">
                 {plan.features.map((feature, j) => (
-                  <li key={j} className="flex items-center gap-2 text-sm">
-                    <Check className="w-4 h-4 text-success shrink-0" />
+                  <li key={j} className="flex items-start gap-2 text-sm">
+                    <Check className="w-4 h-4 text-success shrink-0 mt-0.5" />
                     <span className="text-gray-700">{feature}</span>
                   </li>
                 ))}
               </ul>
               <Link
-                href="/inscription"
+                href={plan.ctaHref}
                 className={`block w-full text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
                   plan.highlighted
                     ? "bg-yellow-400 text-black font-bold hover:bg-yellow-300"

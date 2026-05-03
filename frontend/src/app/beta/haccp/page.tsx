@@ -4,7 +4,7 @@ import HaccpSignupForm from "./HaccpSignupForm";
 export const metadata = {
   title: "Cipia HACCP — Beta gratuite (mai 2026)",
   description:
-    "Veille réglementaire IA pour restaurateurs, boulangers, traiteurs et industriels agroalimentaires. Décrets DGAL, alertes RASFF, GBPH classés par IA Anthropic Claude. À partir de 1,58€/mois.",
+    "Veille réglementaire IA pour restaurateurs, boulangers, traiteurs et industriels agroalimentaires. Décrets DGAL, alertes RASFF, GBPH classés par IA Anthropic Claude. Beta gratuite.",
   robots: "noindex, nofollow",
 };
 
@@ -26,8 +26,8 @@ export default function HaccpBetaPage() {
               Veille réglementaire IA pour restaurateurs, boulangers, traiteurs
               et industriels agroalimentaires.
               <br />
-              <strong className="text-gray-900">À partir de 1,58€/mois</strong>{" "}
-              (19€/an).
+              <strong className="text-gray-900">Beta gratuite</strong> —
+              le tarif sera annoncé à l&apos;ouverture officielle.
             </p>
 
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 mb-10">

@@ -20,7 +20,7 @@ export default function HaccpBetaMerciPage() {
           </h1>
 
           <p className="text-gray-600 mb-6">
-            On revient vers vous début septembre, dès l&apos;ouverture de la
+            On revient vers vous dès cette semaine, dès l&apos;ouverture de la
             beta Cipia HACCP. Vous serez parmi les premiers à tester.
           </p>
 

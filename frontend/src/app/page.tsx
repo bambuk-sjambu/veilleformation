@@ -149,38 +149,58 @@ function Hero() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <Zap className="w-4 h-4" />
-            Cipia Solo · IA · Preuves prêtes pour l&apos;audit
+            Cipia Solo · IA · 5 secteurs réglementaires couverts
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
             Votre veille réglementaire,{" "}
             <span className="text-primary">livrée chaque mardi à 8h.</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
-            Textes officiels, appels d&apos;offres et évolutions sectorielles
-            classés par IA. Gagnez 3h par semaine et présentez vos preuves de
-            veille en 1 clic.
+          <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Textes officiels, alertes et évolutions sectorielles classés par IA
+            pour <strong className="text-gray-900">596 000 indépendants français</strong>.
+            Gagnez 3h par semaine, présentez vos preuves en 1 clic.
           </p>
-          <p className="text-sm text-gray-500 mb-8 max-w-2xl mx-auto">
-            Cipia couvre 5 verticaux :{" "}
-            <strong className="text-gray-700">organismes Qualiopi</strong>,
-            HACCP, médical libéral, avocats indépendants, experts-comptables
-            indépendants.
-          </p>
+
+          <div className="mb-8 max-w-3xl mx-auto">
+            <p className="text-base text-gray-700 mb-3 font-medium">
+              Cipia couvre <strong>5 secteurs</strong> :
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
+              {[
+                { label: "Qualiopi", sub: "OF" },
+                { label: "HACCP", sub: "Restos & agro" },
+                { label: "Médical", sub: "Libéraux" },
+                { label: "Avocats", sub: "Indépendants" },
+                { label: "Experts-compt.", sub: "Indépendants" },
+              ].map((v, i) => (
+                <div
+                  key={i}
+                  className="px-3 py-2 rounded-lg bg-white border border-primary/20 shadow-sm"
+                >
+                  <div className="text-sm sm:text-base font-bold text-gray-900">
+                    {v.label}
+                  </div>
+                  <div className="text-xs text-gray-500">{v.sub}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <NewsletterForm />
           <p className="text-sm text-gray-500 mt-3">
             Gratuit, sans carte bancaire. Désinscription en un clic.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500">
+          <div className="mt-8 flex items-center justify-center flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-primary" />
-              <span><strong className="text-gray-900">45 000</strong> {sector.vocab.audienceShort} concernés</span>
+              <span><strong className="text-gray-900">596 000</strong> pros français concernés</span>
             </div>
-            <span className="text-gray-300">·</span>
+            <span className="text-gray-300 hidden sm:inline">·</span>
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" />
-              <span><strong className="text-gray-900">462+</strong> textes analysés</span>
+              <span><strong className="text-gray-900">660+</strong> textes analysés / sem</span>
             </div>
-            <span className="text-gray-300">·</span>
+            <span className="text-gray-300 hidden sm:inline">·</span>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-primary" />
               <span>Hébergé en France</span>
@@ -287,11 +307,12 @@ function PainPoints() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            La veille {sector.vocab.regulatorName} sans effort
+            La veille réglementaire sans effort
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            45 000 {sector.vocab.audience} ont le même besoin. {sector.brand.name} le résout
-            en une newsletter hebdomadaire.
+            596 000 indépendants et cabinets français ont le même besoin :
+            rester en règle. {sector.brand.name} le résout par IA en une
+            newsletter hebdomadaire, secteur par secteur.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
@@ -896,7 +917,7 @@ function Footer() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <BarChart3 className="w-4 h-4" />
-            <span>45 000 {sector.vocab.audienceShort} certifiés {sector.vocab.regulatorName} en France</span>
+            <span>596 000 indépendants et cabinets français en 5 secteurs</span>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">

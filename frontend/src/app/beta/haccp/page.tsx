@@ -2,7 +2,7 @@ import { Brain, BellRing, BookOpen, Shield } from "lucide-react";
 import HaccpSignupForm from "./HaccpSignupForm";
 
 export const metadata = {
-  title: "Cipia HACCP — Beta gratuite (septembre 2026)",
+  title: "Cipia HACCP — Beta gratuite (mai 2026)",
   description:
     "Veille réglementaire IA pour restaurateurs, boulangers, traiteurs et industriels agroalimentaires. Décrets DGAL, alertes RASFF, GBPH classés par IA Anthropic Claude. À partir de 1,58€/mois.",
   robots: "noindex, nofollow",
@@ -15,12 +15,12 @@ export default function HaccpBetaPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400 text-black text-xs font-bold mb-6 uppercase tracking-wide">
-              Beta gratuite — septembre 2026
+              Beta gratuite — mai 2026
             </div>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
               Cipia arrive sur <span className="text-primary">HACCP</span>.
               <br />
-              Inscrivez-vous gratuitement pour la beta de septembre.
+              Inscrivez-vous gratuitement pour la beta de mai.
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               Veille réglementaire IA pour restaurateurs, boulangers, traiteurs

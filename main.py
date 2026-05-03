@@ -36,6 +36,10 @@ from collectors.opco import (
     UniformationCollector,
 )
 from collectors.france_travail import collect_france_travail  # FranceTravailCollector dispo mais non utilise
+from collectors.rappel_conso import RappelConsoCollector  # secteur HACCP
+from collectors.ansm import ANSMCollector  # secteur médical
+from collectors.bofip import BOFiPCollector  # secteur experts-comptables
+from collectors.judilibre import JudilibreCollector  # secteur avocats
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
 
@@ -115,6 +119,11 @@ def cmd_collect(args):
         OPCOSanteCollector(db_path, logger),
         OPCOmmerceCollector(db_path, logger),
         UniformationCollector(db_path, logger),
+        # Phase pivot multi-secteurs (2026-05-03) — collectors V2
+        RappelConsoCollector(db_path, logger, days_back=days_back),
+        ANSMCollector(db_path, logger, days_back=days_back),
+        BOFiPCollector(db_path, logger, days_back=days_back),
+        JudilibreCollector(db_path, logger, days_back=days_back),
     ]
 
     print("=== Cipia -- Collecte ===\n")

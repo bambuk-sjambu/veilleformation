@@ -1,0 +1,35 @@
+{
+  "sector": "haccp",
+  "brand": "VeilleHACCP",
+  "products": [
+    {
+      "plan_id": "solo",
+      "name": "Solo",
+      "price_eur": 15,
+      "product_id": "prod_URRWrKX14cGsaq",
+      "price_id": "price_1TSYczBkSAQ8fq2RtRV0uURB",
+      "env_var": "STRIPE_PRICE_SOLO"
+    },
+    {
+      "plan_id": "team",
+      "name": "Équipe",
+      "price_eur": 39,
+      "product_id": "prod_URRWLkhJHyfQhg",
+      "price_id": "price_1TSYd1BkSAQ8fq2RAU02nTwB",
+      "env_var": "STRIPE_PRICE_TEAM"
+    },
+    {
+      "plan_id": "agency",
+      "name": "Agence",
+      "price_eur": 79,
+      "product_id": "prod_URRWzhVWnlw2Bl",
+      "price_id": "price_1TSYd4BkSAQ8fq2RV2Fqqdnm",
+      "env_var": "STRIPE_PRICE_AGENCY"
+    }
+  ],
+  "webhook": {
+    "id": "we_1TSYd5BkSAQ8fq2RmIWmFBA0",
+    "url": "https://cipia-haccp.fr/api/stripe/webhook",
+    "secret": "whsec_4geD0vhexUDRfuRFHCy5BIDLMikbEYZr"
+  }
+}

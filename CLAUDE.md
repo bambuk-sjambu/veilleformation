@@ -20,7 +20,10 @@ Veille reglementaire automatisee par IA pour les organismes de formation certifi
 ## Phases
 - **Phase 1 (MVP)** : ✅ collecte BOAMP + Legifrance → resumes Claude Haiku → newsletter Brevo → landing page
 - **Phase 1.5** : 🔄 scrapers 11 OPCO + France Travail + 13 Regions
-- **Phase 2 (SaaS)** : 🔄 dashboard Next.js, auth, Stripe, export PDF audit Qualiopi, personnalisation
+- **Phase 2 (SaaS)** : ✅ dashboard Next.js, auth, Stripe, export PDF audit Qualiopi, personnalisation
+- **Phase A (multi-secteur)** : ✅ refactor config secteur paramétrable, clôturée 2026-05-02
+- **Phase B (skill regveille-bootstrap)** : ✅ skill créé 2026-05-02
+- **PIVOT** : 🚧 1 site cipia.fr multi-personas (5 verticaux V1) avec 2 produits Solo 19€/an + Cabinet 199€/an. **Soft launch beta** ~22 mai 2026, **lancement public mainstream** 16 septembre 2026. Voir étude `/home/stef/SJA/Projets/Veille Reglementaire Formation/Etude pivot - 1 site multi-personas 20EUR par an.md` et plan d'action `Plan d'action priorité - Pivot Cipia.md`
 
 ## Phase 2 - Statut (2026-03-17)
 - ✅ Authentification (iron-session)

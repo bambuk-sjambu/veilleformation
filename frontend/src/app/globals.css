@@ -9,7 +9,17 @@
   --color-accent-light: #FBBF24;
   --color-success: #10B981;
   --color-success-light: #34D399;
-  --font-sans: "Inter", sans-serif;
+  /* ---- Cipia Cabinet (gamme premium : bleu nuit + or) ---- */
+  --color-cabinet-primary: #1E3A5F;
+  --color-cabinet-primary-dark: #14283F;
+  --color-cabinet-primary-light: #2D5485;
+  --color-cabinet-accent: #D4AF37;
+  --color-cabinet-accent-dark: #B8961F;
+  --color-cabinet-accent-light: #E5C76B;
+  --color-cabinet-surface: #F5F1E6;
+  --color-cabinet-ink: #0F1F33;
+  --font-sans: var(--font-inter, "Inter"), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant, "Cormorant Garamond"), Georgia, "Times New Roman", serif;
 }
 
 body {

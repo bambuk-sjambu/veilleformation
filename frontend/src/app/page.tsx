@@ -13,8 +13,11 @@ import {
   Shield,
   Zap,
   BarChart3,
+  ArrowRight,
+  Briefcase,
 } from "lucide-react";
 import NewsletterForm from "@/components/NewsletterForm";
+import AudienceSelector from "@/components/AudienceSelector";
 import { sector } from "@/config";
 
 const faqItems = [
@@ -141,21 +144,27 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="pt-28 pb-20 sm:pt-36 sm:pb-28 bg-gradient-to-b from-blue-50 to-white">
+    <section className="pt-12 pb-20 sm:pt-16 sm:pb-28 bg-gradient-to-b from-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <Zap className="w-4 h-4" />
-            IA · Indicateurs 23-26 · Preuves prêtes pour l&apos;audit
+            Cipia Solo · IA · Preuves prêtes pour l&apos;audit
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            Votre veille {sector.vocab.regulatorName},{" "}
+            Votre veille réglementaire,{" "}
             <span className="text-primary">livrée chaque mardi à 8h.</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Textes réglementaires, appels d&apos;offres et innovations pédagogiques
-            classés par IA. Gagnez 3h par semaine et présentez votre veille
-            en 1 clic lors de l&apos;audit.
+          <p className="text-lg sm:text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
+            Textes officiels, appels d&apos;offres et évolutions sectorielles
+            classés par IA. Gagnez 3h par semaine et présentez vos preuves de
+            veille en 1 clic.
+          </p>
+          <p className="text-sm text-gray-500 mb-8 max-w-2xl mx-auto">
+            Cipia couvre 5 verticaux :{" "}
+            <strong className="text-gray-700">organismes Qualiopi</strong>,
+            HACCP, médical libéral, avocats indépendants, experts-comptables
+            indépendants.
           </p>
           <NewsletterForm />
           <p className="text-sm text-gray-500 mt-3">
@@ -818,21 +827,55 @@ function FinalCTA() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <Shield className="w-12 h-12 text-white/80 mx-auto mb-6" />
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-          Prêt à automatiser votre veille {sector.vocab.regulatorName} ?
+          Prêt à automatiser votre veille réglementaire ?
         </h2>
         <p className="text-lg text-blue-200 mb-8">
-          Rejoignez les {sector.vocab.audience} qui gagnent du temps chaque
-          semaine.
+          Rejoignez les indépendants et TPE qui gagnent du temps chaque
+          semaine avec Cipia Solo.
         </p>
         <Link
           href="/inscription"
           className="inline-flex items-center px-8 py-4 rounded-lg bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-300 transition-colors"
         >
-          Commencez gratuitement
+          Découvrir Cipia Solo (19€/an)
         </Link>
         <p className="text-sm text-blue-300 mt-4">
-          Sans engagement. Sans carte bancaire.
+          14 jours d&apos;essai gratuit. Sans engagement. Sans carte bancaire.
         </p>
+      </div>
+    </section>
+  );
+}
+
+function CabinetCrossSell() {
+  return (
+    <section className="py-12 bg-cabinet-surface border-t border-cabinet-accent/30">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-start gap-4 flex-1">
+            <div className="w-12 h-12 rounded-full bg-cabinet-primary/10 flex items-center justify-center shrink-0">
+              <Briefcase className="w-6 h-6 text-cabinet-primary" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-cabinet-primary mb-1 font-serif">
+                Vous êtes une structure ?
+              </h3>
+              <p className="text-sm text-gray-700">
+                Cabinet d&apos;experts-comptables, OF Qualiopi multi-utilisateurs,
+                cabinet d&apos;avocats, bureau ESG/RGE : découvrez Cipia Cabinet
+                (199€/an, 10 utilisateurs, audit blanc-marque, support
+                prioritaire).
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/cabinet"
+            className="inline-flex items-center gap-2 bg-cabinet-primary text-white px-6 py-3 rounded-lg font-semibold text-sm hover:bg-cabinet-primary-dark transition-colors shrink-0"
+          >
+            Voir Cipia Cabinet
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -886,7 +929,8 @@ export default function HomePage() {
     <>
       <JsonLd />
       <Header />
-      <main>
+      <main className="pt-16">
+        <AudienceSelector active="solo" variant="hero" />
         <Hero />
         <PainPoints />
         <Solution />
@@ -895,6 +939,7 @@ export default function HomePage() {
         <Pricing />
         <FAQ />
         <FinalCTA />
+        <CabinetCrossSell />
       </main>
       <Footer />
     </>

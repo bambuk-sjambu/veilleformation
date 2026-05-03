@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import { sector } from "@/config";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+// Police serif premium pour la gamme "Cipia Cabinet" (titres bleu nuit + or).
+// Chargée globalement pour rester disponible sur /cabinet sans flash de fonte.
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-cormorant",
 });
 
 const siteUrl = `https://${sector.brand.domain}`;
@@ -76,7 +84,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
+      >
         {children}
       </body>
     </html>

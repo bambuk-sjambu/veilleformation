@@ -1,0 +1,163 @@
+{
+  "id": "haccp",
+  "brand": {
+    "name": "VeilleHACCP",
+    "legalName": "VeilleHACCP",
+    "domain": "cipia-haccp.fr",
+    "tagline": "Veille HACCP IA livrée chaque mardi à 8h",
+    "description": "Décrets DGAL, alertes RASFF et bonnes pratiques d'hygiène classés par IA selon les principes HACCP. Export PDF prêt pour l'audit sanitaire.",
+    "logoUrl": "/sectors/haccp/icon.svg",
+    "colorPrimary": "#16a34a",
+    "colorAccent": "#f59e0b"
+  },
+  "vocab": {
+    "audience": "professionnels agroalimentaires soumis à HACCP",
+    "audienceShort": "PROAGRO",
+    "regulatorName": "HACCP",
+    "auditName": "audit HACCP",
+    "regulatorRefName": "principes HACCP (Codex Alimentarius)"
+  },
+  "taxonomy": {
+    "indicators": [
+      {
+        "id": "1",
+        "short": "Légal",
+        "label": "Veille légale et réglementaire HACCP",
+        "description": "Décrets, arrêtés DGAL, règlements UE",
+        "promptHint": "veille legale/reglementaire HACCP"
+      },
+      {
+        "id": "2",
+        "short": "Alertes",
+        "label": "Alertes sanitaires RASFF / DGCCRF",
+        "description": "Rappels produits, contaminations, alertes UE",
+        "promptHint": "alertes sanitaires RASFF DGCCRF"
+      },
+      {
+        "id": "3",
+        "short": "Bonnes pratiques",
+        "label": "Bonnes pratiques d'hygiène (GBPH)",
+        "description": "Guides de bonnes pratiques par filière",
+        "promptHint": "bonnes pratiques hygiene GBPH"
+      },
+      {
+        "id": "4",
+        "short": "Formation",
+        "label": "Formation et certifications",
+        "description": "Plans de maîtrise sanitaire, formations DGAL",
+        "promptHint": "formation certifications HACCP"
+      }
+    ],
+    "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]
+  },
+  "audit_pdf": {
+    "coverTitle": "Rapport de Veille HACCP",
+    "coverSubtitle": "Preuve de conformité {regulatorName} - Indicateurs {firstIndicatorId} à {lastIndicatorId}",
+    "coverFooter": "Document généré automatiquement par {brandName}",
+    "reportTitle": "Rapport de Veille {regulatorName}",
+    "pageFooter": "Rapport généré par {brandName} - Conformité {regulatorName}",
+    "pageFooterShort": "Rapport généré par {brandName}",
+    "sections": {
+      "summary": "Résumé Exécutif",
+      "impactDistribution": "Répartition par niveau d'impact",
+      "sources": "Sources de Veille",
+      "methodology": "Méthodologie de Veille",
+      "actions": "Actions Menées",
+      "detailByIndicator": "Détail par Indicateur"
+    },
+    "summaryLabels": {
+      "articles": "Articles surveillés",
+      "actionsDone": "Actions complétées",
+      "actionsInProgress": "En cours",
+      "actionsTodo": "À faire",
+      "firstIndicator": "Ind. {indicatorId}"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "actionStatusLabels": {
+      "done": "Actions complétées ({count})",
+      "inProgress": "Actions en cours ({count})",
+      "todo": "Actions planifiées ({count})"
+    },
+    "signatureLabels": {
+      "responsibleRole": "Le responsable veille sanitaire",
+      "directorRole": "Le directeur",
+      "nameAndSignaturePlaceholder": "Nom et signature"
+    },
+    "sourceLabels": {
+      "dgal": "DGAL",
+      "rasff": "RASFF",
+      "dgccrf": "DGCCRF",
+      "anses": "ANSES",
+      "efsa": "EFSA",
+      "boamp": "BOAMP",
+      "legifrance": "Legifrance"
+    }
+  },
+  "newsletter": {
+    "subject": {
+      "template": "{brandName} #{edition} — {nbTextes} texte{textesPlural}, {nbAo} alerte{aoPlural} sanitaire",
+      "highImpactPrefix": "⚠️ Impact fort — "
+    },
+    "header": {
+      "title": "VeilleHACCP",
+      "editionLine": "Edition #{edition} &mdash; {dateStart} au {dateEnd}",
+      "viewOnlineLabel": "Voir en ligne"
+    },
+    "intro": "Bonjour,<br/>Voici votre veille réglementaire HACCP et alertes sanitaires de la semaine\n    pour les professionnels de l'agroalimentaire.",
+    "sections": {
+      "reglementaire": {
+        "title": "Veille réglementaire HACCP",
+        "subtitle": "Décrets, arrêtés et règlements UE",
+        "readMoreLabel": "Lire le texte original &rarr;"
+      },
+      "ao": {
+        "title": "Alertes sanitaires",
+        "subtitle": "{count} alerte{plural} cette semaine",
+        "readMoreLabel": "Voir l'alerte &rarr;"
+      },
+      "metier": {
+        "title": "Bonnes pratiques &amp; innovation",
+        "subtitle": "GBPH, plans de maîtrise sanitaire",
+        "readMoreLabel": "En savoir plus &rarr;"
+      },
+      "handicap": {
+        "title": "Formation &amp; certifications",
+        "subtitle": "Plans de formation DGAL",
+        "readMoreLabel": "En savoir plus &rarr;"
+      }
+    },
+    "aoOpportunityWord": "alerte",
+    "aoLabels": {
+      "deadline": "Date limite :",
+      "amount": "Niveau :",
+      "region": "Pays :",
+      "score": "Gravité :"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "statBlock": {
+      "label": "Le chiffre de la semaine",
+      "caption": "textes et alertes analysés par notre IA pour vous faire gagner du temps sur votre veille HACCP."
+    },
+    "cta": {
+      "label": "Découvrir tous les articles",
+      "urlTemplate": "https://{domain}"
+    },
+    "footer": {
+      "disclaimer": "Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>\n    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas un avis juridique.",
+      "unsubscribeLabel": "Se désabonner",
+      "unsubscribeUrlTemplate": "{unsubscribeToken}",
+      "contactLabel": "Contact",
+      "contactEmail": "contact@{domain}",
+      "siteLabel": "VeilleHACCP",
+      "siteUrl": "https://{domain}"
+    }
+  }
+}

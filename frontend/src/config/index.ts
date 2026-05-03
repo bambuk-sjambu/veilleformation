@@ -14,10 +14,12 @@
 // lit le meme fichier via chemin relatif pour garantir l'unicite.
 
 import cipiaConfig from "./sectors/cipia.json";
+import haccpConfig from "./sectors/haccp.json";
 import type { SectorConfig } from "./types";
 
 const SECTORS: Record<string, SectorConfig> = {
   cipia: cipiaConfig as SectorConfig,
+  haccp: haccpConfig as SectorConfig,
 };
 
 const ACTIVE_SECTOR_ID = process.env.SECTOR || "cipia";

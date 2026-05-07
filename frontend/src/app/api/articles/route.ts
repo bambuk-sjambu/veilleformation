@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists, DbArticle } from "@/lib/db";
 import { getCurrentSectorId } from "@/lib/sector-context";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     if (!dbExists()) {

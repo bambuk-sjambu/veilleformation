@@ -3,6 +3,9 @@ import { getDb, dbExists } from "@/lib/db";
 import { sector } from "@/config";
 import { getCurrentSectorId } from "@/lib/sector-context";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const initialByIndicator = (): Record<string, number> =>
   Object.fromEntries(sector.taxonomy.indicators.map((i) => [i.id, 0]));
 

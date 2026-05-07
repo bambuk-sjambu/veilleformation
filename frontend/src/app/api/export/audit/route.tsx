@@ -4,6 +4,7 @@ import { getDb, dbExists, DbArticle, DbAction, DbUserProfile } from "@/lib/db";
 import { AuditPDF } from "@/lib/audit-pdf";
 import { canExport, logExport } from "@/lib/plan";
 import { getSession } from "@/lib/auth";
+import { getActiveSectorIdForUser } from "@/lib/sector-context";
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,16 +42,20 @@ export async function GET(request: NextRequest) {
       // Table doesn't exist yet
     }
 
+    // Filtre par secteur actif (pivot multi-personas X.1) - export limité au secteur du user
+    const sectorId = getActiveSectorIdForUser(session.userId);
+
     const articles = db
       .prepare(`
         SELECT id, title, source, category, published_date, summary, impact_level,
                taxonomy_indicators, collected_at
         FROM articles
         WHERE date(collected_at) >= date(?) AND date(collected_at) <= date(?)
+          AND sector_id = ?
         ORDER BY collected_at DESC
         LIMIT 100
       `)
-      .all(dateStart, dateEnd) as DbArticle[];
+      .all(dateStart, dateEnd, sectorId) as DbArticle[];
 
     // Get actions
     let actions: DbAction[] = [];
@@ -61,9 +66,10 @@ export async function GET(request: NextRequest) {
           FROM actions a
           JOIN articles ar ON a.article_id = ar.id
           WHERE date(ar.collected_at) >= date(?) AND date(ar.collected_at) <= date(?)
+            AND ar.sector_id = ?
           ORDER BY a.created_at DESC
         `)
-        .all(dateStart, dateEnd) as DbAction[];
+        .all(dateStart, dateEnd, sectorId) as DbAction[];
     } catch {
       // Table doesn't exist yet
     }

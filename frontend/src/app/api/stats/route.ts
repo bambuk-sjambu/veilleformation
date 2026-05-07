@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb, dbExists } from "@/lib/db";
 import { sector } from "@/config";
+import { getCurrentSectorId } from "@/lib/sector-context";
 
 const initialByIndicator = (): Record<string, number> =>
   Object.fromEntries(sector.taxonomy.indicators.map((i) => [i.id, 0]));
@@ -64,42 +65,47 @@ export async function GET() {
       });
     }
 
+    // Filtre par secteur actif (pivot multi-personas X.1)
+    const sectorId = await getCurrentSectorId();
+
     const totalArticles = (
       db
-        .prepare("SELECT COUNT(*) as cnt FROM articles WHERE status = 'done'")
-        .get() as { cnt: number }
+        .prepare(
+          "SELECT COUNT(*) as cnt FROM articles WHERE status = 'done' AND sector_id = ?"
+        )
+        .get(sectorId) as { cnt: number }
     ).cnt;
 
     const totalAo = (
       db
         .prepare(
-          "SELECT COUNT(*) as cnt FROM articles WHERE category = 'ao' AND status = 'done'"
+          "SELECT COUNT(*) as cnt FROM articles WHERE category = 'ao' AND status = 'done' AND sector_id = ?"
         )
-        .get() as { cnt: number }
+        .get(sectorId) as { cnt: number }
     ).cnt;
 
     const totalReglementaire = (
       db
         .prepare(
-          "SELECT COUNT(*) as cnt FROM articles WHERE category = 'reglementaire' AND status = 'done'"
+          "SELECT COUNT(*) as cnt FROM articles WHERE category = 'reglementaire' AND status = 'done' AND sector_id = ?"
         )
-        .get() as { cnt: number }
+        .get(sectorId) as { cnt: number }
     ).cnt;
 
     const totalMetier = (
       db
         .prepare(
-          "SELECT COUNT(*) as cnt FROM articles WHERE category = 'metier' AND status = 'done'"
+          "SELECT COUNT(*) as cnt FROM articles WHERE category = 'metier' AND status = 'done' AND sector_id = ?"
         )
-        .get() as { cnt: number }
+        .get(sectorId) as { cnt: number }
     ).cnt;
 
     // By impact
     const impactRows = db
       .prepare(
-        "SELECT impact_level, COUNT(*) as cnt FROM articles WHERE status = 'done' AND impact_level IS NOT NULL GROUP BY impact_level"
+        "SELECT impact_level, COUNT(*) as cnt FROM articles WHERE status = 'done' AND impact_level IS NOT NULL AND sector_id = ? GROUP BY impact_level"
       )
-      .all() as { impact_level: string; cnt: number }[];
+      .all(sectorId) as { impact_level: string; cnt: number }[];
 
     const byImpact: Record<string, number> = { fort: 0, moyen: 0, faible: 0 };
     for (const row of impactRows) {
@@ -115,17 +121,20 @@ export async function GET() {
         .prepare(
           `SELECT COUNT(*) as cnt FROM articles
            WHERE status = 'done'
+             AND sector_id = ?
              AND taxonomy_indicators LIKE ?`
         )
-        .get(`%${ind}%`) as { cnt: number };
+        .get(sectorId, `%${ind}%`) as { cnt: number };
       byIndicator[ind] = row.cnt;
     }
 
     // Last collected
     const lastCollected = (
       db
-        .prepare("SELECT MAX(collected_at) as last_dt FROM articles")
-        .get() as { last_dt: string | null }
+        .prepare(
+          "SELECT MAX(collected_at) as last_dt FROM articles WHERE sector_id = ?"
+        )
+        .get(sectorId) as { last_dt: string | null }
     ).last_dt;
 
     // Newsletters stats
@@ -140,14 +149,18 @@ export async function GET() {
 
     if (nlTableCheck) {
       const nlRow = db
-        .prepare("SELECT MAX(sent_at) as last_sent FROM newsletters")
-        .get() as { last_sent: string | null };
+        .prepare(
+          "SELECT MAX(sent_at) as last_sent FROM newsletters WHERE sector_id = ?"
+        )
+        .get(sectorId) as { last_sent: string | null };
       lastNewsletter = nlRow.last_sent;
 
       newslettersCount = (
-        db.prepare("SELECT COUNT(*) as cnt FROM newsletters").get() as {
-          cnt: number;
-        }
+        db
+          .prepare(
+            "SELECT COUNT(*) as cnt FROM newsletters WHERE sector_id = ?"
+          )
+          .get(sectorId) as { cnt: number }
       ).cnt;
     }
 
@@ -163,9 +176,9 @@ export async function GET() {
       subscribersCount = (
         db
           .prepare(
-            "SELECT COUNT(*) as cnt FROM subscribers WHERE is_active = 1"
+            "SELECT COUNT(*) as cnt FROM subscribers WHERE is_active = 1 AND sector_id = ?"
           )
-          .get() as { cnt: number }
+          .get(sectorId) as { cnt: number }
       ).cnt;
     }
 

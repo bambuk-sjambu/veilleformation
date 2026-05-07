@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists, DbArticle } from "@/lib/db";
+import { getCurrentSectorId } from "@/lib/sector-context";
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,6 +35,11 @@ export async function GET(request: NextRequest) {
 
     const conditions: string[] = [];
     const values: (string | number)[] = [];
+
+    // Filtre par secteur actif (pivot multi-personas X.1)
+    const sectorId = await getCurrentSectorId();
+    conditions.push("sector_id = ?");
+    values.push(sectorId);
 
     if (status) {
       conditions.push("status = ?");

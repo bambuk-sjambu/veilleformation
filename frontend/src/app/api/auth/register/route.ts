@@ -4,11 +4,28 @@ import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { getDb, DbUser } from "@/lib/db";
 import { sessionOptions, SessionData } from "@/lib/session";
+import {
+  addSectorForUser,
+  setActiveSectorForUser,
+  DEFAULT_SECTOR_ID,
+} from "@/lib/sector-context";
+
+const VALID_SECTORS = new Set([
+  "cipia",
+  "haccp",
+  "medical",
+  "avocats",
+  "experts-comptables",
+]);
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, firstName, lastName } = body;
+    const { email, password, firstName, lastName, sectorId } = body;
+    const requestedSector =
+      typeof sectorId === "string" && VALID_SECTORS.has(sectorId)
+        ? sectorId
+        : DEFAULT_SECTOR_ID;
 
     if (!email || !password || !firstName || !lastName) {
       return NextResponse.json(
@@ -49,9 +66,20 @@ export async function POST(request: Request) {
 
     const result = db
       .prepare(
-        "INSERT INTO users (email, password_hash, first_name, last_name) VALUES (?, ?, ?, ?)"
+        "INSERT INTO users (email, password_hash, first_name, last_name, active_sector_id) VALUES (?, ?, ?, ?, ?)"
       )
-      .run(email.toLowerCase(), passwordHash, firstName.trim(), lastName.trim());
+      .run(
+        email.toLowerCase(),
+        passwordHash,
+        firstName.trim(),
+        lastName.trim(),
+        requestedSector
+      );
+
+    // Inscrit le user à son secteur primaire (table n:n user_sectors)
+    const newUserId = Number(result.lastInsertRowid);
+    addSectorForUser(newUserId, requestedSector, true);
+    setActiveSectorForUser(newUserId, requestedSector);
 
     const cookieStore = await cookies();
     const session = await getIronSession<SessionData>(cookieStore, sessionOptions);

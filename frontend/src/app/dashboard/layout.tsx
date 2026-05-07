@@ -2,6 +2,11 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import DashboardShell from "@/components/DashboardShell";
 import { getDb } from "@/lib/db";
+import {
+  getActiveSectorIdForUser,
+  getUserSectors,
+  DEFAULT_SECTOR_ID,
+} from "@/lib/sector-context";
 
 export default async function DashboardLayout({
   children,
@@ -10,7 +15,7 @@ export default async function DashboardLayout({
 }) {
   const user = await getCurrentUser();
 
-  if (!user) {
+  if (!user || !user.userId) {
     redirect("/connexion");
   }
 
@@ -30,12 +35,21 @@ export default async function DashboardLayout({
     // ignore si colonne pas encore creee
   }
 
+  const activeSectorId =
+    getActiveSectorIdForUser(user.userId) || DEFAULT_SECTOR_ID;
+  const userSectors = getUserSectors(user.userId);
+
   return (
     <DashboardShell
       firstName={user.firstName || ""}
       lastName={user.lastName || ""}
       avatarUrl={avatarUrl}
       isFeedbackPanel={isFeedbackPanel}
+      activeSectorId={activeSectorId}
+      userSectors={userSectors.map((s) => ({
+        sector_id: s.sector_id,
+        is_primary: s.is_primary,
+      }))}
     >
       {children}
     </DashboardShell>

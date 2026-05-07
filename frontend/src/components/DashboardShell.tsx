@@ -22,7 +22,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import FeedbackWidget from "./FeedbackWidget";
-import { sector } from "@/config";
+import SectorSwitcher from "./SectorSwitcher";
+import { getSectorMeta } from "@/lib/sector-meta";
 
 const primaryNav = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -51,13 +52,18 @@ export default function DashboardShell({
   lastName,
   avatarUrl,
   isFeedbackPanel = false,
+  activeSectorId = "cipia",
+  userSectors = [],
 }: {
   children: React.ReactNode;
   firstName: string;
   lastName: string;
   avatarUrl?: string | null;
   isFeedbackPanel?: boolean;
+  activeSectorId?: string;
+  userSectors?: { sector_id: string; is_primary: number }[];
 }) {
+  const sectorMeta = getSectorMeta(activeSectorId);
   const pathname = usePathname();
   const router = useRouter();
   const [userOpen, setUserOpen] = useState(false);
@@ -90,15 +96,22 @@ export default function DashboardShell({
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               <Link href="/dashboard" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">{sector.brand.name.charAt(0)}</span>
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: sectorMeta.primary }}
+                >
+                  <span className="text-white font-bold text-sm">C</span>
                 </div>
                 <span className="font-bold text-lg text-gray-900 hidden sm:inline">
-                  {sector.brand.name}
+                  {sectorMeta.shortLabel}
                 </span>
               </Link>
+              <SectorSwitcher
+                activeSectorId={activeSectorId}
+                userSectors={userSectors}
+              />
             </div>
 
             <div className="relative" ref={userRef}>

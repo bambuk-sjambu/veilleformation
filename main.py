@@ -246,93 +246,79 @@ def cmd_retry(args):
     print(f"Duree: {stats['duration_seconds']}s")
 
 
-def cmd_newsletter(args):
-    """Generate and send the weekly newsletter."""
-    from datetime import datetime, timedelta
+SECTORS_DIR = Path(__file__).parent / "frontend" / "src" / "config" / "sectors"
 
-    logger = setup_logger()
-    db_path = args.db or DEFAULT_DB_PATH
 
-    if not Path(db_path).exists():
-        print(f"Base non trouvee: {db_path}")
-        sys.exit(1)
+def _list_available_sectors() -> list[str]:
+    """Liste les ids des secteurs définis (ordre alpha, fallback ['cipia'])."""
+    if not SECTORS_DIR.exists():
+        return ["cipia"]
+    ids = sorted(p.stem for p in SECTORS_DIR.glob("*.json"))
+    return ids or ["cipia"]
 
-    # Determine week range (last Monday to Sunday)
-    today = datetime.now()
-    day_of_week = today.weekday()  # 0=Monday
-    is_tuesday = day_of_week == 1
 
-    if not is_tuesday and not args.force:
-        print("La newsletter est envoyee le mardi.")
-        print("Utilisez --force pour forcer l'envoi.")
-        return
+def _run_newsletter_for_sector(args, db_path: str, sector_id: str,
+                               week_start_str: str, week_end_str: str) -> None:
+    """Génère et envoie la newsletter pour un secteur précis."""
+    print(f"\n--- Secteur : {sector_id} ---")
 
-    week_end = today - timedelta(days=day_of_week)  # This Monday 00:00
-    week_start = week_end - timedelta(days=7)  # Previous Monday
-    week_start_str = week_start.strftime("%Y-%m-%d")
-    week_end_str = week_end.strftime("%Y-%m-%d")
-
-    print("=== Cipia -- Newsletter ===\n")
-    print(f"Periode: {week_start_str} -> {week_end_str}")
-
-    # Determine edition number
+    # Edition number par secteur (numérotation indépendante)
     conn = get_connection(db_path)
     try:
         row = conn.execute(
-            "SELECT COALESCE(MAX(edition_number), 0) FROM newsletters"
+            "SELECT COALESCE(MAX(edition_number), 0) FROM newsletters WHERE sector_id = ?",
+            (sector_id,),
         ).fetchone()
         edition_number = row[0] + 1
     finally:
         conn.close()
 
-    # Select articles
-    articles = select_articles_for_newsletter(db_path, week_start_str, week_end_str)
+    articles = select_articles_for_newsletter(
+        db_path, week_start_str, week_end_str, sector_id=sector_id
+    )
     stats = articles["stats"]
     total = stats["total"]
 
-    print(f"Articles selectionnes: {total}")
-    print(f"  - Reglementaire: {stats.get('reglementaire', 0)}")
-    print(f"  - Appels d'offres: {stats.get('ao', 0)}")
-    print(f"  - Metier: {stats.get('metier', 0)}")
-    print(f"  - Handicap: {stats.get('handicap', 0)}")
+    print(f"Articles selectionnes: {total} "
+          f"(R:{stats.get('reglementaire',0)} / A:{stats.get('ao',0)} / "
+          f"M:{stats.get('metier',0)} / H:{stats.get('handicap',0)})")
 
     if total == 0:
-        print("\nAucun article a inclure. Newsletter non generee.")
+        print("Aucun article a inclure pour ce secteur. Skip.")
         return
 
-    # Generate
     has_high_impact = any(
         a.get("impact_level") == "fort"
         for a in articles.get("reglementaire", [])
     )
     subject = generate_newsletter_subject(
-        edition_number, stats, week_start_str, week_end_str, has_high_impact
+        edition_number, stats, week_start_str, week_end_str, has_high_impact,
+        sector_id=sector_id,
     )
     html = generate_newsletter_html(
-        articles, week_start_str, week_end_str, edition_number
+        articles, week_start_str, week_end_str, edition_number,
+        sector_id=sector_id,
     )
 
-    print(f"\nEdition #{edition_number}: {subject}")
+    print(f"Edition #{edition_number} ({sector_id}): {subject}")
     print(f"Taille HTML: {len(html):,} octets")
 
-    # Save to DB
     conn = get_connection(db_path)
     try:
         conn.execute(
             """INSERT INTO newsletters (edition_number, subject, html_content,
-               recipients_count)
-               VALUES (?, ?, ?, 0)""",
-            (edition_number, subject, html),
+               recipients_count, sector_id)
+               VALUES (?, ?, ?, 0, ?)""",
+            (edition_number, subject, html, sector_id),
         )
         conn.commit()
         newsletter_id = conn.execute(
-            "SELECT id FROM newsletters WHERE edition_number = ?",
-            (edition_number,),
+            "SELECT id FROM newsletters WHERE edition_number = ? AND sector_id = ?",
+            (edition_number, sector_id),
         ).fetchone()[0]
     finally:
         conn.close()
 
-    # Send via Resend (priorite) ou fallback Brevo
     resend = ResendClient()
     brevo = BrevoClient()
 
@@ -342,11 +328,15 @@ def cmd_newsletter(args):
     elif brevo.api_key:
         provider = "brevo"
 
+    article_ids = [a["id"] for section in
+                   ("reglementaire", "ao", "metier", "handicap")
+                   for a in articles.get(section, [])]
+
     if provider and args.dry_run:
-        print(f"\n[DRY RUN] Newsletter non envoyee (--dry-run, provider={provider})")
+        print(f"[DRY RUN] Pas d'envoi (provider={provider})")
     elif provider == "resend":
-        print("\nEnvoi via Resend...")
-        result = resend.send_newsletter(html, subject, db_path)
+        print("Envoi via Resend...")
+        result = resend.send_newsletter(html, subject, db_path, sector_id=sector_id)
         if result["batch_id"]:
             conn = get_connection(db_path)
             try:
@@ -358,19 +348,13 @@ def cmd_newsletter(args):
                 conn.commit()
             finally:
                 conn.close()
-
-            all_article_ids = []
-            for section in ["reglementaire", "ao", "metier", "handicap"]:
-                for a in articles.get(section, []):
-                    all_article_ids.append(a["id"])
-            mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
-
-            print(f"Newsletter #{edition_number} envoyee! (Resend batch {result['batch_id']})")
-            print(f"Delivres: {result['sent']}/{result['total']} (echecs: {result['failed']})")
+            mark_articles_as_sent(article_ids, newsletter_id, db_path)
+            print(f"Envoyee! Resend batch {result['batch_id']} — "
+                  f"{result['sent']}/{result['total']} delivres ({result['failed']} echecs)")
         else:
-            print(f"ERREUR: Echec de l'envoi Resend (0/{result['total']} delivres, {result['failed']} echecs)")
+            print(f"ERREUR Resend: 0/{result['total']} delivres, {result['failed']} echecs")
     elif provider == "brevo":
-        print("\nEnvoi via Brevo (fallback)...")
+        print("Envoi via Brevo (fallback)...")
         campaign_id = brevo.create_and_send_campaign(html, subject)
         if campaign_id:
             conn = get_connection(db_path)
@@ -382,35 +366,69 @@ def cmd_newsletter(args):
                 conn.commit()
             finally:
                 conn.close()
-
-            all_article_ids = []
-            for section in ["reglementaire", "ao", "metier", "handicap"]:
-                for a in articles.get(section, []):
-                    all_article_ids.append(a["id"])
-            mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
-
-            subscriber_count = brevo.get_subscriber_count()
-            print(f"Newsletter #{edition_number} envoyee! (campagne Brevo #{campaign_id})")
-            print(f"Destinataires: {subscriber_count}")
+            mark_articles_as_sent(article_ids, newsletter_id, db_path)
+            print(f"Envoyee! Campagne Brevo #{campaign_id}")
         else:
-            print("ERREUR: Echec de l'envoi Brevo")
+            print("ERREUR: Echec envoi Brevo")
     else:
-        print("\nNi RESEND_API_KEY ni BREVO_API_KEY configurees. Newsletter sauvegardee en base uniquement.")
-        # Ne marquer comme sent QUE si ce n'est pas un dry-run, sinon on
-        # corrompt l'etat des articles sans envoi reel.
+        print("Ni RESEND_API_KEY ni BREVO_API_KEY. Sauvegardee en base uniquement.")
         if not args.dry_run:
-            all_article_ids = []
-            for section in ["reglementaire", "ao", "metier", "handicap"]:
-                for a in articles.get(section, []):
-                    all_article_ids.append(a["id"])
-            mark_articles_as_sent(all_article_ids, newsletter_id, db_path)
+            mark_articles_as_sent(article_ids, newsletter_id, db_path)
 
-    # Save HTML preview
-    preview_path = f"data/newsletter_{edition_number}.html"
+    preview_path = f"data/newsletter_{sector_id}_{edition_number}.html"
     Path(preview_path).parent.mkdir(parents=True, exist_ok=True)
     with open(preview_path, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"Apercu HTML sauvegarde: {preview_path}")
+    print(f"Apercu HTML : {preview_path}")
+
+
+def cmd_newsletter(args):
+    """Generate and send weekly newsletters (1 par secteur).
+
+    Sans --sector, boucle sur tous les secteurs présents dans
+    frontend/src/config/sectors/. Avec --sector X, génère uniquement X.
+    """
+    from datetime import datetime, timedelta
+
+    setup_logger()
+    db_path = args.db or DEFAULT_DB_PATH
+
+    if not Path(db_path).exists():
+        print(f"Base non trouvee: {db_path}")
+        sys.exit(1)
+
+    today = datetime.now()
+    day_of_week = today.weekday()
+    is_tuesday = day_of_week == 1
+
+    if not is_tuesday and not args.force:
+        print("La newsletter est envoyee le mardi.")
+        print("Utilisez --force pour forcer l'envoi.")
+        return
+
+    week_end = today - timedelta(days=day_of_week)
+    week_start = week_end - timedelta(days=7)
+    week_start_str = week_start.strftime("%Y-%m-%d")
+    week_end_str = week_end.strftime("%Y-%m-%d")
+
+    if args.sector:
+        sectors = [args.sector]
+    else:
+        sectors = _list_available_sectors()
+
+    print("=== Cipia -- Newsletters multi-secteurs ===")
+    print(f"Periode : {week_start_str} -> {week_end_str}")
+    print(f"Secteurs : {', '.join(sectors)}")
+
+    for sector_id in sectors:
+        try:
+            _run_newsletter_for_sector(
+                args, db_path, sector_id, week_start_str, week_end_str,
+            )
+        except ValueError as e:
+            # load_sector lève ValueError sur secteur inconnu
+            print(f"Secteur '{sector_id}' invalide : {e}")
+            continue
 
 
 def cmd_collect_history(args):
@@ -612,6 +630,15 @@ Commandes:
     newsletter_parser.add_argument(
         "--dry-run", action="store_true",
         help="Generer sans envoyer",
+    )
+    newsletter_parser.add_argument(
+        "--sector",
+        default=None,
+        help=(
+            "Limite l'execution a un secteur (cipia, haccp, medical, avocats, "
+            "experts-comptables). Sans cette option, toutes les newsletters "
+            "secteurs sont generees a la suite."
+        ),
     )
 
     subparsers.add_parser("status", help="Afficher les statistiques")

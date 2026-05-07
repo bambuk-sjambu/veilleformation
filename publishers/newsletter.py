@@ -69,29 +69,45 @@ def select_articles_for_newsletter(
     db_path: str,
     week_start: date,
     week_end: date,
+    sector_id: Optional[str] = None,
 ) -> dict:
     """Query eligible articles and group them by newsletter section.
 
     Only articles with status='done' that have not yet been included in a
     newsletter and whose published_date falls within the given range are
-    considered.
+    considered. If `sector_id` is provided, the query is filtered on
+    articles.sector_id (pivot multi-personas C.5).
 
     Returns a dict with keys: reglementaire, ao, metier, handicap, stats.
     Returns an empty dict (with stats total=0) when no articles are found.
     """
     conn = get_connection(db_path)
     try:
-        rows = conn.execute(
-            """
-            SELECT *
-            FROM articles
-            WHERE status = 'done'
-              AND sent_in_newsletter_id IS NULL
-              AND published_date BETWEEN ? AND ?
-            ORDER BY published_date DESC
-            """,
-            (str(week_start), str(week_end)),
-        ).fetchall()
+        if sector_id:
+            rows = conn.execute(
+                """
+                SELECT *
+                FROM articles
+                WHERE status = 'done'
+                  AND sent_in_newsletter_id IS NULL
+                  AND published_date BETWEEN ? AND ?
+                  AND sector_id = ?
+                ORDER BY published_date DESC
+                """,
+                (str(week_start), str(week_end), sector_id),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                """
+                SELECT *
+                FROM articles
+                WHERE status = 'done'
+                  AND sent_in_newsletter_id IS NULL
+                  AND published_date BETWEEN ? AND ?
+                ORDER BY published_date DESC
+                """,
+                (str(week_start), str(week_end)),
+            ).fetchall()
         articles = [dict(r) for r in rows]
     finally:
         conn.close()
@@ -199,14 +215,18 @@ def generate_newsletter_subject(
     date_debut: date,
     date_fin: date,
     has_high_impact: bool,
+    sector_id: Optional[str] = None,
 ) -> str:
     """Generate the email subject line.
 
     Sujet et pr\u00e9fixe haut-impact lus depuis `sector.newsletter.subject`.
     Format Cipia par d\u00e9faut : "Cipia #N \u2014 X textes, Y appels d'offres"
     avec pr\u00e9fixe "\u26a0\ufe0f Impact fort \u2014 " quand has_high_impact.
+
+    `sector_id` permet de forcer le secteur (pivot C.5). Sinon, env SECTOR
+    ou fallback "cipia".
     """
-    sector = load_sector()
+    sector = load_sector(sector_id)
     nl_subject = sector.newsletter.subject
 
     nb_textes = stats.get("reglementaire", 0) + stats.get("metier", 0) + stats.get("handicap", 0)
@@ -478,20 +498,12 @@ def generate_newsletter_html(
     edition_number: int,
     unsubscribe_url: str = "{{unsubscribe}}",
     archive_url: str = "{{archive_url}}",
+    sector_id: Optional[str] = None,
 ) -> str:
     """Render the newsletter HTML from grouped articles.
 
-    Args:
-        articles: Dict returned by select_articles_for_newsletter with keys
-            reglementaire, ao, metier, handicap, stats.
-        date_debut: Start of the reporting period.
-        date_fin: End of the reporting period.
-        edition_number: Sequential edition number.
-        unsubscribe_url: Placeholder or real unsubscribe URL (Brevo tag).
-        archive_url: URL to view the newsletter in a browser.
-
-    Returns:
-        Rendered HTML string, ready for sending via Brevo.
+    `sector_id` force la config secteur (pivot C.5). Sinon env SECTOR ou
+    fallback "cipia".
 
     Raises:
         ValueError: When there are zero articles across all sections.
@@ -500,7 +512,7 @@ def generate_newsletter_html(
     if stats.get("total", 0) == 0:
         raise ValueError("Impossible de generer une newsletter sans articles.")
 
-    sector = load_sector()
+    sector = load_sector(sector_id)
     nl = sector.newsletter
     domain = sector.brand.domain
     audience = sector.vocab.audience
@@ -671,22 +683,28 @@ def create_newsletter(
     week_end: date,
     edition_number: int,
     unsubscribe_url: str = "{{unsubscribe}}",
+    sector_id: Optional[str] = None,
 ) -> Optional[dict]:
     """End-to-end newsletter creation.
 
-    1. Selects articles for the period.
-    2. Generates subject and HTML.
-    3. Inserts the newsletter record in the DB.
+    1. Selects articles for the period (filtré par sector_id si fourni).
+    2. Generates subject and HTML (avec config secteur correspondante).
+    3. Inserts the newsletter record in the DB (avec sector_id).
     4. Returns newsletter metadata (does NOT mark articles as sent yet --
        that should happen after Brevo confirms dispatch).
 
     Returns None if no articles are available.
     """
-    articles = select_articles_for_newsletter(db_path, week_start, week_end)
+    articles = select_articles_for_newsletter(
+        db_path, week_start, week_end, sector_id=sector_id
+    )
     stats = articles["stats"]
 
     if stats["total"] == 0:
-        logger.info("Aucun article pour la periode %s - %s", week_start, week_end)
+        logger.info(
+            "Aucun article pour la periode %s - %s (secteur=%s)",
+            week_start, week_end, sector_id or "all",
+        )
         return None
 
     has_high_impact = any(
@@ -695,10 +713,12 @@ def create_newsletter(
     )
 
     subject = generate_newsletter_subject(
-        edition_number, stats, week_start, week_end, has_high_impact
+        edition_number, stats, week_start, week_end, has_high_impact,
+        sector_id=sector_id,
     )
     html = generate_newsletter_html(
-        articles, week_start, week_end, edition_number, unsubscribe_url
+        articles, week_start, week_end, edition_number, unsubscribe_url,
+        sector_id=sector_id,
     )
 
     # Collect all article IDs for later marking
@@ -706,16 +726,25 @@ def create_newsletter(
     for section in ("reglementaire", "ao", "metier", "handicap"):
         all_ids.extend(a["id"] for a in articles.get(section, []))
 
-    # Insert newsletter record
+    # Insert newsletter record (avec sector_id, fallback 'cipia' au niveau DB)
     conn = get_connection(db_path)
     try:
-        cursor = conn.execute(
-            """
-            INSERT INTO newsletters (edition_number, subject, html_content)
-            VALUES (?, ?, ?)
-            """,
-            (edition_number, subject, html),
-        )
+        if sector_id:
+            cursor = conn.execute(
+                """
+                INSERT INTO newsletters (edition_number, subject, html_content, sector_id)
+                VALUES (?, ?, ?, ?)
+                """,
+                (edition_number, subject, html, sector_id),
+            )
+        else:
+            cursor = conn.execute(
+                """
+                INSERT INTO newsletters (edition_number, subject, html_content)
+                VALUES (?, ?, ?)
+                """,
+                (edition_number, subject, html),
+            )
         conn.commit()
         newsletter_id = cursor.lastrowid
     finally:

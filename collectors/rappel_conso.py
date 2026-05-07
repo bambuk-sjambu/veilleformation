@@ -80,6 +80,7 @@ class RappelConsoCollector(BaseCollector):
     """Collect rappels alimentaires depuis l'API RappelConso V2 (DGCCRF + DGAL)."""
 
     SOURCE_NAME = "rappel_conso"
+    SECTOR_ID = "haccp"
 
     def __init__(self, db_path: str = ":memory:", logger=None, days_back: int = 30):
         super().__init__(db_path, logger)

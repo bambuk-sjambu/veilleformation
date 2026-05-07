@@ -450,3 +450,87 @@ class TestCreateNewsletter:
             edition_number=99,
         )
         assert result is None
+
+
+# ---------------------------------------------------------------------------
+# Tests: filtrage par secteur (pivot multi-personas C.5)
+# ---------------------------------------------------------------------------
+
+class TestSectorFiltering:
+    """Vérifie que select_articles_for_newsletter filtre bien par sector_id."""
+
+    def _seed_multi_sector(self, conn):
+        # 1 article cipia
+        insert_article(conn, _make_article(
+            source_id="cipia-r1",
+            category="reglementaire",
+            sector_id="cipia",
+        ))
+        # 1 article haccp
+        insert_article(conn, _make_article(
+            source="rappel_conso",
+            source_id="haccp-r1",
+            category="reglementaire",
+            title="Rappel produit alimentaire",
+            sector_id="haccp",
+        ))
+        # 2 articles medical
+        insert_article(conn, _make_article(
+            source="ansm",
+            source_id="med-r1",
+            category="reglementaire",
+            title="Recommandation HAS sur statines",
+            sector_id="medical",
+        ))
+        insert_article(conn, _make_article(
+            source="ansm",
+            source_id="med-r2",
+            category="metier",
+            title="Bonnes pratiques HAS hypertension",
+            sector_id="medical",
+        ))
+
+    def test_filter_returns_only_target_sector(self, db_path, conn):
+        self._seed_multi_sector(conn)
+
+        result_haccp = select_articles_for_newsletter(
+            db_path, WEEK_START, WEEK_END, sector_id="haccp"
+        )
+        assert result_haccp["stats"]["total"] == 1
+        assert result_haccp["reglementaire"][0]["source_id"] == "haccp-r1"
+
+        result_medical = select_articles_for_newsletter(
+            db_path, WEEK_START, WEEK_END, sector_id="medical"
+        )
+        assert result_medical["stats"]["total"] == 2
+
+        result_avocats = select_articles_for_newsletter(
+            db_path, WEEK_START, WEEK_END, sector_id="avocats"
+        )
+        assert result_avocats["stats"]["total"] == 0
+
+    def test_no_sector_returns_all(self, db_path, conn):
+        self._seed_multi_sector(conn)
+        result = select_articles_for_newsletter(db_path, WEEK_START, WEEK_END)
+        assert result["stats"]["total"] == 4
+
+    def test_create_newsletter_sector_specific(self, db_path, conn):
+        self._seed_multi_sector(conn)
+        result = create_newsletter(
+            db_path=db_path,
+            week_start=WEEK_START,
+            week_end=WEEK_END,
+            edition_number=1,
+            sector_id="medical",
+        )
+        assert result is not None
+        assert result["stats"]["total"] == 2
+        # Le HTML doit contenir les libellés du secteur medical
+        assert "Cipia Médical" in result["html"] or "medical" in result["html"].lower()
+
+        # Le record DB doit avoir sector_id='medical'
+        row = conn.execute(
+            "SELECT sector_id FROM newsletters WHERE id = ?",
+            (result["newsletter_id"],),
+        ).fetchone()
+        assert row["sector_id"] == "medical"

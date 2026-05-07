@@ -1,0 +1,162 @@
+{
+  "id": "experts-comptables",
+  "brand": {
+    "name": "Cipia Experts-Comptables",
+    "legalName": "Cipia",
+    "domain": "cipia.fr",
+    "tagline": "Veille fiscale, comptable et sociale livrée chaque mardi à 8h",
+    "description": "BOFiP, normes comptables, URSSAF, déontologie OEC et formation continue obligatoire classés par IA pour les experts-comptables indépendants. Export PDF prêt pour l'audit ordinal.",
+    "logoUrl": "/sectors/experts-comptables/icon.svg",
+    "colorPrimary": "#0f766e",
+    "colorAccent": "#f59e0b"
+  },
+  "vocab": {
+    "audience": "experts-comptables indépendants",
+    "audienceShort": "EC",
+    "regulatorName": "OEC",
+    "auditName": "audit ordinal CSOEC",
+    "regulatorRefName": "règles déontologiques OEC et obligations de formation continue"
+  },
+  "taxonomy": {
+    "indicators": [
+      {
+        "id": "1",
+        "short": "Fiscal",
+        "label": "Veille fiscale BOFiP",
+        "description": "Bulletin Officiel des Finances Publiques, IS/IR/TVA",
+        "promptHint": "veille fiscale BOFiP IS IR TVA experts-comptables"
+      },
+      {
+        "id": "2",
+        "short": "Comptable",
+        "label": "Normes comptables PCG/ANC",
+        "description": "Plan comptable général, règlements ANC, IFRS",
+        "promptHint": "normes comptables PCG ANC IFRS experts-comptables"
+      },
+      {
+        "id": "3",
+        "short": "Social",
+        "label": "Veille sociale et paie",
+        "description": "URSSAF, conventions collectives, DSN, paie",
+        "promptHint": "URSSAF social paie DSN conventions collectives"
+      },
+      {
+        "id": "4",
+        "short": "Déontologie",
+        "label": "Déontologie OEC et formation continue",
+        "description": "Règles CSOEC, formation 40h obligatoire, anti-blanchiment",
+        "promptHint": "deontologie OEC formation continue 40 heures anti-blanchiment"
+      }
+    ],
+    "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]
+  },
+  "audit_pdf": {
+    "coverTitle": "Rapport de Veille Expert-Comptable",
+    "coverSubtitle": "Preuve de conformité {regulatorName} - Indicateurs {firstIndicatorId} à {lastIndicatorId}",
+    "coverFooter": "Document généré automatiquement par {brandName}",
+    "reportTitle": "Rapport de Veille {regulatorName}",
+    "pageFooter": "Rapport généré par {brandName} - Conformité {regulatorName}",
+    "pageFooterShort": "Rapport généré par {brandName}",
+    "sections": {
+      "summary": "Résumé Exécutif",
+      "impactDistribution": "Répartition par niveau d'impact",
+      "sources": "Sources de Veille",
+      "methodology": "Méthodologie de Veille",
+      "actions": "Actions Menées",
+      "detailByIndicator": "Détail par Indicateur"
+    },
+    "summaryLabels": {
+      "articles": "Articles surveillés",
+      "actionsDone": "Actions complétées",
+      "actionsInProgress": "En cours",
+      "actionsTodo": "À faire",
+      "firstIndicator": "Ind. {indicatorId}"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "actionStatusLabels": {
+      "done": "Actions complétées ({count})",
+      "inProgress": "Actions en cours ({count})",
+      "todo": "Actions planifiées ({count})"
+    },
+    "signatureLabels": {
+      "responsibleRole": "L'expert-comptable responsable",
+      "directorRole": "Le président du conseil régional OEC",
+      "nameAndSignaturePlaceholder": "Nom et signature"
+    },
+    "sourceLabels": {
+      "bofip": "BOFiP",
+      "anc": "ANC",
+      "urssaf": "URSSAF",
+      "csoec": "CSOEC",
+      "legifrance": "Légifrance",
+      "boamp": "BOAMP"
+    }
+  },
+  "newsletter": {
+    "subject": {
+      "template": "{brandName} #{edition} — {nbTextes} texte{textesPlural}, {nbAo} actu{aoPlural} URSSAF",
+      "highImpactPrefix": "⚠️ Impact fort — "
+    },
+    "header": {
+      "title": "Cipia Experts-Comptables",
+      "editionLine": "Édition #{edition} &mdash; {dateStart} au {dateEnd}",
+      "viewOnlineLabel": "Voir en ligne"
+    },
+    "intro": "Bonjour,<br/>Voici votre veille fiscale, comptable et sociale de la semaine\n    pour les experts-comptables indépendants.",
+    "sections": {
+      "reglementaire": {
+        "title": "Veille fiscale BOFiP",
+        "subtitle": "Mises à jour BOFiP, IS, IR, TVA",
+        "readMoreLabel": "Lire le texte original &rarr;"
+      },
+      "ao": {
+        "title": "Actualités URSSAF",
+        "subtitle": "{count} mise{plural} à jour cette semaine",
+        "readMoreLabel": "Voir l'actualité &rarr;"
+      },
+      "metier": {
+        "title": "Normes comptables &amp; pratiques",
+        "subtitle": "PCG, règlements ANC, IFRS",
+        "readMoreLabel": "En savoir plus &rarr;"
+      },
+      "handicap": {
+        "title": "Déontologie &amp; formation continue",
+        "subtitle": "CSOEC, 40h obligatoires, anti-blanchiment",
+        "readMoreLabel": "En savoir plus &rarr;"
+      }
+    },
+    "aoOpportunityWord": "actualité",
+    "aoLabels": {
+      "deadline": "Date d'application :",
+      "amount": "Type :",
+      "region": "Périmètre :",
+      "score": "Pertinence :"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "statBlock": {
+      "label": "Le chiffre de la semaine",
+      "caption": "textes BOFiP, URSSAF et normes ANC analysés par notre IA pour vous faire gagner du temps sur votre veille."
+    },
+    "cta": {
+      "label": "Découvrir tous les articles",
+      "urlTemplate": "https://{domain}/experts-comptables"
+    },
+    "footer": {
+      "disclaimer": "Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>\n    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas un conseil fiscal ou comptable.",
+      "unsubscribeLabel": "Se désabonner",
+      "unsubscribeUrlTemplate": "{unsubscribeToken}",
+      "contactLabel": "Contact",
+      "contactEmail": "contact@{domain}",
+      "siteLabel": "Cipia Experts-Comptables",
+      "siteUrl": "https://{domain}/experts-comptables"
+    }
+  }
+}

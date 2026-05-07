@@ -1,0 +1,163 @@
+{
+  "id": "medical",
+  "brand": {
+    "name": "Cipia Médical",
+    "legalName": "Cipia",
+    "domain": "cipia.fr",
+    "tagline": "Veille HAS et conventions CPAM livrée chaque mardi à 8h",
+    "description": "Recommandations HAS, décrets santé, conventions CPAM et obligations DPC classés par IA pour les professionnels de santé en exercice libéral. Export PDF prêt pour l'audit ordinal.",
+    "logoUrl": "/sectors/medical/icon.svg",
+    "colorPrimary": "#0ea5e9",
+    "colorAccent": "#f59e0b"
+  },
+  "vocab": {
+    "audience": "professionnels de santé en exercice libéral",
+    "audienceShort": "PROSANTE",
+    "regulatorName": "HAS",
+    "auditName": "audit ordinal",
+    "regulatorRefName": "recommandations HAS et conventions CPAM"
+  },
+  "taxonomy": {
+    "indicators": [
+      {
+        "id": "1",
+        "short": "Légal",
+        "label": "Veille légale et réglementaire santé",
+        "description": "Décrets, arrêtés et lois Code de la santé publique",
+        "promptHint": "veille legale reglementaire sante professionnels liberaux"
+      },
+      {
+        "id": "2",
+        "short": "HAS",
+        "label": "Recommandations HAS et bonnes pratiques",
+        "description": "Recommandations Haute Autorité de Santé, avis HCSP",
+        "promptHint": "recommandations HAS bonnes pratiques cliniques"
+      },
+      {
+        "id": "3",
+        "short": "DPC",
+        "label": "Développement Professionnel Continu",
+        "description": "Obligations DPC, formations agréées, ANDPC",
+        "promptHint": "DPC formation continue obligation professionnels sante"
+      },
+      {
+        "id": "4",
+        "short": "Conventions",
+        "label": "Conventions CPAM et tarifs",
+        "description": "Avenants conventionnels, NGAP, CCAM, télétransmission",
+        "promptHint": "conventions CPAM tarifs NGAP CCAM"
+      }
+    ],
+    "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]
+  },
+  "audit_pdf": {
+    "coverTitle": "Rapport de Veille Médicale",
+    "coverSubtitle": "Preuve de conformité {regulatorName} - Indicateurs {firstIndicatorId} à {lastIndicatorId}",
+    "coverFooter": "Document généré automatiquement par {brandName}",
+    "reportTitle": "Rapport de Veille {regulatorName}",
+    "pageFooter": "Rapport généré par {brandName} - Conformité {regulatorName}",
+    "pageFooterShort": "Rapport généré par {brandName}",
+    "sections": {
+      "summary": "Résumé Exécutif",
+      "impactDistribution": "Répartition par niveau d'impact",
+      "sources": "Sources de Veille",
+      "methodology": "Méthodologie de Veille",
+      "actions": "Actions Menées",
+      "detailByIndicator": "Détail par Indicateur"
+    },
+    "summaryLabels": {
+      "articles": "Articles surveillés",
+      "actionsDone": "Actions complétées",
+      "actionsInProgress": "En cours",
+      "actionsTodo": "À faire",
+      "firstIndicator": "Ind. {indicatorId}"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "actionStatusLabels": {
+      "done": "Actions complétées ({count})",
+      "inProgress": "Actions en cours ({count})",
+      "todo": "Actions planifiées ({count})"
+    },
+    "signatureLabels": {
+      "responsibleRole": "Le praticien responsable",
+      "directorRole": "Le responsable du cabinet",
+      "nameAndSignaturePlaceholder": "Nom et signature"
+    },
+    "sourceLabels": {
+      "has": "HAS",
+      "ansm": "ANSM",
+      "cnam": "CNAM",
+      "andpc": "ANDPC",
+      "ordres": "Ordres professionnels",
+      "legifrance": "Légifrance",
+      "boamp": "BOAMP"
+    }
+  },
+  "newsletter": {
+    "subject": {
+      "template": "{brandName} #{edition} — {nbTextes} texte{textesPlural}, {nbAo} avis HAS",
+      "highImpactPrefix": "⚠️ Impact fort — "
+    },
+    "header": {
+      "title": "Cipia Médical",
+      "editionLine": "Édition #{edition} &mdash; {dateStart} au {dateEnd}",
+      "viewOnlineLabel": "Voir en ligne"
+    },
+    "intro": "Bonjour,<br/>Voici votre veille réglementaire santé et HAS de la semaine\n    pour les professionnels de santé en exercice libéral.",
+    "sections": {
+      "reglementaire": {
+        "title": "Veille réglementaire santé",
+        "subtitle": "Décrets, arrêtés et Code de la santé publique",
+        "readMoreLabel": "Lire le texte original &rarr;"
+      },
+      "ao": {
+        "title": "Recommandations HAS",
+        "subtitle": "{count} avis HAS cette semaine",
+        "readMoreLabel": "Voir la recommandation &rarr;"
+      },
+      "metier": {
+        "title": "DPC &amp; formation continue",
+        "subtitle": "ANDPC, formations agréées",
+        "readMoreLabel": "En savoir plus &rarr;"
+      },
+      "handicap": {
+        "title": "Conventions CPAM &amp; tarifs",
+        "subtitle": "Avenants conventionnels, NGAP/CCAM",
+        "readMoreLabel": "En savoir plus &rarr;"
+      }
+    },
+    "aoOpportunityWord": "recommandation",
+    "aoLabels": {
+      "deadline": "Date d'application :",
+      "amount": "Niveau :",
+      "region": "Périmètre :",
+      "score": "Pertinence :"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "statBlock": {
+      "label": "Le chiffre de la semaine",
+      "caption": "textes et recommandations HAS analysés par notre IA pour vous faire gagner du temps sur votre veille médicale."
+    },
+    "cta": {
+      "label": "Découvrir tous les articles",
+      "urlTemplate": "https://{domain}/medical"
+    },
+    "footer": {
+      "disclaimer": "Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>\n    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas un avis médical ou juridique.",
+      "unsubscribeLabel": "Se désabonner",
+      "unsubscribeUrlTemplate": "{unsubscribeToken}",
+      "contactLabel": "Contact",
+      "contactEmail": "contact@{domain}",
+      "siteLabel": "Cipia Médical",
+      "siteUrl": "https://{domain}/medical"
+    }
+  }
+}

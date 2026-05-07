@@ -153,6 +153,7 @@ class JudilibreCollector(BaseCollector):
     """Collecte les décisions Judilibre (Cour de cassation) via l'API PISTE."""
 
     SOURCE_NAME = "judilibre"
+    SECTOR_ID = "avocats"
 
     def __init__(
         self,

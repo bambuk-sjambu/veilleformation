@@ -40,13 +40,21 @@ class ResendClient:
         if not self.api_key:
             logger.warning("RESEND_API_KEY non configuree -- les envois Resend echoueront")
 
-    def get_subscriber_count(self, db_path: str) -> int:
-        """Return number of active (non-unsubscribed) subscribers."""
+    def get_subscriber_count(self, db_path: str, sector_id: Optional[str] = None) -> int:
+        """Return number of active (non-unsubscribed) subscribers, optionally
+        filtered by sector_id (pivot multi-personas C.5)."""
         conn = get_connection(db_path)
         try:
-            row = conn.execute(
-                "SELECT COUNT(*) FROM subscribers WHERE unsubscribed_at IS NULL AND is_active = 1"
-            ).fetchone()
+            if sector_id:
+                row = conn.execute(
+                    "SELECT COUNT(*) FROM subscribers "
+                    "WHERE unsubscribed_at IS NULL AND is_active = 1 AND sector_id = ?",
+                    (sector_id,),
+                ).fetchone()
+            else:
+                row = conn.execute(
+                    "SELECT COUNT(*) FROM subscribers WHERE unsubscribed_at IS NULL AND is_active = 1"
+                ).fetchone()
             return int(row[0]) if row else 0
         finally:
             conn.close()
@@ -95,8 +103,12 @@ class ResendClient:
         logger.error("Resend send exhausted retries for %s", to)
         return None
 
-    def send_newsletter(self, html: str, subject: str, db_path: str) -> dict:
-        """Send the newsletter HTML to all active subscribers.
+    def send_newsletter(
+        self, html: str, subject: str, db_path: str,
+        sector_id: Optional[str] = None,
+    ) -> dict:
+        """Send the newsletter HTML to active subscribers, optionally filtered
+        by sector_id (pivot multi-personas C.5).
 
         Returns a result dict:
           {"batch_id": str|None, "sent": int, "failed": int, "total": int}
@@ -108,10 +120,18 @@ class ResendClient:
 
         conn = get_connection(db_path)
         try:
-            rows = conn.execute(
-                "SELECT email FROM subscribers "
-                "WHERE unsubscribed_at IS NULL AND is_active = 1 AND email IS NOT NULL"
-            ).fetchall()
+            if sector_id:
+                rows = conn.execute(
+                    "SELECT email FROM subscribers "
+                    "WHERE unsubscribed_at IS NULL AND is_active = 1 "
+                    "AND email IS NOT NULL AND sector_id = ?",
+                    (sector_id,),
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT email FROM subscribers "
+                    "WHERE unsubscribed_at IS NULL AND is_active = 1 AND email IS NOT NULL"
+                ).fetchall()
         finally:
             conn.close()
 

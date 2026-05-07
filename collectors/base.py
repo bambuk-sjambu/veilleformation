@@ -14,6 +14,12 @@ class BaseCollector:
     """
 
     SOURCE_NAME: str = "unknown"
+    # Pivot multi-personas (C.4) : chaque collector déclare son secteur cible.
+    # Les collectors généralistes (BOAMP, Légifrance, OPCO, France Travail…)
+    # restent sur 'cipia' (Qualiopi). Les collectors mono-secteur override
+    # cette valeur (rappel_conso=haccp, ansm=medical, bofip=experts-comptables,
+    # judilibre=avocats).
+    SECTOR_ID: str = "cipia"
 
     def __init__(self, db_path: str, logger: logging.Logger = None):
         self.db_path = db_path
@@ -45,6 +51,7 @@ class BaseCollector:
         inserted = 0
         try:
             for article in articles:
+                article.setdefault("sector_id", self.SECTOR_ID)
                 if insert_article(conn, article):
                     inserted += 1
         finally:

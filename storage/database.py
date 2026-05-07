@@ -75,7 +75,9 @@ CREATE TABLE IF NOT EXISTS articles (
   processed_at DATETIME,
   sent_in_newsletter_id INTEGER,
   is_read INTEGER DEFAULT 0,
-  is_starred INTEGER DEFAULT 0
+  is_starred INTEGER DEFAULT 0,
+  -- Pivot multi-personas (C.1) : routage par secteur (cipia/haccp/medical/avocats/experts-comptables)
+  sector_id TEXT NOT NULL DEFAULT 'cipia'
 );
 
 CREATE INDEX IF NOT EXISTS idx_articles_source ON articles(source);
@@ -84,11 +86,12 @@ CREATE INDEX IF NOT EXISTS idx_articles_category on articles(category);
 CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published_date DESC);
 CREATE INDEX IF NOT EXISTS idx_articles_impact on articles(impact_level);
 CREATE INDEX IF NOT EXISTS idx_articles_source_id ON articles(source_id);
+CREATE INDEX IF NOT EXISTS idx_articles_sector_id ON articles(sector_id);
 
 -- Newsletters(weekly editions)
 CREATE TABLE IF NOT EXISTS newsletters (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  edition_number INTEGER UNIQUE NOT NULL,
+  edition_number INTEGER NOT NULL,
   subject TEXT NOT NULL,
   html_content TEXT,
   week_start DATE,
@@ -108,12 +111,17 @@ CREATE TABLE IF NOT EXISTS newsletters (
   bounce_count INTEGER DEFAULT 0,
   stats_fetched_at DATETIME,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  archive_url TEXT
+  archive_url TEXT,
+  -- Pivot multi-personas (C.1)
+  sector_id TEXT NOT NULL DEFAULT 'cipia',
+  -- Pivot C.3 : numerotation independante par secteur
+  UNIQUE(sector_id, edition_number)
 );
 
 CREATE INDEX IF NOT EXISTS idx_newsletters_edition ON newsletters(edition_number);
 CREATE INDEX IF NOT EXISTS idx_newsletters_sent ON newsletters(sent_at);
 CREATE INDEX IF NOT EXISTS idx_newsletters_status on newsletters(status);
+CREATE INDEX IF NOT EXISTS idx_newsletters_sector_id ON newsletters(sector_id);
 
 -- Subscribers(email subscribers)
 CREATE TABLE IF NOT EXISTS subscribers (
@@ -127,11 +135,14 @@ CREATE TABLE IF NOT EXISTS subscribers (
   brevo_contact_id TEXT,
   subscribed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   unsubscribed_at DATETIME,
-  is_active INTEGER DEFAULT 1
+  is_active INTEGER DEFAULT 1,
+  -- Pivot multi-personas (C.1) : V1 = 1 subscriber = 1 secteur d'intérêt
+  sector_id TEXT NOT NULL DEFAULT 'cipia'
 );
 
 CREATE INDEX IF NOT EXISTS idx_subscribers_email on subscribers(email);
 CREATE INDEX IF NOT EXISTS idx_subscribers_active on subscribers(is_active);
+CREATE INDEX IF NOT EXISTS idx_subscribers_sector_id on subscribers(sector_id);
 
 -- Collection logs(automated collection tracking)
 CREATE TABLE IF NOT EXISTS collection_logs (
@@ -302,6 +313,7 @@ def insert_article(conn: sqlite3.Connection, article: dict) -> bool:
         "impact_justification", "impact_phrase",
         "relevance_score", "mots_cles", "date_entree_vigueur",
         "taxonomy_indicators", "taxonomy_justification", "extra_meta",
+        "sector_id",
     ]
     present = {k: v for k, v in article.items() if k in schema_columns and v is not None}
 

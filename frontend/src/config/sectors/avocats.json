@@ -1,0 +1,162 @@
+{
+  "id": "avocats",
+  "brand": {
+    "name": "Cipia Avocats",
+    "legalName": "Cipia",
+    "domain": "cipia.fr",
+    "tagline": "Veille jurisprudence et déontologie livrée chaque mardi à 8h",
+    "description": "Arrêts Cassation et Conseil d'État, lois Légifrance, déontologie CNB et formation continue obligatoire classés par IA pour les avocats indépendants. Export PDF prêt pour l'audit ordinal.",
+    "logoUrl": "/sectors/avocats/icon.svg",
+    "colorPrimary": "#1e40af",
+    "colorAccent": "#d4a017"
+  },
+  "vocab": {
+    "audience": "avocats indépendants en exercice libéral",
+    "audienceShort": "AVOCATS",
+    "regulatorName": "CNB",
+    "auditName": "audit ordinal",
+    "regulatorRefName": "règles déontologiques CNB et obligations de formation"
+  },
+  "taxonomy": {
+    "indicators": [
+      {
+        "id": "1",
+        "short": "Jurisprudence",
+        "label": "Veille jurisprudentielle Cassation et Conseil d'État",
+        "description": "Arrêts Cassation, CE, jurisprudence Judilibre",
+        "promptHint": "jurisprudence cassation conseil etat avocats"
+      },
+      {
+        "id": "2",
+        "short": "Légal",
+        "label": "Veille légale et réglementaire",
+        "description": "Lois, décrets, arrêtés Légifrance et JORF",
+        "promptHint": "veille legale lois decrets legifrance avocats"
+      },
+      {
+        "id": "3",
+        "short": "Déontologie",
+        "label": "Déontologie et RGPD",
+        "description": "Règles CNB, secret professionnel, conflits d'intérêts, RGPD",
+        "promptHint": "deontologie CNB secret professionnel RGPD avocats"
+      },
+      {
+        "id": "4",
+        "short": "Formation",
+        "label": "Formation continue obligatoire",
+        "description": "20 heures annuelles, organismes agréés CNB",
+        "promptHint": "formation continue obligatoire avocats 20 heures CNB"
+      }
+    ],
+    "categories": ["reglementaire", "ao", "metier", "handicap", "financement"]
+  },
+  "audit_pdf": {
+    "coverTitle": "Rapport de Veille Juridique",
+    "coverSubtitle": "Preuve de conformité {regulatorName} - Indicateurs {firstIndicatorId} à {lastIndicatorId}",
+    "coverFooter": "Document généré automatiquement par {brandName}",
+    "reportTitle": "Rapport de Veille {regulatorName}",
+    "pageFooter": "Rapport généré par {brandName} - Conformité {regulatorName}",
+    "pageFooterShort": "Rapport généré par {brandName}",
+    "sections": {
+      "summary": "Résumé Exécutif",
+      "impactDistribution": "Répartition par niveau d'impact",
+      "sources": "Sources de Veille",
+      "methodology": "Méthodologie de Veille",
+      "actions": "Actions Menées",
+      "detailByIndicator": "Détail par Indicateur"
+    },
+    "summaryLabels": {
+      "articles": "Articles surveillés",
+      "actionsDone": "Actions complétées",
+      "actionsInProgress": "En cours",
+      "actionsTodo": "À faire",
+      "firstIndicator": "Ind. {indicatorId}"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "actionStatusLabels": {
+      "done": "Actions complétées ({count})",
+      "inProgress": "Actions en cours ({count})",
+      "todo": "Actions planifiées ({count})"
+    },
+    "signatureLabels": {
+      "responsibleRole": "L'avocat responsable",
+      "directorRole": "Le bâtonnier de l'ordre",
+      "nameAndSignaturePlaceholder": "Nom et signature"
+    },
+    "sourceLabels": {
+      "judilibre": "Judilibre",
+      "legifrance": "Légifrance",
+      "jorf": "JORF",
+      "cnb": "CNB",
+      "barreaux": "Barreaux locaux",
+      "boamp": "BOAMP"
+    }
+  },
+  "newsletter": {
+    "subject": {
+      "template": "{brandName} #{edition} — {nbTextes} texte{textesPlural}, {nbAo} arrêt{aoPlural}",
+      "highImpactPrefix": "⚠️ Impact fort — "
+    },
+    "header": {
+      "title": "Cipia Avocats",
+      "editionLine": "Édition #{edition} &mdash; {dateStart} au {dateEnd}",
+      "viewOnlineLabel": "Voir en ligne"
+    },
+    "intro": "Bonjour Maître,<br/>Voici votre veille jurisprudentielle et réglementaire de la semaine\n    pour les avocats indépendants.",
+    "sections": {
+      "reglementaire": {
+        "title": "Veille légale",
+        "subtitle": "Lois, décrets et arrêtés Légifrance",
+        "readMoreLabel": "Lire le texte original &rarr;"
+      },
+      "ao": {
+        "title": "Jurisprudence",
+        "subtitle": "{count} arrêt{plural} cette semaine",
+        "readMoreLabel": "Voir l'arrêt &rarr;"
+      },
+      "metier": {
+        "title": "Déontologie &amp; pratiques",
+        "subtitle": "Règles CNB, secret professionnel, RGPD",
+        "readMoreLabel": "En savoir plus &rarr;"
+      },
+      "handicap": {
+        "title": "Formation continue",
+        "subtitle": "Organismes CNB agréés, 20h obligatoires",
+        "readMoreLabel": "En savoir plus &rarr;"
+      }
+    },
+    "aoOpportunityWord": "arrêt",
+    "aoLabels": {
+      "deadline": "Date d'audience :",
+      "amount": "Juridiction :",
+      "region": "Chambre :",
+      "score": "Pertinence :"
+    },
+    "impactLabels": {
+      "fort": "Fort",
+      "moyen": "Moyen",
+      "faible": "Faible"
+    },
+    "statBlock": {
+      "label": "Le chiffre de la semaine",
+      "caption": "textes et arrêts analysés par notre IA pour vous faire gagner du temps sur votre veille juridique."
+    },
+    "cta": {
+      "label": "Découvrir tous les articles",
+      "urlTemplate": "https://{domain}/avocats"
+    },
+    "footer": {
+      "disclaimer": "Cette newsletter est générée par IA (Claude) à partir de sources officielles.<br/>\n    Les analyses d'impact sont fournies à titre indicatif et ne constituent pas une consultation juridique.",
+      "unsubscribeLabel": "Se désabonner",
+      "unsubscribeUrlTemplate": "{unsubscribeToken}",
+      "contactLabel": "Contact",
+      "contactEmail": "contact@{domain}",
+      "siteLabel": "Cipia Avocats",
+      "siteUrl": "https://{domain}/avocats"
+    }
+  }
+}

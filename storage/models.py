@@ -29,6 +29,7 @@ class Article:
     sent_in_newsletter_id: Optional[int] = None
     is_read: int = 0
     is_starred: int = 0
+    sector_id: str = "cipia"
     id: Optional[int] = None
 
     def to_dict(self) -> dict:
@@ -58,6 +59,7 @@ class Newsletter:
     click_rate: Optional[float] = None
     unsubscribe_count: int = 0
     archive_url: Optional[str] = None
+    sector_id: str = "cipia"
     id: Optional[int] = None
 
 
@@ -75,4 +77,5 @@ class Subscriber:
     subscribed_at: Optional[datetime] = None
     unsubscribed_at: Optional[datetime] = None
     is_active: int = 1
+    sector_id: str = "cipia"
     id: Optional[int] = None

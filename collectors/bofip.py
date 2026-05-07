@@ -139,6 +139,7 @@ class BOFiPCollector(BaseCollector):
     """
 
     SOURCE_NAME = "bofip"
+    SECTOR_ID = "experts-comptables"
 
     def __init__(self, db_path: str, logger=None, timeout: int = 30):
         super().__init__(db_path, logger)

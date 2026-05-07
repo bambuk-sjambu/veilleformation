@@ -117,6 +117,7 @@ class ANSMCollector(BaseCollector):
     """
 
     SOURCE_NAME = "ansm"
+    SECTOR_ID = "medical"
 
     # Catégorie Cipia : le schéma DB n'autorise actuellement que
     # ('reglementaire', 'ao', 'metier', 'handicap', 'financement'). Les

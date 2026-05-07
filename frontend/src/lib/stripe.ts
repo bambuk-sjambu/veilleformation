@@ -16,11 +16,17 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-// Price IDs for each plan (monthly)
+// Price IDs for each plan. Pivot 2026-05 : gamme officielle = solo + cabinet
+// (yearly only). Les anciens equipe/agence sont conservés pour rétrocompat
+// lecture (zéro abonné actuellement, pas de migration nécessaire).
 export const PLAN_PRICES = {
   solo: {
     monthly: process.env.STRIPE_PRICE_SOLO_MONTHLY || "price_solo_monthly",
     yearly: process.env.STRIPE_PRICE_SOLO_YEARLY || "price_solo_yearly",
+  },
+  cabinet: {
+    monthly: process.env.STRIPE_PRICE_CABINET_MONTHLY || "price_cabinet_monthly",
+    yearly: process.env.STRIPE_PRICE_CABINET_YEARLY || "price_cabinet_yearly",
   },
   equipe: {
     monthly: process.env.STRIPE_PRICE_EQUIPE_MONTHLY || "price_equipe_monthly",
@@ -32,7 +38,7 @@ export const PLAN_PRICES = {
   },
 } as const;
 
-export type PlanType = "free" | "solo" | "equipe" | "agence";
+export type PlanType = "free" | "solo" | "cabinet" | "equipe" | "agence";
 export type BillingPeriod = "monthly" | "yearly";
 
 export function getPlanFromPriceId(priceId: string): PlanType | null {
@@ -63,6 +69,15 @@ export function getPlanFeatures(plan: PlanType) {
       hasApi: false,
       hasWhiteLabel: false,
       historyMonths: 6,
+    },
+    cabinet: {
+      maxExports: -1,
+      hasAlertes: true,
+      hasEquipe: true,
+      maxUsers: 10,
+      hasApi: false,
+      hasWhiteLabel: true,
+      historyMonths: 24,
     },
     equipe: {
       maxExports: -1,

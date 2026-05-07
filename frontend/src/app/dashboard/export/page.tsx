@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { sector } from "@/config";
+import { useSector } from "@/lib/sector-client";
 import { getIndicators } from "@/lib/extra-meta";
 
 interface Profile {
@@ -21,6 +21,7 @@ interface Stats {
 }
 
 export default function ExportPage() {
+  const { config: sector } = useSector();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);

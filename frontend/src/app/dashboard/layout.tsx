@@ -7,6 +7,8 @@ import {
   getUserSectors,
   DEFAULT_SECTOR_ID,
 } from "@/lib/sector-context";
+import { getSectorConfig } from "@/config";
+import { SectorProvider } from "@/lib/sector-client";
 
 export default async function DashboardLayout({
   children,
@@ -38,20 +40,23 @@ export default async function DashboardLayout({
   const activeSectorId =
     getActiveSectorIdForUser(user.userId) || DEFAULT_SECTOR_ID;
   const userSectors = getUserSectors(user.userId);
+  const activeConfig = getSectorConfig(activeSectorId);
 
   return (
-    <DashboardShell
-      firstName={user.firstName || ""}
-      lastName={user.lastName || ""}
-      avatarUrl={avatarUrl}
-      isFeedbackPanel={isFeedbackPanel}
-      activeSectorId={activeSectorId}
-      userSectors={userSectors.map((s) => ({
-        sector_id: s.sector_id,
-        is_primary: s.is_primary,
-      }))}
-    >
-      {children}
-    </DashboardShell>
+    <SectorProvider sectorId={activeSectorId} config={activeConfig}>
+      <DashboardShell
+        firstName={user.firstName || ""}
+        lastName={user.lastName || ""}
+        avatarUrl={avatarUrl}
+        isFeedbackPanel={isFeedbackPanel}
+        activeSectorId={activeSectorId}
+        userSectors={userSectors.map((s) => ({
+          sector_id: s.sector_id,
+          is_primary: s.is_primary,
+        }))}
+      >
+        {children}
+      </DashboardShell>
+    </SectorProvider>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { sector } from "@/config";
+import { useSector } from "@/lib/sector-client";
 
 interface UserProfile {
   id: number;
@@ -22,6 +22,7 @@ interface UserProfile {
 }
 
 export default function SettingsPage() {
+  const { config: sector } = useSector();
   const [profile, setProfile] = useState<Partial<UserProfile>>({
     company_name: "",
     siret: "",

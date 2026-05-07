@@ -8,6 +8,7 @@
 
 import { getDb } from "./db";
 import { getCurrentUser } from "./auth";
+import { getSectorConfig, type SectorConfig } from "@/config";
 
 export const DEFAULT_SECTOR_ID = "cipia";
 
@@ -23,6 +24,19 @@ export async function getCurrentSectorId(): Promise<string> {
   const user = await getCurrentUser();
   if (!user || !user.userId) return DEFAULT_SECTOR_ID;
   return getActiveSectorIdForUser(user.userId);
+}
+
+/**
+ * Helper de page server : retourne la config complète du secteur actif
+ * pour la requête courante (user authentifié → users.active_sector_id,
+ * fallback cipia pour les visiteurs).
+ *
+ * À utiliser dans les pages dashboard à la place de
+ * `import { sector } from "@/config"` pour un rendu sectoriel.
+ */
+export async function getActiveSectorConfig(): Promise<SectorConfig> {
+  const sectorId = await getCurrentSectorId();
+  return getSectorConfig(sectorId);
 }
 
 export interface UserSector {

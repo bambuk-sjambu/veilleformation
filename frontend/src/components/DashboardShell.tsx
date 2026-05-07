@@ -91,8 +91,30 @@ export default function DashboardShell({
   const isActive = (href: string) =>
     pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
 
+  // Branding dynamique par secteur : on override les CSS vars Tailwind
+  // au niveau du shell. Tout descendant qui utilise bg-primary, text-primary,
+  // border-primary, bg-accent etc. bascule automatiquement sur la palette
+  // du secteur actif (X.3.a).
+  const sectorBrandingVars = {
+    "--color-primary": sectorMeta.primary,
+    "--color-primary-dark": sectorMeta.primaryDark,
+    "--color-primary-light": sectorMeta.primary,
+    "--color-accent": sectorMeta.accent,
+    "--color-accent-light": sectorMeta.accent,
+  } as React.CSSProperties;
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className="min-h-screen bg-gray-50"
+      style={sectorBrandingVars}
+    >
+      {/* Bande sectorielle : marque visuellement l'univers actif */}
+      <div
+        className="h-1 w-full"
+        style={{
+          background: `linear-gradient(90deg, ${sectorMeta.primary} 0%, ${sectorMeta.primaryDark} 60%, ${sectorMeta.accent} 100%)`,
+        }}
+      />
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">

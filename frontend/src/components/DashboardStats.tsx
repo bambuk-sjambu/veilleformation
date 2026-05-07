@@ -14,7 +14,7 @@ import {
   Loader2,
   DatabaseZap,
 } from "lucide-react";
-import { sector } from "@/config";
+import { useSector } from "@/lib/sector-client";
 
 interface Stats {
   total_articles: number;
@@ -45,6 +45,7 @@ function formatDateFr(dateStr: string | null): string {
 }
 
 export default function DashboardStats({ firstName }: { firstName: string }) {
+  const { config: sector } = useSector();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

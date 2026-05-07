@@ -14,7 +14,8 @@ import {
   Lightbulb,
   Info,
 } from "lucide-react";
-import { sector } from "@/config";
+import { useSector } from "@/lib/sector-client";
+import { useMemo } from "react";
 import { getIndicators } from "@/lib/extra-meta";
 
 interface Article {
@@ -64,20 +65,6 @@ const INDICATOR_COLORS: Record<string, string> = {
   "26": "bg-teal-100 text-teal-800",
 };
 
-const indicatorConfig: Record<
-  string,
-  { label: string; short: string; classes: string }
-> = Object.fromEntries(
-  sector.taxonomy.indicators.map((ind) => [
-    ind.id,
-    {
-      label: ind.label,
-      short: ind.short,
-      classes: INDICATOR_COLORS[ind.id] || "bg-gray-100 text-gray-700",
-    },
-  ])
-);
-
 function parseIndicators(raw: string | null): string[] {
   if (!raw) return [];
   try {
@@ -92,7 +79,13 @@ function parseIndicators(raw: string | null): string[] {
   }
 }
 
-function RelevanceScore({ score }: { score: number | null }) {
+function RelevanceScore({
+  score,
+  audience,
+}: {
+  score: number | null;
+  audience: string;
+}) {
   if (score === null) return null;
   const color =
     score >= 8
@@ -103,7 +96,7 @@ function RelevanceScore({ score }: { score: number | null }) {
   return (
     <span
       className={`text-xs font-medium px-2 py-0.5 rounded ${color}`}
-      title={`Pertinence pour les ${sector.vocab.audience} (1=faible, 10=tres pertinent)`}
+      title={`Pertinence pour les ${audience} (1=faible, 10=tres pertinent)`}
     >
       Pertinence {score}/10
     </span>
@@ -111,6 +104,24 @@ function RelevanceScore({ score }: { score: number | null }) {
 }
 
 export default function VeillePage() {
+  const { config: sector } = useSector();
+  const indicatorConfig = useMemo<
+    Record<string, { label: string; short: string; classes: string }>
+  >(
+    () =>
+      Object.fromEntries(
+        sector.taxonomy.indicators.map((ind) => [
+          ind.id,
+          {
+            label: ind.label,
+            short: ind.short,
+            classes: INDICATOR_COLORS[ind.id] || "bg-gray-100 text-gray-700",
+          },
+        ])
+      ),
+    [sector.taxonomy.indicators]
+  );
+
   const [articles, setArticles] = useState<Article[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -495,7 +506,10 @@ export default function VeillePage() {
                           {formatDateFr(article.published_date)}
                         </span>
                       )}
-                      <RelevanceScore score={article.relevance_score} />
+                      <RelevanceScore
+                        score={article.relevance_score}
+                        audience={sector.vocab.audience}
+                      />
                     </div>
                   </div>
 

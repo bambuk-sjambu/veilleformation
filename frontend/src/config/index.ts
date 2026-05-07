@@ -15,11 +15,17 @@
 
 import cipiaConfig from "./sectors/cipia.json";
 import haccpConfig from "./sectors/haccp.json";
+import medicalConfig from "./sectors/medical.json";
+import avocatsConfig from "./sectors/avocats.json";
+import ecConfig from "./sectors/experts-comptables.json";
 import type { SectorConfig } from "./types";
 
 const SECTORS: Record<string, SectorConfig> = {
   cipia: cipiaConfig as SectorConfig,
   haccp: haccpConfig as SectorConfig,
+  medical: medicalConfig as SectorConfig,
+  avocats: avocatsConfig as SectorConfig,
+  "experts-comptables": ecConfig as SectorConfig,
 };
 
 const ACTIVE_SECTOR_ID = process.env.SECTOR || "cipia";
@@ -31,5 +37,28 @@ if (!active) {
   );
 }
 
+/**
+ * Secteur statique par défaut (lu de SECTOR env au build).
+ * À utiliser pour les pages publiques visiteurs (home, /pricing, /cabinet…).
+ * Pour les pages dashboard où on doit refléter le secteur du user authentifié,
+ * utiliser plutôt getSectorConfig(sectorId) côté server.
+ */
 export const sector: SectorConfig = active;
-export type { SectorConfig, BrandConfig, VocabConfig, TaxonomyConfig, TaxonomyIndicator, AuditPdfConfig, NewsletterConfig } from "./types";
+
+/**
+ * Lookup dynamique : retourne la config du secteur demandé.
+ * Fallback sur 'cipia' si le secteur n'existe pas.
+ */
+export function getSectorConfig(sectorId: string): SectorConfig {
+  return SECTORS[sectorId] || SECTORS.cipia;
+}
+
+export type {
+  SectorConfig,
+  BrandConfig,
+  VocabConfig,
+  TaxonomyConfig,
+  TaxonomyIndicator,
+  AuditPdfConfig,
+  NewsletterConfig,
+} from "./types";

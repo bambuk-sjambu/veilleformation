@@ -40,6 +40,8 @@ from collectors.rappel_conso import RappelConsoCollector  # secteur HACCP
 from collectors.ansm import ANSMCollector  # secteur médical
 from collectors.bofip import BOFiPCollector  # secteur experts-comptables
 from collectors.judilibre import JudilibreCollector  # secteur avocats
+from collectors.drees import DREESCollector  # secteur médical (élargissement X.5)
+from collectors.dila_jorf_medical import DILAJorfMedicalCollector  # secteur médical (élargissement X.5)
 from collectors.regions import collect_regions
 from collectors.rss_feeds import collect_all_rss
 
@@ -124,6 +126,9 @@ def cmd_collect(args):
         ANSMCollector(db_path, logger),  # pas de days_back, RSS du jour
         BOFiPCollector(db_path, logger),  # pas de days_back, RSS plafonne maxR=50
         JudilibreCollector(db_path, logger, days_back=days_back),
+        # Élargissement médical (X.5, 2026-05-07) — DREES + JORF santé
+        DREESCollector(db_path, logger),
+        DILAJorfMedicalCollector(db_path, logger, days_back=jorf_days_back),
     ]
 
     print("=== Cipia -- Collecte ===\n")

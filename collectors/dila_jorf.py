@@ -85,7 +85,12 @@ EXCLUSIONS = [
 
 
 def _matches_keywords(title: str) -> bool:
-    """True si le titre matche un keyword strict et aucun pattern exclu."""
+    """True si le titre matche un keyword strict et aucun pattern exclu.
+
+    Helper module-level conservé pour rétrocompat (tests, import direct).
+    Utilise les KEYWORDS_STRICT et EXCLUSIONS du module (= secteur formation pro).
+    Pour multi-secteur, override `_matches_keywords` côté sous-classe.
+    """
     if not title:
         return False
     low = title.lower()
@@ -99,13 +104,34 @@ _DUMP_RE = re.compile(r"JORF_(\d{8})-(\d{6})\.tar\.gz")
 
 
 class DILAJorfCollector(BaseCollector):
-    """Collect texts from JORF (Journal Officiel) DILA dumps."""
+    """Collect texts from JORF (Journal Officiel) DILA dumps.
+
+    Multi-secteur (X.5) : pour cibler un autre secteur, créer une sous-classe
+    avec ses propres KEYWORDS_STRICT/EXCLUSIONS comme attributs de classe et
+    override SOURCE_NAME + SECTOR_ID. La méthode `_matches_keywords_self`
+    utilise `self.KEYWORDS_STRICT` / `self.EXCLUSIONS`.
+    """
 
     SOURCE_NAME = "jorf"
+    KEYWORDS_STRICT = KEYWORDS_STRICT  # référence le module-level par défaut
+    EXCLUSIONS = EXCLUSIONS
 
     def __init__(self, db_path: str, logger=None, days_back: int = 7):
         super().__init__(db_path, logger)
         self.days_back = days_back
+
+    def _matches_keywords_self(self, title: str) -> bool:
+        """Variante méthode utilisant self.KEYWORDS_STRICT / self.EXCLUSIONS.
+
+        Permet aux sous-classes de spécialiser le filtrage par secteur sans
+        toucher à la fonction module-level (gardée pour rétrocompat).
+        """
+        if not title:
+            return False
+        low = title.lower()
+        if any(ex.lower() in low for ex in self.EXCLUSIONS):
+            return False
+        return any(kw.lower() in low for kw in self.KEYWORDS_STRICT)
 
     def _list_dumps(self) -> list[tuple[str, str]]:
         """List dump files available on the DILA server.
@@ -196,7 +222,7 @@ class DILAJorfCollector(BaseCollector):
                         titretxt = lien.get("titretxt", "").strip()
                         if not idtxt or not titretxt:
                             continue
-                        if not _matches_keywords(titretxt):
+                        if not self._matches_keywords_self(titretxt):
                             continue
 
                         # Trouver le ministère parent (TITRE_TM le plus proche en remontant)

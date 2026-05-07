@@ -39,6 +39,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+    // Pages sectorielles publiques (pivot X.3.b)
+    { url: `${BASE_URL}/qualiopi`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${BASE_URL}/haccp`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${BASE_URL}/medical`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${BASE_URL}/avocats`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${BASE_URL}/experts-comptables`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${BASE_URL}/cabinet`, lastModified: now, changeFrequency: "monthly", priority: 0.95 },
     { url: `${BASE_URL}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },

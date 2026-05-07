@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
-import { sector } from "@/config";
+import { ALL_SECTOR_IDS, getSectorMeta } from "@/lib/sector-meta";
 
-export default function InscriptionPage() {
+function InscriptionForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Pré-rempli depuis ?secteur=X (lien depuis page sectorielle)
+  const initialSector = (() => {
+    const s = searchParams.get("secteur");
+    return s && ALL_SECTOR_IDS.includes(s) ? s : "cipia";
+  })();
+
+  const [sectorId, setSectorId] = useState<string>(initialSector);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +25,22 @@ export default function InscriptionPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const meta = getSectorMeta(sectorId);
+
+  // Branding dynamique selon le secteur sélectionné
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--color-primary", meta.primary);
+    root.style.setProperty("--color-primary-dark", meta.primaryDark);
+    root.style.setProperty("--color-accent", meta.accent);
+    return () => {
+      // Reset quand on quitte la page
+      root.style.removeProperty("--color-primary");
+      root.style.removeProperty("--color-primary-dark");
+      root.style.removeProperty("--color-accent");
+    };
+  }, [meta.primary, meta.primaryDark, meta.accent]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,7 +62,13 @@ export default function InscriptionPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, firstName, lastName }),
+        body: JSON.stringify({
+          email,
+          password,
+          firstName,
+          lastName,
+          sectorId,
+        }),
       });
 
       const data = await res.json();
@@ -56,31 +87,77 @@ export default function InscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md">
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-12"
+      style={{
+        background: `linear-gradient(180deg, ${meta.surface} 0%, #F9FAFB 100%)`,
+      }}
+    >
+      <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">{sector.brand.name.charAt(0)}</span>
+            <div
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: meta.primary }}
+            >
+              <span className="text-white font-bold">C</span>
             </div>
             <span className="font-bold text-xl text-gray-900">
-              {sector.brand.name}
+              {meta.shortLabel}
             </span>
+            <span className="text-2xl">{meta.emoji}</span>
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">
             Créer votre compte
           </h1>
           <p className="text-gray-600 mt-1">
-            Commencez votre veille {sector.vocab.regulatorName} en 30 secondes
+            Choisissez votre métier et démarrez en 30 secondes.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
               {error}
             </div>
           )}
+
+          {/* Sélecteur secteur */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Mon métier
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {ALL_SECTOR_IDS.map((id) => {
+                const m = getSectorMeta(id);
+                const active = id === sectorId;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setSectorId(id)}
+                    className="flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all"
+                    style={{
+                      borderColor: active ? m.primary : "#E5E7EB",
+                      backgroundColor: active ? m.surface : "white",
+                    }}
+                  >
+                    <span className="text-2xl">{m.emoji}</span>
+                    <span
+                      className="text-xs font-semibold text-center leading-tight"
+                      style={{ color: active ? m.primaryDark : "#374151" }}
+                    >
+                      {m.shortLabel.replace("Cipia ", "")}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              {meta.longLabel}. Vous pourrez ajouter d&apos;autres secteurs avec
+              le plan Cabinet (199€/an).
+            </p>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
@@ -192,14 +269,15 @@ export default function InscriptionPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-white font-semibold transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: meta.primary }}
             >
               {loading ? (
                 <span>Création du compte...</span>
               ) : (
                 <>
                   <UserPlus className="w-5 h-5" />
-                  Créer mon compte
+                  Créer mon compte {meta.shortLabel}
                 </>
               )}
             </button>
@@ -210,12 +288,27 @@ export default function InscriptionPage() {
           Déjà un compte ?{" "}
           <Link
             href="/connexion"
-            className="text-primary font-medium hover:underline"
+            className="font-medium hover:underline"
+            style={{ color: meta.primaryDark }}
           >
             Se connecter
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function InscriptionPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <p className="text-gray-500">Chargement…</p>
+        </div>
+      }
+    >
+      <InscriptionForm />
+    </Suspense>
   );
 }

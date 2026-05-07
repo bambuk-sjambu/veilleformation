@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import NewsletterForm from "@/components/NewsletterForm";
 import AudienceSelector from "@/components/AudienceSelector";
+import SectorSelectorCards from "@/components/SectorSelectorCards";
 import { sector } from "@/config";
 
 const faqItems = [
@@ -934,6 +935,7 @@ export default function HomePage() {
       <main className="pt-16">
         <AudienceSelector active="solo" variant="hero" />
         <Hero />
+        <SectorSelectorCards />
         <PainPoints />
         <Solution />
         <HowItWorks />

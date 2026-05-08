@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { getDb } from "@/lib/db";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { consumeMagicLink, checkMagicLink } from "@/lib/founder-tokens";
-import { rateLimitOk } from "@/lib/rate-limit";
+import { rateLimitOk, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +15,7 @@ export const dynamic = "force-dynamic";
  * Échange un magic link valide contre un mot de passe défini + connexion auto.
  */
 export async function POST(request: NextRequest) {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
+  const ip = getClientIp(request.headers);
   if (!rateLimitOk(`auth:set-password:${ip}`, 5, 60_000)) {
     return NextResponse.json(
       { error: "Trop de tentatives. Réessayez dans une minute." },

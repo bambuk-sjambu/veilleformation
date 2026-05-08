@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStripe, FOUNDER_PRICES, FOUNDER_CAPS } from "@/lib/stripe";
 import { getDb } from "@/lib/db";
 import { reserveFounderSeat, countActiveReservations } from "@/lib/founder-reservations";
-import { rateLimitOk } from "@/lib/rate-limit";
+import { rateLimitOk, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +25,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 export async function POST(request: NextRequest) {
   // Rate limit IP-based : 5 sessions/min/IP pour empêcher DoS Stripe
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
+  const ip = getClientIp(request.headers);
   if (!rateLimitOk(`founders:checkout:${ip}`, 5, 60_000)) {
     return NextResponse.json(
       { error: "Trop de tentatives. Réessayez dans une minute." },

@@ -23,14 +23,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Aucun fichier fourni" }, { status: 400 });
     }
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Le fichier doit être une image" }, { status: 400 });
+    // Allowlist stricte MIME — refuse SVG (XSS via <script>) et tout fichier
+    // non-image bitmap. Le MIME annoncé par le client est vérifié + magic bytes.
+    const ALLOWED_MIME_TO_EXT: Record<string, string> = {
+      "image/png": "png",
+      "image/jpeg": "jpg",
+      "image/webp": "webp",
+    };
+    const ext = ALLOWED_MIME_TO_EXT[file.type];
+    if (!ext) {
+      return NextResponse.json(
+        { error: "Format non supporté. PNG, JPEG ou WebP uniquement." },
+        { status: 400 }
+      );
     }
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
       return NextResponse.json({ error: "L'image ne doit pas dépasser 2 Mo" }, { status: 400 });
+    }
+
+    // Lit les bytes pour vérifier les magic bytes (defense-in-depth contre MIME spoof)
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const magicBytesValid =
+      (file.type === "image/png" &&
+        buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) ||
+      (file.type === "image/jpeg" &&
+        buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) ||
+      (file.type === "image/webp" &&
+        buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+        buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50);
+    if (!magicBytesValid) {
+      return NextResponse.json(
+        { error: "Le contenu du fichier ne correspond pas à son type déclaré." },
+        { status: 400 }
+      );
     }
 
     // Create uploads directory if it doesn't exist
@@ -39,14 +67,11 @@ export async function POST(request: NextRequest) {
       await mkdir(uploadsDir, { recursive: true });
     }
 
-    // Generate unique filename
-    const ext = file.name.split(".").pop() || "png";
+    // Filename généré server-side avec extension dérivée du MIME (jamais de file.name)
     const filename = `user-${session.userId}-${Date.now()}.${ext}`;
     const filepath = path.join(uploadsDir, filename);
 
     // Write file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
     await writeFile(filepath, buffer);
 
     // Generate URL

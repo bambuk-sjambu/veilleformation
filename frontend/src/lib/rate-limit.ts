@@ -17,6 +17,37 @@ interface Bucket {
   resetAt: number;
 }
 
+/**
+ * Récupère l'IP client réelle. Priorise `x-real-ip` (header set par le
+ * reverse proxy de confiance — nginx/Caddy/Hetzner Load Balancer) sur
+ * `x-forwarded-for[0]` qui peut être spoofé librement par n'importe quel
+ * client (le reverse proxy concatène derrière mais l'attaquant peut envoyer
+ * `X-Forwarded-For: 1.2.3.4` arbitraire — la 1re entrée est sa valeur).
+ *
+ * Si pas de proxy en amont, fallback sur la dernière entrée du XFF (= la
+ * première après le client, donc la plus proche du serveur, moins
+ * spoofable). Sinon "unknown" → tous les requests partagent le même bucket.
+ */
+export function getClientIp(headers: {
+  get(name: string): string | null;
+}): string {
+  // 1. x-real-ip est set par le reverse proxy directement, jamais par le client
+  const realIp = headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+
+  // 2. fallback sur le dernier hop de x-forwarded-for (le proxy ajoute en queue)
+  const xff = headers.get("x-forwarded-for");
+  if (xff) {
+    const parts = xff.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 0) {
+      // Prendre la dernière IP (la plus proche du serveur, moins spoofable que la 1re)
+      return parts[parts.length - 1];
+    }
+  }
+
+  return "unknown";
+}
+
 const buckets = new Map<string, Bucket>();
 
 // GC simple : supprime les buckets expirés toutes les 5 min

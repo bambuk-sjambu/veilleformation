@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { getActiveSectorIdForUser } from "@/lib/sector-context";
 
 interface DbAction {
   id: number;
@@ -35,9 +36,16 @@ export async function GET(
     const { id } = await params;
     const db = getDb();
 
+    // Cross-tenant protection : action accessible uniquement si l'article
+    // associé est dans le secteur actif du user.
+    const sectorId = getActiveSectorIdForUser(session.userId);
     const action = db
-      .prepare("SELECT * FROM actions WHERE id = ?")
-      .get(parseInt(id, 10)) as DbAction | undefined;
+      .prepare(
+        `SELECT a.* FROM actions a
+         JOIN articles ar ON a.article_id = ar.id
+         WHERE a.id = ? AND ar.sector_id = ?`
+      )
+      .get(parseInt(id, 10), sectorId) as DbAction | undefined;
 
     if (!action) {
       return NextResponse.json({ error: "Action non trouvee" }, { status: 404 });
@@ -73,10 +81,16 @@ export async function PUT(
 
     const { action_description, responsible, status, priority, due_date, notes } = body;
 
-    // Check if action exists
+    // Cross-tenant protection : action modifiable uniquement si l'article
+    // associé est dans le secteur actif du user.
+    const sectorId = getActiveSectorIdForUser(session.userId);
     const existing = db
-      .prepare("SELECT id FROM actions WHERE id = ?")
-      .get(parseInt(id, 10));
+      .prepare(
+        `SELECT a.id FROM actions a
+         JOIN articles ar ON a.article_id = ar.id
+         WHERE a.id = ? AND ar.sector_id = ?`
+      )
+      .get(parseInt(id, 10), sectorId);
 
     if (!existing) {
       return NextResponse.json({ error: "Action non trouvee" }, { status: 404 });
@@ -153,9 +167,16 @@ export async function DELETE(
     const { id } = await params;
     const db = getDb();
 
+    // Cross-tenant protection : action supprimable uniquement si l'article
+    // associé est dans le secteur actif du user.
+    const sectorId = getActiveSectorIdForUser(session.userId);
     const result = db
-      .prepare("DELETE FROM actions WHERE id = ?")
-      .run(parseInt(id, 10));
+      .prepare(
+        `DELETE FROM actions
+         WHERE id = ?
+           AND article_id IN (SELECT id FROM articles WHERE sector_id = ?)`
+      )
+      .run(parseInt(id, 10), sectorId);
 
     if (result.changes === 0) {
       return NextResponse.json({ error: "Action non trouvee" }, { status: 404 });

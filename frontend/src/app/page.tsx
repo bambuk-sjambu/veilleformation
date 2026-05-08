@@ -21,6 +21,7 @@ import NewsletterForm from "@/components/NewsletterForm";
 import AudienceSelector from "@/components/AudienceSelector";
 import SectorSelectorCards from "@/components/SectorSelectorCards";
 import { sector } from "@/config";
+import { safeJsonLd } from "@/lib/safe-json-ld";
 
 const faqItems = [
   {
@@ -100,15 +101,15 @@ function JsonLd() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(softwareSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqSchema) }}
       />
     </>
   );
@@ -680,10 +681,10 @@ function Pricing() {
     },
     {
       name: "Cipia Solo",
-      price: "19",
-      period: "/an",
-      perMonth: "soit 1,58€/mois",
-      description: "Pour les indépendants et TPE — 50× moins cher que Lefebvre",
+      price: "39",
+      period: "€ HT/an",
+      perMonth: "soit 3,25€/mois",
+      description: "Pour les indépendants et TPE — 12× moins cher que VeilleFormation",
       features: [
         "Tous les secteurs (5 verticaux)",
         "Dashboard avec alertes mots-clés",

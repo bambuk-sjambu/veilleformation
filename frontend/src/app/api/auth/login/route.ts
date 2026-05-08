@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { getDb, DbUser } from "@/lib/db";
 import { sessionOptions, SessionData } from "@/lib/session";
-import { rateLimitOk } from "@/lib/rate-limit";
+import { rateLimitOk, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +15,7 @@ interface DbUserWithPasswordSet extends DbUser {
 export async function POST(request: NextRequest) {
   try {
     // Rate limit anti-bruteforce : 5 tentatives/min/IP
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(request.headers);
     if (!rateLimitOk(`auth:login:${ip}`, 5, 60_000)) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans une minute." },

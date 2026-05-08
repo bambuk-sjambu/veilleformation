@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import AudienceSelector from "@/components/AudienceSelector";
 import { sector } from "@/config";
+import { safeJsonLd } from "@/lib/safe-json-ld";
 
 // ---------------------------------------------------------------------------
 // Cipia Cabinet — gamme premium pour cabinets et structures
@@ -116,11 +117,11 @@ function CabinetJsonLd() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(offerSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(offerSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqSchema) }}
       />
     </>
   );

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { createMagicLink } from "@/lib/founder-tokens";
 import { sendFounderActivationEmail } from "@/lib/resend";
-import { rateLimitOk } from "@/lib/rate-limit";
+import { rateLimitOk, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -17,10 +17,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * souhaite réinitialiser, on envoie un magic link.
  */
 export async function POST(request: NextRequest) {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
+  const ip = getClientIp(request.headers);
   if (!rateLimitOk(`auth:forgot:${ip}`, 3, 60_000)) {
     return NextResponse.json(
       { error: "Trop de tentatives. Réessayez dans une minute." },

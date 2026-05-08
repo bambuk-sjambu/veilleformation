@@ -5,7 +5,7 @@ import { sector } from "@/config";
 
 export const metadata = {
   title: `Conditions Générales d'Utilisation | ${sector.brand.name}`,
-  description: `Conditions Générales d'Utilisation du service ${sector.brand.name} édité par Hi-Commerce SAS.`,
+  description: `Conditions Générales d'Utilisation du service ${sector.brand.name} édité par Haruna SARL.`,
 };
 
 export default function CguPage() {
@@ -28,7 +28,7 @@ export default function CguPage() {
               <p>
                 Les présentes Conditions Générales d&apos;Utilisation (ci-après « CGU ») ont pour objet
                 de définir les modalités d&apos;accès et d&apos;utilisation du service {sector.brand.name} (ci-après le « Service »),
-                édité par <strong>Hi-Commerce SAS</strong>, société par actions simplifiée de droit français
+                édité par <strong>Haruna SARL</strong>, société à responsabilité limitée (SARL) de droit français
                 (coordonnées détaillées dans les{" "}
                 <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link>).
               </p>
@@ -57,7 +57,7 @@ export default function CguPage() {
                 des CGU et les accepter sans réserve.
               </p>
               <p className="mt-2">
-                Hi-Commerce SAS se réserve la faculté de modifier les CGU à tout moment. Les utilisateurs seront
+                Haruna SARL se réserve la faculté de modifier les CGU à tout moment. Les utilisateurs seront
                 informés par email au moins 30 jours avant l&apos;entrée en vigueur de toute modification substantielle.
                 Le Service est exclusivement destiné à un usage professionnel (B2B) ; le droit de rétractation prévu
                 aux articles L.221-18 et suivants du Code de la consommation ne s&apos;applique donc pas.
@@ -130,7 +130,7 @@ export default function CguPage() {
               <p className="mt-2">
                 La revente, la mise à disposition à des tiers non abonnés, le scraping automatisé du Service
                 ou son utilisation dans un produit concurrent sont soumis à autorisation écrite préalable
-                de Hi-Commerce SAS.
+                de Haruna SARL.
               </p>
             </div>
 
@@ -140,7 +140,7 @@ export default function CguPage() {
               </h2>
               <p>
                 Le Service, sa structure, son interface, ses algorithmes de classification IA, ainsi que les
-                résumés et scores de pertinence générés sont la propriété exclusive de Hi-Commerce SAS.
+                résumés et scores de pertinence générés sont la propriété exclusive de Haruna SARL.
               </p>
               <p className="mt-2">
                 Les contenus issus de sources publiques (Légifrance, BOAMP, BOFiP, Journal officiel, données
@@ -158,7 +158,7 @@ export default function CguPage() {
                 8. Disponibilité du Service
               </h2>
               <p>
-                Hi-Commerce SAS s&apos;engage, dans le cadre d&apos;une obligation de moyens, à maintenir le Service
+                Haruna SARL s&apos;engage, dans le cadre d&apos;une obligation de moyens, à maintenir le Service
                 accessible 24 heures sur 24 et 7 jours sur 7. Des interruptions peuvent intervenir pour des
                 opérations de maintenance, qui seront dans la mesure du possible planifiées hors heures ouvrées
                 et annoncées à l&apos;avance.
@@ -213,7 +213,7 @@ export default function CguPage() {
                 11. Responsabilité
               </h2>
               <p>
-                La responsabilité de Hi-Commerce SAS est engagée dans les limites prévues par la loi française.
+                La responsabilité de Haruna SARL est engagée dans les limites prévues par la loi française.
                 Elle ne saurait être tenue responsable :
               </p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
@@ -234,7 +234,7 @@ export default function CguPage() {
                 12. Suspension et résiliation
               </h2>
               <p>
-                Hi-Commerce SAS peut suspendre ou résilier un compte en cas de manquement grave aux présentes CGU,
+                Haruna SARL peut suspendre ou résilier un compte en cas de manquement grave aux présentes CGU,
                 notamment : usage frauduleux, scraping massif, tentative de contournement des limitations de plan,
                 contenus illicites. La résiliation intervient après mise en demeure restée sans effet pendant 8 jours,
                 sauf urgence en matière de sécurité.
@@ -255,7 +255,7 @@ export default function CguPage() {
               <p>
                 Les présentes CGU sont régies par le droit français. Le Service étant exclusivement destiné à
                 un usage professionnel, tout litige relatif à leur exécution ou à leur interprétation sera soumis,
-                à défaut de résolution amiable, aux tribunaux compétents du ressort du siège social de Hi-Commerce SAS,
+                à défaut de résolution amiable, aux tribunaux compétents du ressort du siège social de Haruna SARL,
                 y compris en cas de pluralité de défendeurs ou d&apos;appel en garantie.
               </p>
               <p className="mt-2">

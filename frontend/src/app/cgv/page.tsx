@@ -50,34 +50,44 @@ export default function CgvPage() {
                   <thead>
                     <tr className="border-b border-gray-200">
                       <th className="text-left py-2">Formule</th>
-                      <th className="text-left py-2">Prix mensuel HT</th>
+                      <th className="text-left py-2">Prix HT</th>
+                      <th className="text-left py-2">Périodicité</th>
                       <th className="text-left py-2">Utilisateurs</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="border-b border-gray-100">
-                      <td className="py-2"><strong>Gratuit</strong></td>
+                      <td className="py-2"><strong>Newsletter</strong></td>
                       <td className="py-2">0 €</td>
+                      <td className="py-2">Gratuit</td>
                       <td className="py-2">1</td>
                     </tr>
                     <tr className="border-b border-gray-100">
-                      <td className="py-2"><strong>Solo</strong></td>
-                      <td className="py-2">15 €</td>
+                      <td className="py-2"><strong>Cipia Founder</strong></td>
+                      <td className="py-2">100 € (Phase 1) / 150 € (Phase 2)</td>
+                      <td className="py-2">Paiement unique (à vie / 5 ans)</td>
                       <td className="py-2">1</td>
                     </tr>
                     <tr className="border-b border-gray-100">
-                      <td className="py-2"><strong>Équipe</strong></td>
+                      <td className="py-2"><strong>Cipia Solo</strong></td>
                       <td className="py-2">39 €</td>
-                      <td className="py-2">jusqu&apos;à 5</td>
+                      <td className="py-2">Annuel</td>
+                      <td className="py-2">1</td>
                     </tr>
                     <tr>
-                      <td className="py-2"><strong>Agence</strong></td>
-                      <td className="py-2">79 €</td>
-                      <td className="py-2">jusqu&apos;à 20</td>
+                      <td className="py-2"><strong>Cipia Cabinet</strong></td>
+                      <td className="py-2">199 €</td>
+                      <td className="py-2">Annuel</td>
+                      <td className="py-2">jusqu&apos;à 10</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+              <p className="mt-3 text-sm text-gray-600">
+                L&apos;offre <strong>Cipia Founder</strong> est régie par des conditions spécifiques
+                détaillées dans les <Link href="/cgv-founder" className="text-primary hover:underline">CGV Founder</Link>
+                {" "}(durée d&apos;engagement, garantie 14 jours, limites de places).
+              </p>
               <p className="mt-3">
                 Les prix sont exprimés en euros hors taxes. La TVA française applicable (20 %) ou tout autre taux
                 légal en vigueur est appliquée en sus. Les clients professionnels établis dans l&apos;Union européenne
@@ -103,7 +113,7 @@ export default function CgvPage() {
               </p>
               <p className="mt-2">
                 Le client reconnaît avoir pris connaissance des présentes CGV avant toute souscription et les accepter
-                sans réserve en cochant la case prévue à cet effet lors de la commande.
+                intégralement en cochant la case prévue à cet effet lors de la commande.
               </p>
             </div>
 

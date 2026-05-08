@@ -40,7 +40,7 @@ export default function CgvFounderPage() {
           <ul>
             <li>
               <strong>Cipia</strong> : service de veille réglementaire automatisée par
-              intelligence artificielle, édité par Hi-Commerce SAS, RCS Bordeaux 909 044 632.
+              intelligence artificielle, édité par Haruna SARL, SIREN 752 912 022.
             </li>
             <li>
               <strong>Founder</strong> : tout client ayant souscrit à l&apos;Offre Founder via

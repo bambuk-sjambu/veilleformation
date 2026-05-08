@@ -5,7 +5,7 @@ import { sector } from "@/config";
 
 export const metadata = {
   title: `Politique de gestion des données | ${sector.brand.name}`,
-  description: `Politique de gestion des données utilisateur de ${sector.brand.name}, conforme au RGPD et à la loi Informatique et Libertés (Hi-Commerce SAS).`,
+  description: `Politique de gestion des données utilisateur de ${sector.brand.name}, conforme au RGPD et à la loi Informatique et Libertés (Haruna SARL).`,
 };
 
 export default function PolitiqueDonneesPage() {
@@ -30,7 +30,7 @@ export default function PolitiqueDonneesPage() {
                 <Link href="/confidentialite" className="text-primary hover:underline">politique de confidentialité</Link>{" "}
                 de {sector.brand.name}. Là où la politique de confidentialité décrit les <em>droits</em> des personnes
                 et les <em>finalités</em> du traitement, le présent document décrit les <em>modalités techniques
-                et opérationnelles</em> mises en œuvre par Hi-Commerce SAS pour traiter, sécuriser et conserver
+                et opérationnelles</em> mises en œuvre par Haruna SARL pour traiter, sécuriser et conserver
                 ces données — y compris les flux IA, le chiffrement, les sauvegardes et la procédure de violation.
               </p>
             </div>
@@ -40,7 +40,7 @@ export default function PolitiqueDonneesPage() {
                 2. Cadre normatif
               </h2>
               <p>
-                <strong>Hi-Commerce SAS</strong>, éditeur du Service {sector.brand.name}, traite les données personnelles
+                <strong>Haruna SARL</strong>, éditeur du Service {sector.brand.name}, traite les données personnelles
                 de ses utilisateurs conformément :
               </p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
@@ -56,7 +56,7 @@ export default function PolitiqueDonneesPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 3. Principes appliqués
               </h2>
-              <p>Hi-Commerce SAS met en œuvre les principes fondamentaux du RGPD (article 5) :</p>
+              <p>Haruna SARL met en œuvre les principes fondamentaux du RGPD (article 5) :</p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li><strong>Licéité, loyauté, transparence :</strong> chaque traitement repose sur une base légale claire et est documenté dans un registre des traitements</li>
                 <li><strong>Limitation des finalités :</strong> les données sont collectées pour des finalités déterminées et explicites, propres au Service de veille réglementaire</li>
@@ -64,7 +64,7 @@ export default function PolitiqueDonneesPage() {
                 <li><strong>Exactitude :</strong> un processus de mise à jour et de correction est disponible dans l&apos;espace personnel de chaque utilisateur</li>
                 <li><strong>Limitation de conservation :</strong> les données sont conservées pour la durée strictement nécessaire (voir section 6)</li>
                 <li><strong>Intégrité et confidentialité :</strong> les mesures techniques et organisationnelles sont détaillées en section 8</li>
-                <li><strong>Responsabilité :</strong> Hi-Commerce SAS peut démontrer à tout moment sa conformité via la documentation interne</li>
+                <li><strong>Responsabilité :</strong> Haruna SARL peut démontrer à tout moment sa conformité via la documentation interne</li>
               </ul>
             </div>
 
@@ -73,12 +73,12 @@ export default function PolitiqueDonneesPage() {
                 4. Responsable de traitement et contact
               </h2>
               <ul className="space-y-1">
-                <li><strong>Responsable de traitement :</strong> Hi-Commerce SAS, représentée par son président Stéphane Jambu</li>
+                <li><strong>Responsable de traitement :</strong> Haruna SARL, représentée par son président Stéphane Jambu</li>
                 <li><strong>Contact RGPD :</strong> <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a></li>
                 <li><strong>Coordonnées postales :</strong> voir <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link></li>
               </ul>
               <p className="mt-2">
-                Hi-Commerce SAS n&apos;est pas tenue de désigner un Délégué à la Protection des Données (DPO) au sens
+                Haruna SARL n&apos;est pas tenue de désigner un Délégué à la Protection des Données (DPO) au sens
                 de l&apos;article 37 du RGPD à ce jour. La fonction de référent RGPD interne est assurée par Stéphane Jambu,
                 joignable à l&apos;adresse ci-dessus. Un DPO externe sera désigné si les seuils ou la nature des
                 traitements l&apos;imposent à l&apos;avenir.
@@ -196,7 +196,7 @@ export default function PolitiqueDonneesPage() {
                 7. Sous-traitants et transferts hors UE
               </h2>
               <p>
-                Hi-Commerce SAS recourt à des sous-traitants qualifiés, chacun lié par un accord de traitement
+                Haruna SARL recourt à des sous-traitants qualifiés, chacun lié par un accord de traitement
                 des données (DPA) conforme à l&apos;article 28 du RGPD :
               </p>
               <div className="overflow-x-auto mt-3">
@@ -259,7 +259,7 @@ export default function PolitiqueDonneesPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 8. Mesures techniques et organisationnelles de sécurité
               </h2>
-              <p>Hi-Commerce SAS applique les mesures suivantes :</p>
+              <p>Haruna SARL applique les mesures suivantes :</p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li><strong>Chiffrement en transit :</strong> TLS 1.3, HSTS actif, certificats Let&apos;s Encrypt renouvelés automatiquement</li>
                 <li><strong>Chiffrement au repos :</strong> volumes disque chiffrés côté hébergeur, mots de passe stockés via bcrypt (coût ≥&nbsp;12), base SQLite stockée sur volume chiffré accessible uniquement via SSH root</li>
@@ -283,7 +283,7 @@ export default function PolitiqueDonneesPage() {
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li><strong>Données envoyées à l&apos;IA :</strong> exclusivement des <strong>textes officiels publics</strong> (Légifrance, BOAMP, BOFiP, Journal officiel, contenus HAS, ANSES, ordres professionnels, OPCO, Régions). Aucune donnée personnelle utilisateur n&apos;est transmise à l&apos;IA.</li>
                 <li><strong>Finalité :</strong> résumer, classer selon la taxonomie du secteur de l&apos;abonné (indicateurs Qualiopi 23-26, principes HACCP, recommandations HAS, jurisprudences, BOFiP) et estimer un niveau d&apos;impact.</li>
-                <li><strong>Données utilisateur :</strong> seuls les paramètres de filtrage (secteur, mots-clés, région) restent dans la base Hi-Commerce SAS. Ils ne sont pas envoyés à Anthropic.</li>
+                <li><strong>Données utilisateur :</strong> seuls les paramètres de filtrage (secteur, mots-clés, région) restent dans la base Haruna SARL. Ils ne sont pas envoyés à Anthropic.</li>
                 <li><strong>Pas d&apos;entraînement :</strong> l&apos;API Anthropic utilisée par {sector.brand.name} n&apos;exploite pas les contenus envoyés pour entraîner ses modèles, conformément aux conditions commerciales d&apos;Anthropic.</li>
                 <li><strong>Encadrement :</strong> transferts vers Anthropic (USA) couverts par les Clauses Contractuelles Types (décision 2021/914).</li>
               </ul>
@@ -307,7 +307,7 @@ export default function PolitiqueDonneesPage() {
               <p className="mt-2">
                 <strong>Modalités d&apos;exercice :</strong> toute demande peut être adressée par email à{" "}
                 <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>,
-                accompagnée d&apos;une copie d&apos;une pièce d&apos;identité. Hi-Commerce SAS répond dans un délai
+                accompagnée d&apos;une copie d&apos;une pièce d&apos;identité. Haruna SARL répond dans un délai
                 maximum d&apos;un mois, prolongeable de deux mois pour les demandes complexes (art. 12 RGPD).
                 L&apos;exercice des droits est gratuit, sauf demandes manifestement abusives.
               </p>
@@ -319,7 +319,7 @@ export default function PolitiqueDonneesPage() {
               </h2>
               <p>
                 En cas de violation de données personnelles (fuite, accès non autorisé, perte, divulgation accidentelle),
-                Hi-Commerce SAS met en œuvre la procédure suivante, conforme aux articles 33 et 34 du RGPD :
+                Haruna SARL met en œuvre la procédure suivante, conforme aux articles 33 et 34 du RGPD :
               </p>
               <ol className="list-decimal pl-5 space-y-1 mt-2">
                 <li>Identification et qualification de la violation dans les meilleurs délais</li>
@@ -352,7 +352,7 @@ export default function PolitiqueDonneesPage() {
                 13. Registre des traitements
               </h2>
               <p>
-                Conformément à l&apos;article 30 du RGPD, Hi-Commerce SAS tient un registre interne des activités
+                Conformément à l&apos;article 30 du RGPD, Haruna SARL tient un registre interne des activités
                 de traitement. Ce registre, mis à jour régulièrement, est tenu à la disposition de la CNIL
                 sur demande.
               </p>
@@ -378,7 +378,7 @@ export default function PolitiqueDonneesPage() {
                 15. Évolutions de la présente politique
               </h2>
               <p>
-                Hi-Commerce SAS peut être amenée à faire évoluer cette politique pour tenir compte d&apos;évolutions
+                Haruna SARL peut être amenée à faire évoluer cette politique pour tenir compte d&apos;évolutions
                 légales, réglementaires ou techniques. Les modifications substantielles font l&apos;objet d&apos;une
                 information aux utilisateurs par email et/ou par une bannière dans le Service, au moins 30 jours
                 avant leur entrée en vigueur.

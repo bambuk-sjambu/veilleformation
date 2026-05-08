@@ -5,7 +5,7 @@ import { sector } from "@/config";
 
 export const metadata = {
   title: `Politique de confidentialité | ${sector.brand.name}`,
-  description: `Politique de confidentialité et protection des données personnelles de ${sector.brand.name}, édité par Hi-Commerce SAS.`,
+  description: `Politique de confidentialité et protection des données personnelles de ${sector.brand.name}, édité par Haruna SARL.`,
 };
 
 export default function ConfidentialitePage() {
@@ -25,7 +25,7 @@ export default function ConfidentialitePage() {
                 1. Introduction
               </h2>
               <p>
-                Hi-Commerce SAS, éditeur du service {sector.brand.name}, s&apos;engage à protéger la vie privée
+                Haruna SARL, éditeur du service {sector.brand.name}, s&apos;engage à protéger la vie privée
                 des utilisateurs du Service. Cette politique explique quelles données sont collectées,
                 à quelles fins, sur quelle base légale, et quels sont vos droits conformément au Règlement
                 général sur la protection des données (RGPD, règlement (UE) 2016/679) et à la loi n°&nbsp;78-17
@@ -42,7 +42,7 @@ export default function ConfidentialitePage() {
                 2. Responsable du traitement
               </h2>
               <p>
-                Le responsable du traitement est <strong>Hi-Commerce SAS</strong>, représentée par son président
+                Le responsable du traitement est <strong>Haruna SARL</strong>, représentée par son président
                 Stéphane Jambu, qui assure également la fonction de référent RGPD interne (coordonnées complètes
                 dans les{" "}
                 <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link>).
@@ -81,7 +81,7 @@ export default function ConfidentialitePage() {
                 <li><strong>Profil professionnel :</strong> secteur(s) sélectionné(s) parmi les 5 disponibles, nom du cabinet ou de la structure, ville/région, fonction&nbsp;; pour les organismes de formation, optionnellement SIRET et NDE pour la génération du rapport d&apos;audit Qualiopi</li>
                 <li><strong>Préférences de veille :</strong> mots-clés d&apos;alerte, indicateurs/référentiels suivis (Qualiopi 23-26, HACCP, recommandations HAS, jurisprudences, BOFiP), régions ciblées</li>
                 <li><strong>Activité applicative :</strong> articles marqués comme lus, intéressants, à exploiter&nbsp;; statut des actions internes</li>
-                <li><strong>Données de paiement :</strong> jeton sécurisé Stripe (token), historique de facturation. <strong>Aucune donnée de carte bancaire n&apos;est stockée par Hi-Commerce SAS&nbsp;;</strong> les données de carte sont collectées et conservées exclusivement par Stripe (PCI-DSS niveau 1)</li>
+                <li><strong>Données de paiement :</strong> jeton sécurisé Stripe (token), historique de facturation. <strong>Aucune donnée de carte bancaire n&apos;est stockée par Haruna SARL&nbsp;;</strong> les données de carte sont collectées et conservées exclusivement par Stripe (PCI-DSS niveau 1)</li>
                 <li><strong>Membres d&apos;équipe (plan Cabinet) :</strong> emails et noms des collaborateurs invités, rôles (owner, admin, member)</li>
                 <li><strong>Données techniques :</strong> logs d&apos;accès, adresse IP, agent utilisateur (conservation limitée à 6 mois pour la sécurité)</li>
               </ul>
@@ -118,7 +118,7 @@ export default function ConfidentialitePage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 7. Destinataires et sous-traitants
               </h2>
-              <p className="mb-2">Vos données peuvent être transmises aux sous-traitants suivants, liés à Hi-Commerce SAS par un accord de traitement des données (DPA) conforme à l&apos;article 28 du RGPD :</p>
+              <p className="mb-2">Vos données peuvent être transmises aux sous-traitants suivants, liés à Haruna SARL par un accord de traitement des données (DPA) conforme à l&apos;article 28 du RGPD :</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Hetzner Online GmbH</strong> (Allemagne, datacenter UE) — hébergement applicatif et base de données</li>
                 <li><strong>Stripe Payments Europe Ltd.</strong> (Irlande) — traitement des paiements et tokenisation des cartes bancaires</li>
@@ -128,7 +128,7 @@ export default function ConfidentialitePage() {
                 <li><strong>OVH SAS</strong> (France) — gestion du nom de domaine</li>
               </ul>
               <p className="mt-2">
-                Hi-Commerce SAS <strong>ne vend ni ne loue vos données personnelles à des tiers</strong>.
+                Haruna SARL <strong>ne vend ni ne loue vos données personnelles à des tiers</strong>.
                 Aucune donnée n&apos;est utilisée à des fins publicitaires, de profilage commercial externe ou
                 de revente.
               </p>
@@ -165,7 +165,7 @@ export default function ConfidentialitePage() {
               <p className="mt-2">
                 Pour exercer ces droits, écrivez à{" "}
                 <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>{" "}
-                avec une copie d&apos;une pièce d&apos;identité. Hi-Commerce SAS répond dans un délai maximum
+                avec une copie d&apos;une pièce d&apos;identité. Haruna SARL répond dans un délai maximum
                 d&apos;un mois (prolongeable de deux mois pour les demandes complexes, art. 12 RGPD).
               </p>
             </div>
@@ -175,7 +175,7 @@ export default function ConfidentialitePage() {
                 10. Sécurité
               </h2>
               <p>
-                Hi-Commerce SAS met en œuvre les mesures techniques et organisationnelles suivantes pour protéger
+                Haruna SARL met en œuvre les mesures techniques et organisationnelles suivantes pour protéger
                 vos données : chiffrement TLS 1.3 en transit, hashage bcrypt des mots de passe (coût ≥&nbsp;12),
                 isolation des sessions via iron-session, sauvegardes quotidiennes chiffrées, accès restreint
                 au serveur applicatif via clé SSH, journalisation des accès administratifs.

@@ -5,7 +5,7 @@ import { sector } from "@/config";
 
 export const metadata = {
   title: `Mentions légales | ${sector.brand.name}`,
-  description: `Mentions légales du service ${sector.brand.name} édité par Hi-Commerce SAS.`,
+  description: `Mentions légales du service ${sector.brand.name} édité par Haruna SARL.`,
 };
 
 export default function MentionsLegalesPage() {
@@ -25,22 +25,22 @@ export default function MentionsLegalesPage() {
                 1. Éditeur du service
               </h2>
               <p>
-                Le service {sector.brand.name} est édité par <strong>Hi-Commerce SAS</strong>, plateforme de veille
+                Le service {sector.brand.name} est édité par <strong>Haruna SARL</strong>, plateforme de veille
                 réglementaire automatisée par intelligence artificielle, destinée aux 596&nbsp;000 professionnels
                 indépendants et cabinets français exerçant dans cinq secteurs réglementés (organismes de formation
                 Qualiopi, restaurateurs et acteurs HACCP, professionnels de santé libéraux, avocats indépendants,
                 experts-comptables indépendants).
               </p>
               <ul className="mt-2 space-y-1">
-                <li><strong>Raison sociale :</strong> Hi-Commerce SAS</li>
+                <li><strong>Raison sociale :</strong> Haruna SARL</li>
                 <li><strong>Forme juridique :</strong> Société par actions simplifiée (SAS) de droit français</li>
-                <li><strong>Siège social :</strong> [ADRESSE SIÈGE HI-COMMERCE SAS]</li>
-                <li><strong>RCS :</strong> [RCS HI-COMMERCE SAS]</li>
-                <li><strong>SIREN :</strong> [SIREN HI-COMMERCE SAS]</li>
-                <li><strong>SIRET :</strong> [SIRET HI-COMMERCE SAS]</li>
-                <li><strong>Code APE :</strong> [APE HI-COMMERCE SAS]</li>
-                <li><strong>N° TVA intracommunautaire :</strong> [TVA INTRA HI-COMMERCE SAS]</li>
-                <li><strong>Capital social :</strong> [CAPITAL HI-COMMERCE SAS]</li>
+                <li><strong>Siège social :</strong> à compléter</li>
+                <li><strong>RCS :</strong> à compléter</li>
+                <li><strong>SIREN :</strong> 752 912 022</li>
+                <li><strong>SIRET :</strong> à compléter</li>
+                <li><strong>Code APE :</strong> à compléter</li>
+                <li><strong>N° TVA intracommunautaire :</strong> à compléter</li>
+                <li><strong>Capital social :</strong> à compléter</li>
                 <li><strong>Email :</strong> {`contact@${sector.brand.domain}`}</li>
               </ul>
             </div>
@@ -50,7 +50,7 @@ export default function MentionsLegalesPage() {
                 2. Directeur de la publication
               </h2>
               <p>
-                Stéphane Jambu, en qualité de président de Hi-Commerce SAS.
+                Stéphane Jambu, en qualité de gérant de Haruna SARL.
               </p>
             </div>
 
@@ -60,7 +60,7 @@ export default function MentionsLegalesPage() {
               </h2>
               <p>
                 « Cipia », « Cipia Newsletter », « Cipia Solo » et « Cipia Cabinet » sont des dénominations
-                commerciales exploitées par Hi-Commerce SAS. Toute reproduction ou utilisation non autorisée
+                commerciales exploitées par Haruna SARL. Toute reproduction ou utilisation non autorisée
                 est passible de sanctions au titre du livre VII du Code de la propriété intellectuelle.
               </p>
             </div>
@@ -102,14 +102,14 @@ export default function MentionsLegalesPage() {
               </h2>
               <p>
                 L&apos;ensemble des contenus présents sur {sector.brand.name} (textes, résumés générés par IA, interfaces,
-                graphismes, logo, icônes, code source) sont la propriété exclusive de Hi-Commerce SAS, à l&apos;exception
+                graphismes, logo, icônes, code source) sont la propriété exclusive de Haruna SARL, à l&apos;exception
                 des contenus provenant de sources officielles (Légifrance, BOAMP, BOFiP, Journal officiel, HAS, ANSES,
                 ordres professionnels, OPCO, Régions) qui restent soumis à leurs licences respectives, notamment la
                 Licence Ouverte Etalab v2.0 pour les données publiques françaises.
               </p>
               <p className="mt-2">
                 Toute reproduction, distribution, modification, adaptation, retransmission ou publication,
-                même partielle, de ces éléments est soumise à l&apos;accord écrit préalable de Hi-Commerce SAS.
+                même partielle, de ces éléments est soumise à l&apos;accord écrit préalable de Haruna SARL.
               </p>
             </div>
 
@@ -127,7 +127,7 @@ export default function MentionsLegalesPage() {
                 </Link>.
                 Les demandes relatives au RGPD sont à adresser à{" "}
                 <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.
-                Hi-Commerce SAS, en tant que responsable de traitement, est représentée par Stéphane Jambu
+                Haruna SARL, en tant que responsable de traitement, est représentée par Stéphane Jambu
                 pour toutes les questions relatives à la protection des données personnelles.
               </p>
             </div>
@@ -163,7 +163,7 @@ export default function MentionsLegalesPage() {
               <p>
                 Le Service est exclusivement destiné aux professionnels (B2B). En cas de litige, les parties
                 s&apos;efforceront de trouver une solution amiable préalable. À défaut, les juridictions compétentes
-                du ressort du siège social de Hi-Commerce SAS seront seules saisies, conformément aux{" "}
+                du ressort du siège social de Haruna SARL seront seules saisies, conformément aux{" "}
                 <Link href="/cgu" className="text-primary hover:underline">CGU</Link> et aux{" "}
                 <Link href="/cgv" className="text-primary hover:underline">CGV</Link>.
               </p>

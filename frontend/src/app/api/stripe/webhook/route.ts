@@ -30,10 +30,11 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+
+        // Cas A : checkout subscription classique (Solo, Cabinet…)
         const userId = session.metadata?.userId;
         const plan = session.metadata?.plan as PlanType;
-
-        if (userId && plan) {
+        if (userId && plan && session.mode === "subscription") {
           const subscriptionId = session.subscription as string;
           const customerId = session.customer as string;
 
@@ -49,6 +50,105 @@ export async function POST(request: NextRequest) {
                 subscription_period_end = datetime(?, 'unixepoch')
             WHERE id = ?
           `).run(plan, customerId, subscriptionId, (subscription as any).current_period_end, userId);
+          break;
+        }
+
+        // Cas B : checkout Founder one-shot (mode=payment, sans user authentifié)
+        // Pivot Founders 2026-05-08 : on crée le user automatiquement à partir
+        // de l'email Stripe, on tag founder_phase + plan='founder', on inscrit
+        // au secteur cipia (Phase 1 OF Qualiopi).
+        const founderPhase = session.metadata?.founder_phase;
+        if (session.mode === "payment" && founderPhase) {
+          const phase = parseInt(founderPhase, 10);
+          if (phase !== 1 && phase !== 2) break;
+
+          const sessionId = session.id;
+          // Idempotence : si la session a déjà été traitée, on ne refait rien
+          const existing = db
+            .prepare(
+              "SELECT id FROM users WHERE founder_stripe_session_id = ?"
+            )
+            .get(sessionId);
+          if (existing) {
+            console.log(`Founder webhook: session ${sessionId} déjà traitée, skip`);
+            break;
+          }
+
+          const email = (
+            session.customer_details?.email ||
+            session.customer_email ||
+            ""
+          ).toLowerCase().trim();
+          if (!email) {
+            console.error(`Founder webhook: pas d'email pour session ${sessionId}`);
+            break;
+          }
+
+          const fullName = session.customer_details?.name || "";
+          const [firstName, ...rest] = fullName.split(" ");
+          const lastName = rest.join(" ") || firstName || "";
+
+          const sectorId = session.metadata?.sector_id || "cipia";
+          const customerId = session.customer as string;
+
+          // Date d'expiration : NULL pour phase 1 (lifetime), +5 ans pour phase 2
+          let founderUntilSql = "NULL";
+          if (phase === 2) {
+            founderUntilSql = "date('now', '+5 years')";
+          }
+
+          // Vérifie si un user existe déjà avec cet email
+          const existingUser = db
+            .prepare("SELECT id FROM users WHERE email = ?")
+            .get(email) as { id: number } | undefined;
+
+          let userId2: number;
+          if (existingUser) {
+            // Upgrade le user existant en founder
+            userId2 = existingUser.id;
+            db.prepare(`
+              UPDATE users
+              SET plan = 'founder',
+                  founder_phase = ?,
+                  founder_purchased_at = datetime('now'),
+                  founder_until_date = ${founderUntilSql},
+                  founder_stripe_session_id = ?,
+                  stripe_customer_id = ?,
+                  active_sector_id = ?
+              WHERE id = ?
+            `).run(phase, sessionId, customerId, sectorId, userId2);
+          } else {
+            // Crée le user (mot de passe placeholder, sera défini via lien magique email)
+            const placeholder = "FOUNDER_PENDING_" + sessionId.slice(-12);
+            const result = db.prepare(`
+              INSERT INTO users (
+                email, password_hash, first_name, last_name,
+                plan, founder_phase, founder_purchased_at,
+                founder_until_date, founder_stripe_session_id,
+                stripe_customer_id, active_sector_id
+              ) VALUES (?, ?, ?, ?, 'founder', ?, datetime('now'), ${founderUntilSql}, ?, ?, ?)
+            `).run(
+              email,
+              placeholder,
+              firstName.trim() || "Founder",
+              lastName.trim() || "Cipia",
+              phase,
+              sessionId,
+              customerId,
+              sectorId,
+            );
+            userId2 = Number(result.lastInsertRowid);
+          }
+
+          // Inscrit au secteur (table user_sectors)
+          db.prepare(`
+            INSERT OR IGNORE INTO user_sectors (user_id, sector_id, is_primary)
+            VALUES (?, ?, 1)
+          `).run(userId2, sectorId);
+
+          console.log(
+            `Founder webhook: phase=${phase} email=${email} user=${userId2} sector=${sectorId}`
+          );
         }
         break;
       }

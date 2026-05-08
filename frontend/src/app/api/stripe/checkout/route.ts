@@ -13,8 +13,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { plan, billingPeriod } = body as { plan: PlanType; billingPeriod: BillingPeriod };
 
-    if (!plan || !billingPeriod || plan === "free") {
-      return NextResponse.json({ error: "Plan invalide" }, { status: 400 });
+    if (!plan || !billingPeriod || plan === "free" || plan === "founder") {
+      return NextResponse.json(
+        { error: "Plan invalide. Utilisez /api/founders/checkout pour Founder." },
+        { status: 400 }
+      );
     }
 
     const db = getDb();
@@ -42,8 +45,8 @@ export async function POST(request: NextRequest) {
       db.prepare("UPDATE users SET stripe_customer_id = ? WHERE id = ?").run(customerId, dbUser.id);
     }
 
-    // Get price ID
-    const priceId = PLAN_PRICES[plan]?.[billingPeriod];
+    // Get price ID (founder est exclu plus haut, donc le narrowing fonctionne)
+    const priceId = (PLAN_PRICES as Record<string, Record<string, string>>)[plan]?.[billingPeriod];
     if (!priceId) {
       return NextResponse.json({ error: "Prix non trouvé" }, { status: 400 });
     }

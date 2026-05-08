@@ -38,7 +38,18 @@ export const PLAN_PRICES = {
   },
 } as const;
 
-export type PlanType = "free" | "solo" | "cabinet" | "equipe" | "agence";
+// Founders : prix one-shot par phase (mode payment Stripe, pas subscription)
+export const FOUNDER_PRICES = {
+  phase1: process.env.STRIPE_PRICE_FOUNDER_PHASE_1 || "price_founder_phase_1",
+  phase2: process.env.STRIPE_PRICE_FOUNDER_PHASE_2 || "price_founder_phase_2",
+} as const;
+
+export const FOUNDER_CAPS = {
+  phase1: 250, // Lifetime, OF Qualiopi uniquement
+  phase2: 1000, // 5 ans, multi-secteurs possible
+} as const;
+
+export type PlanType = "free" | "solo" | "cabinet" | "equipe" | "agence" | "founder";
 export type BillingPeriod = "monthly" | "yearly";
 
 export function getPlanFromPriceId(priceId: string): PlanType | null {
@@ -77,6 +88,15 @@ export function getPlanFeatures(plan: PlanType) {
       maxUsers: 10,
       hasApi: false,
       hasWhiteLabel: true,
+      historyMonths: 24,
+    },
+    founder: {
+      maxExports: -1,
+      hasAlertes: true,
+      hasEquipe: false,
+      maxUsers: 1,
+      hasApi: false,
+      hasWhiteLabel: false,
       historyMonths: 24,
     },
     equipe: {

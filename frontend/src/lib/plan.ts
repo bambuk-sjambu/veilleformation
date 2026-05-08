@@ -1,6 +1,6 @@
 import { getDb } from "./db";
 
-export type PlanType = "free" | "solo" | "cabinet" | "equipe" | "agence";
+export type PlanType = "free" | "solo" | "cabinet" | "founder" | "equipe" | "agence";
 
 export interface PlanFeatures {
   maxExports: number; // -1 = unlimited
@@ -38,6 +38,15 @@ export const PLAN_FEATURES: Record<PlanType, PlanFeatures> = {
     maxUsers: 10,
     hasApi: false,
     hasWhiteLabel: true,
+    historyMonths: 24,
+  },
+  founder: {
+    maxExports: -1,
+    hasAlertes: true,
+    hasEquipe: false,
+    maxUsers: 1,
+    hasApi: false,
+    hasWhiteLabel: false,
     historyMonths: 24,
   },
   equipe: {

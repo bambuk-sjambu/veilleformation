@@ -16,26 +16,57 @@ interface SubscriptionInfo {
   subscription_period_end: string | null;
 }
 
-const PLAN_CONFIG = {
+const PLAN_CONFIG: Record<
+  string,
+  { name: string; price: number; period: string; features: string[] }
+> = {
   free: {
-    name: "Gratuit",
+    name: "Newsletter",
     price: 0,
-    features: ["Newsletter hebdomadaire", "1 thème", "Export PDF (1x/mois)"],
+    period: "gratuit",
+    features: [
+      "Newsletter hebdomadaire (mardi 8h)",
+      "1 secteur au choix",
+      "Articles classés par IA Anthropic Claude",
+    ],
+  },
+  founder: {
+    name: "Cipia Founder",
+    price: 100,
+    period: "à vie (paiement unique)",
+    features: [
+      "Toutes les fonctionnalités Solo",
+      "Accès illimité, à vie",
+      "Évolutions Qualiopi V7+ incluses",
+      "Statut Founder visible",
+      "Historique 24 mois",
+    ],
   },
   solo: {
-    name: "Solo",
-    price: 15,
-    features: ["Tous thèmes", "Veille AO", "Alertes personnalisées", "Export PDF illimité"],
-  },
-  équipe: {
-    name: "Équipe",
+    name: "Cipia Solo",
     price: 39,
-    features: ["5 utilisateurs", "Toutes features Solo", "Export avec logo", "Historique 12 mois"],
+    period: "€ HT/an",
+    features: [
+      "Tous les secteurs",
+      "Veille appels d'offres",
+      "Alertes personnalisées",
+      "Export PDF illimité",
+      "Plan d'action intégré",
+      "Historique 24 mois",
+    ],
   },
-  agence: {
-    name: "Agence",
-    price: 79,
-    features: ["20 utilisateurs", "Multi-sites", "API & Webhooks", "White-label"],
+  cabinet: {
+    name: "Cipia Cabinet",
+    price: 199,
+    period: "€ HT/an",
+    features: [
+      "10 utilisateurs inclus",
+      "Multi-secteurs (Qualiopi, HACCP, médical, avocats, EC)",
+      "Toutes les fonctionnalités Solo",
+      "Export PDF avec votre logo (white-label)",
+      "Audit blanc-marque",
+      "Support prioritaire",
+    ],
   },
 };
 

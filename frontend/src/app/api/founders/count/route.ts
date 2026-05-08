@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb, dbExists } from "@/lib/db";
 import { FOUNDER_CAPS } from "@/lib/stripe";
+import { countActiveReservations } from "@/lib/founder-reservations";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -43,7 +44,12 @@ export async function GET() {
 
   const phase1Cap = FOUNDER_CAPS.phase1;
   const phase2Cap = FOUNDER_CAPS.phase2;
-  const phase1SoldOut = phase1Sold >= phase1Cap;
+  // Inclut les réservations actives (sessions Stripe en cours) pour aligner
+  // sur la logique de /api/founders/checkout. Sinon on affiche "phase 1
+  // disponible" alors que le checkout bascule sur phase 2 (incohérence prix).
+  const phase1Reserved = countActiveReservations(1);
+  const phase1Effective = phase1Sold + phase1Reserved;
+  const phase1SoldOut = phase1Effective >= phase1Cap;
 
   // Tant que la phase 1 n'est pas vidée, c'est elle l'active
   if (!phase1SoldOut) {
@@ -51,17 +57,19 @@ export async function GET() {
       activePhase: 1,
       sold: phase1Sold,
       cap: phase1Cap,
-      remaining: Math.max(0, phase1Cap - phase1Sold),
+      remaining: Math.max(0, phase1Cap - phase1Effective),
       isSoldOut: false,
     });
   }
 
   // Sinon on bascule sur phase 2
+  const phase2Reserved = countActiveReservations(2);
+  const phase2Effective = phase2Sold + phase2Reserved;
   return NextResponse.json({
     activePhase: 2,
     sold: phase2Sold,
     cap: phase2Cap,
-    remaining: Math.max(0, phase2Cap - phase2Sold),
-    isSoldOut: phase2Sold >= phase2Cap,
+    remaining: Math.max(0, phase2Cap - phase2Effective),
+    isSoldOut: phase2Effective >= phase2Cap,
   });
 }

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { getActiveSectorIdForUser } from "@/lib/sector-context";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,8 +40,21 @@ export async function POST(request: NextRequest) {
       // Column doesn't exist, add it
     }
 
+    // Cross-tenant protection : un user ne peut modifier que les articles
+    // de son secteur actif.
+    const sectorId = getActiveSectorIdForUser(session.userId);
     try {
-      db.prepare("UPDATE articles SET read_status = ? WHERE id = ?").run(readStatus, id);
+      const updated = db
+        .prepare(
+          "UPDATE articles SET read_status = ? WHERE id = ? AND sector_id = ?"
+        )
+        .run(readStatus, id, sectorId);
+      if (updated.changes === 0) {
+        return NextResponse.json(
+          { error: "Article introuvable dans votre secteur" },
+          { status: 404 }
+        );
+      }
     } catch (error) {
       console.error("Failed to update read status:", error);
       return NextResponse.json(

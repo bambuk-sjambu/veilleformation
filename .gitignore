@@ -53,3 +53,4 @@ data/email_beta_campaign_*.html
 data/screenshots/
 data/test_*.json
 data/newsletter_*.html
+bootstrap_artifacts/

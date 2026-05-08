@@ -56,10 +56,13 @@ export async function POST(request: Request) {
       .get(email.toLowerCase()) as DbUser | undefined;
 
     if (existing) {
-      return NextResponse.json(
-        { error: "Un compte existe déjà avec cette adresse email." },
-        { status: 409 }
-      );
+      // Anti-énumération : on retourne 200 silencieux. Si le user a oublié
+      // qu'il a un compte, il peut utiliser /connexion/oubli-mot-de-passe.
+      // Côté SEO/RGPD : pas de divulgation de l'existence du compte.
+      return NextResponse.json({
+        ok: true,
+        info: "Si un compte existe déjà avec cette adresse, utilisez la fonction « Mot de passe oublié » pour vous reconnecter.",
+      });
     }
 
     const passwordHash = await bcrypt.hash(password, 12);

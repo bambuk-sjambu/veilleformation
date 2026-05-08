@@ -22,8 +22,15 @@ interface ActionWithArticle extends DbAction {
   article_source: string | null;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
+    // Auth requise : actions Qualiopi = données business privées des OF.
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
     if (!dbExists()) {
       return NextResponse.json({ actions: [], total: 0 });
     }

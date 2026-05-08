@@ -30,13 +30,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Idempotence sur event.id : Stripe garantit la stabilité de l'ID même sur retry
-  if (!markEventProcessed(event.id, event.type)) {
+  // Idempotence sur event.id : Stripe garantit la stabilité de l'ID même sur retry.
+  // On ne le marque comme traité qu'à la fin du switch (commit-after-work) pour
+  // permettre un retry après échec partiel (ex: payment_status pending → paid).
+  // En revanche on lit dès maintenant pour court-circuiter les doublons exacts.
+  const db = getDb();
+  const alreadyProcessed = db
+    .prepare("SELECT 1 FROM processed_events WHERE event_id = ?")
+    .get(event.id);
+  if (alreadyProcessed) {
     console.log(`Webhook event ${event.id} (${event.type}) déjà traité — skip`);
     return NextResponse.json({ received: true, idempotent: true });
   }
-
-  const db = getDb();
 
   try {
     switch (event.type) {
@@ -214,12 +219,54 @@ export async function POST(request: NextRequest) {
         break;
       }
 
-      case "checkout.session.expired": {
-        // Libère la réservation pour rouvrir la place
+      case "checkout.session.expired":
+      case "checkout.session.async_payment_failed": {
+        // Libère la réservation pour rouvrir la place (TOCTOU recovery)
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.mode === "payment" && session.metadata?.founder_phase) {
           releaseFounderReservation(session.id);
         }
+        break;
+      }
+
+      case "charge.refunded":
+      case "charge.dispute.created": {
+        // Refund = rétrograde le user en plan='free' + libère sa place
+        const charge = event.data.object as Stripe.Charge;
+        const paymentIntent = charge.payment_intent as string;
+        if (!paymentIntent) break;
+        // Retrouve la session checkout liée au PaymentIntent
+        const sessions = await getStripe().checkout.sessions.list({
+          payment_intent: paymentIntent,
+          limit: 1,
+        });
+        const sessionId = sessions.data[0]?.id;
+        if (!sessionId) {
+          console.warn(`Refund: pas de session trouvée pour PI ${paymentIntent}`);
+          break;
+        }
+        // Trouve le user via founder_stripe_session_id
+        const user = db
+          .prepare(
+            "SELECT id, plan, founder_phase FROM users WHERE founder_stripe_session_id = ?"
+          )
+          .get(sessionId) as
+          | { id: number; plan: string; founder_phase: number | null }
+          | undefined;
+        if (!user) break;
+        // Rétrograde + libère la place
+        db.prepare(`
+          UPDATE users
+          SET plan = 'free',
+              founder_phase = NULL,
+              founder_purchased_at = NULL,
+              founder_until_date = NULL,
+              founder_stripe_session_id = NULL
+          WHERE id = ?
+        `).run(user.id);
+        console.log(
+          `Refund: user ${user.id} rétrogradé (était phase=${user.founder_phase})`
+        );
         break;
       }
 
@@ -286,6 +333,9 @@ export async function POST(request: NextRequest) {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
+    // Marque l'event comme traité après le switch (commit-after-work).
+    // Permet le retry si on a return 500 dans le switch (ex: email manquant).
+    markEventProcessed(event.id, event.type);
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Webhook handler error:", error);

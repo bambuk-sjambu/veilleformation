@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists, DbArticle } from "@/lib/db";
 import { getCurrentSectorId } from "@/lib/sector-context";
+import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+  // Auth requise : le contenu articles est la valeur produit, pas exposable
+  // anonymement (protection anti-scraping concurrents).
+  const user = await getCurrentUser();
+  if (!user || !user.userId) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   try {
     if (!dbExists()) {
       return NextResponse.json(

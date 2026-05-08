@@ -30,7 +30,11 @@ export const sessionOptions: SessionOptions = {
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    sameSite: "lax" as const,
+    // strict pour bloquer les CSRF cross-origin (lax laissait passer les form
+    // submissions top-level). Impact UX : les liens externes vers /dashboard
+    // ne réauthentifient pas, le user doit se reconnecter — acceptable pour
+    // un app dashboard.
+    sameSite: "strict" as const,
     maxAge: 60 * 60 * 24 * 7, // 1 week
   },
 };

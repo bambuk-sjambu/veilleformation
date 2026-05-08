@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb, dbExists, DbNewsletter } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
+    // Auth requise : le contenu newsletter est la valeur produit (export
+    // privé pour les abonnés). Pas de scraping anonyme.
+    const user = await getCurrentUser();
+    if (!user || !user.userId) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
     if (!dbExists()) {
       return NextResponse.json({
         error: "Base non initialisee",

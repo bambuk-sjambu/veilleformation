@@ -6,9 +6,8 @@ import { rateLimitOk } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
-// Reserve buffer = 5% du cap pour absorber une variation soudaine de trafic
-// même si les réservations actives sont décomptées (defensive).
-const SAFETY_BUFFER = (cap: number) => Math.max(0, Math.floor(cap * 0.04));
+// Pas de buffer artificiel : la table founder_reservations couvre déjà le
+// TOCTOU exactement (insert atomique + TTL 30 min). Aligné avec /api/founders/count.
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -69,10 +68,8 @@ export async function POST(request: NextRequest) {
   const phase1Reserved = countActiveReservations(1);
   const phase1Effective = phase1Sold + phase1Reserved;
 
-  const activePhase: 1 | 2 =
-    phase1Effective >= FOUNDER_CAPS.phase1 - SAFETY_BUFFER(FOUNDER_CAPS.phase1)
-      ? 2
-      : 1;
+  // Bascule sur phase 2 quand phase 1 est saturée (sold + reserved >= cap)
+  const activePhase: 1 | 2 = phase1Effective >= FOUNDER_CAPS.phase1 ? 2 : 1;
   const priceId = activePhase === 1 ? FOUNDER_PRICES.phase1 : FOUNDER_PRICES.phase2;
 
   if (!priceId || priceId.startsWith("price_founder_phase_")) {
@@ -129,12 +126,17 @@ export async function POST(request: NextRequest) {
           sector_id: "cipia",
         },
       },
-      // TVA 20% (Cipia est assujetti)
-      automatic_tax: { enabled: false },
+      // TVA 20% : Stripe Tax calcule automatiquement la TVA française
+      // sur les prices `tax_behavior=exclusive` (HT). Permet l'autoliquidation
+      // intra-UE B2B via tax_id_collection. Indispensable pour la conformité
+      // factures HT/TTC affichée dans les CGV.
+      automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
       billing_address_collection: "required",
-      // Génère facture PDF Stripe
+      // Génère facture PDF Stripe (avec TVA si automatic_tax actif)
       invoice_creation: { enabled: true },
+      // Force expiration 30 min — alignée avec founder_reservations TTL
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       locale: "fr",
     });
 

@@ -54,6 +54,9 @@ export async function sendFounderActivationEmail(
   firstName: string
 ): Promise<void> {
   const subject = "Bienvenue chez les Founders Cipia — Activez votre compte";
+  const dashboardSettingsUrl = `${SITE_URL}/dashboard/settings`;
+  const exportUrl = `${SITE_URL}/dashboard/export`;
+  const whatsappUrl = "https://wa.me/33635261644";
   const html = `<!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="utf-8"><title>${subject}</title></head>
@@ -81,9 +84,40 @@ export async function sendFounderActivationEmail(
           <p style="margin:0 0 16px;font-size:12px;color:#9CA3AF;word-break:break-all;">
             Lien direct : ${activationUrl}
           </p>
+
+          <hr style="border:none;border-top:1px solid #E5E7EB;margin:32px 0 24px;">
+
+          <h2 style="margin:0 0 16px;font-size:18px;color:#111827;font-weight:700;">Vos 3 prochaines étapes</h2>
+          <ol style="margin:0 0 16px 20px;padding:0;font-size:14px;color:#374151;line-height:1.7;">
+            <li style="margin-bottom:12px;">
+              <strong>Configurez votre veille.</strong> Une fois connecté, allez dans
+              <a href="${dashboardSettingsUrl}" style="color:#1E40AF;">vos paramètres</a>
+              pour cocher les indicateurs Qualiopi qui vous concernent (23, 24, 25, 26)
+              et préciser vos thématiques métier.
+            </li>
+            <li style="margin-bottom:12px;">
+              <strong>Première newsletter mardi 8h.</strong> Votre première édition Cipia
+              arrive dans votre boîte mail dès le mardi qui suit votre activation,
+              avec les textes réglementaires de la semaine déjà classés.
+            </li>
+            <li>
+              <strong>Activez l'export PDF dès maintenant.</strong> Préparez votre prochain
+              audit Qualiopi en générant votre rapport de veille en 1 clic depuis
+              <a href="${exportUrl}" style="color:#1E40AF;">/dashboard/export</a>.
+            </li>
+          </ol>
+
           <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;">
-          <p style="margin:0;font-size:13px;color:#374151;line-height:1.6;">
-            Une question ? Répondez à ce mail ou écrivez à <a href="mailto:contact@${sector.brand.domain}" style="color:#1E40AF;">contact@${sector.brand.domain}</a>.
+
+          <p style="margin:0 0 8px;font-size:13px;color:#374151;line-height:1.6;">
+            <strong>Une question ? Réponse rapide :</strong>
+          </p>
+          <p style="margin:0 0 4px;font-size:13px;color:#374151;line-height:1.6;">
+            📱 WhatsApp : <a href="${whatsappUrl}" style="color:#1E40AF;">+33 6 35 26 16 44</a>
+            (réponse sous 24h)
+          </p>
+          <p style="margin:0 0 16px;font-size:13px;color:#374151;line-height:1.6;">
+            📧 Email : <a href="mailto:contact@${sector.brand.domain}" style="color:#1E40AF;">contact@${sector.brand.domain}</a>
           </p>
           <p style="margin:16px 0 0;font-size:12px;color:#9CA3AF;">
             Stéphane Jambu — Cipia · Edité par Haruna SARL (RCS Créteil 752 912 022).
@@ -103,7 +137,16 @@ ${activationUrl}
 
 Ce lien est valable 72 heures. Si vous l'avez déjà utilisé, demandez un nouveau lien depuis ${SITE_URL}/connexion.
 
-Une question ? contact@${sector.brand.domain}
+Vos 3 prochaines étapes :
+1. Configurez votre veille — cochez vos indicateurs Qualiopi 23-26 et thématiques :
+   ${dashboardSettingsUrl}
+2. Première newsletter mardi 8h dans votre boîte mail (textes de la semaine classés).
+3. Activez l'export PDF dès maintenant pour préparer votre audit :
+   ${exportUrl}
+
+Une question ?
+WhatsApp : +33 6 35 26 16 44 (réponse sous 24h) — ${whatsappUrl}
+Email : contact@${sector.brand.domain}
 
 Stéphane Jambu — Cipia (Haruna SARL).
 `;

@@ -68,6 +68,10 @@ export async function POST(request: NextRequest) {
         userId: dbUser.id.toString(),
         plan,
       },
+      // TVA française auto via Stripe Tax (prix HT en `tax_behavior=exclusive`)
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      billing_address_collection: "required",
       subscription_data: {
         trial_period_days: 14,
         trial_settings: {

@@ -12,11 +12,25 @@ export async function POST() {
 
     const db = getDb();
     const dbUser = db
-      .prepare("SELECT stripe_customer_id FROM users WHERE id = ?")
-      .get(user.userId) as { stripe_customer_id: string | null } | undefined;
+      .prepare("SELECT stripe_customer_id, plan FROM users WHERE id = ?")
+      .get(user.userId) as
+      | { stripe_customer_id: string | null; plan: string | null }
+      | undefined;
 
     if (!dbUser?.stripe_customer_id) {
       return NextResponse.json({ error: "Aucun client Stripe" }, { status: 400 });
+    }
+
+    // Founders sont en mode payment one-shot, pas subscription.
+    // Le Customer Portal ne leur sert à rien (rien à annuler).
+    if (dbUser.plan === "founder") {
+      return NextResponse.json(
+        {
+          error:
+            "Votre place Founder est un paiement unique sans abonnement. Aucun portail à gérer. Pour toute question : contact@cipia.fr",
+        },
+        { status: 400 }
+      );
     }
 
     const session = await getStripe().billingPortal.sessions.create({

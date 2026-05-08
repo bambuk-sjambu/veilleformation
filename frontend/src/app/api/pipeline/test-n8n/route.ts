@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/require-admin";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAdmin();
+  if (guard) return guard;
+
   const { webhook_url } = await req.json();
 
   if (!webhook_url || !webhook_url.startsWith("http")) {

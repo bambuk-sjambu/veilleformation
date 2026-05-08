@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/require-admin";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAdmin();
+  if (guard) return guard;
+
   const { database_url } = await req.json();
 
   if (!database_url || database_url.includes(":@")) {

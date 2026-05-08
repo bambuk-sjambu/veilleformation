@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe, FOUNDER_PRICES, FOUNDER_CAPS } from "@/lib/stripe";
 import { getDb } from "@/lib/db";
+import { reserveFounderSeat, countActiveReservations } from "@/lib/founder-reservations";
+import { rateLimitOk } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
+
+// Reserve buffer = 5% du cap pour absorber une variation soudaine de trafic
+// même si les réservations actives sont décomptées (defensive).
+const SAFETY_BUFFER = (cap: number) => Math.max(0, Math.floor(cap * 0.04));
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * POST /api/founders/checkout
@@ -17,6 +25,18 @@ export const dynamic = "force-dynamic";
  * Body : { email?: string }  (pré-remplit Stripe Checkout si fourni)
  */
 export async function POST(request: NextRequest) {
+  // Rate limit IP-based : 5 sessions/min/IP pour empêcher DoS Stripe
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  if (!rateLimitOk(`founders:checkout:${ip}`, 5, 60_000)) {
+    return NextResponse.json(
+      { error: "Trop de tentatives. Réessayez dans une minute." },
+      { status: 429 }
+    );
+  }
+
   let body: { email?: string } = {};
   try {
     body = await request.json();
@@ -24,7 +44,17 @@ export async function POST(request: NextRequest) {
     // body optionnel
   }
 
-  // Détermine la phase active
+  // Validation email côté server (avant Stripe)
+  if (body.email !== undefined && body.email !== null && body.email !== "") {
+    if (typeof body.email !== "string" || !EMAIL_REGEX.test(body.email)) {
+      return NextResponse.json(
+        { error: "Email invalide." },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Détermine la phase active (users payés + réservations actives = effectif)
   const db = getDb();
   let phase1Sold = 0;
   try {
@@ -36,7 +66,13 @@ export async function POST(request: NextRequest) {
   } catch {
     // colonne pas encore créée
   }
-  const activePhase: 1 | 2 = phase1Sold >= FOUNDER_CAPS.phase1 ? 2 : 1;
+  const phase1Reserved = countActiveReservations(1);
+  const phase1Effective = phase1Sold + phase1Reserved;
+
+  const activePhase: 1 | 2 =
+    phase1Effective >= FOUNDER_CAPS.phase1 - SAFETY_BUFFER(FOUNDER_CAPS.phase1)
+      ? 2
+      : 1;
   const priceId = activePhase === 1 ? FOUNDER_PRICES.phase1 : FOUNDER_PRICES.phase2;
 
   if (!priceId || priceId.startsWith("price_founder_phase_")) {
@@ -46,11 +82,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Si la phase 2 est aussi vidée, on refuse
+  // Cap dur (sans buffer) sur la phase active
+  const activeCap = FOUNDER_CAPS[`phase${activePhase}` as "phase1" | "phase2"];
+  let phaseSold = phase1Sold;
+  let phaseReserved = phase1Reserved;
   if (activePhase === 2) {
-    let phase2Sold = 0;
     try {
-      phase2Sold = (
+      phaseSold = (
         db
           .prepare("SELECT COUNT(*) as n FROM users WHERE founder_phase = 2")
           .get() as { n: number }
@@ -58,12 +96,13 @@ export async function POST(request: NextRequest) {
     } catch {
       // ignore
     }
-    if (phase2Sold >= FOUNDER_CAPS.phase2) {
-      return NextResponse.json(
-        { error: "Toutes les places Founder sont vendues." },
-        { status: 410 }
-      );
-    }
+    phaseReserved = countActiveReservations(2);
+  }
+  if (phaseSold + phaseReserved >= activeCap) {
+    return NextResponse.json(
+      { error: "Toutes les places Founder sont vendues." },
+      { status: 410 }
+    );
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cipia.fr";
@@ -99,16 +138,23 @@ export async function POST(request: NextRequest) {
       locale: "fr",
     });
 
+    // Réserve la place pour 30 min — le webhook DELETE en cas de succès ou expiration
+    reserveFounderSeat(session.id, activePhase);
+
     return NextResponse.json({
       url: session.url,
       sessionId: session.id,
       activePhase,
     });
   } catch (e: unknown) {
-    const errorMessage = e instanceof Error ? e.message : "Erreur Stripe inconnue";
     console.error("Founder checkout error:", e);
+    // Ne PAS exposer l'erreur Stripe brute en production (peut leaker des infos)
+    const isDev = process.env.NODE_ENV !== "production";
+    const errorMessage = e instanceof Error ? e.message : "Erreur Stripe inconnue";
     return NextResponse.json(
-      { error: "Erreur lors de la création de la session", details: errorMessage },
+      isDev
+        ? { error: "Erreur lors de la création de la session", details: errorMessage }
+        : { error: "Erreur lors de la création de la session." },
       { status: 500 }
     );
   }

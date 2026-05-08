@@ -44,6 +44,72 @@ export async function sendEmail(opts: SendEmailOptions): Promise<{ id: string }>
   return res.json();
 }
 
+/**
+ * Email d'activation Founder envoyé après paiement réussi (mode=payment one-shot).
+ * L'URL contient un magic link single-use qui mène à /connexion/activer.
+ */
+export async function sendFounderActivationEmail(
+  email: string,
+  activationUrl: string,
+  firstName: string
+): Promise<void> {
+  const subject = "Bienvenue chez les Founders Cipia — Activez votre compte";
+  const html = `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"><title>${subject}</title></head>
+<body style="font-family:Arial,Helvetica,sans-serif;background:#F3F4F6;margin:0;padding:24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F3F4F6;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;border-radius:8px;overflow:hidden;">
+        <tr><td style="background:#1E40AF;padding:24px 32px;text-align:center;">
+          <h1 style="margin:0;font-size:24px;color:#FFFFFF;font-weight:700;">Bienvenue chez les Founders Cipia 🎉</h1>
+        </td></tr>
+        <tr><td style="padding:32px;">
+          <p style="margin:0 0 16px;font-size:16px;color:#111827;line-height:1.5;">Bonjour ${firstName},</p>
+          <p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.6;">
+            Votre paiement Cipia Founder est confirmé. Vous faites partie des fondateurs.
+            Pour finaliser votre compte, cliquez sur le bouton ci-dessous et choisissez votre mot de passe.
+          </p>
+          <p style="margin:24px 0;text-align:center;">
+            <a href="${activationUrl}" style="display:inline-block;padding:14px 28px;background:#1E40AF;color:#FFFFFF;font-weight:700;text-decoration:none;border-radius:6px;font-size:15px;">
+              Activer mon compte
+            </a>
+          </p>
+          <p style="margin:0 0 8px;font-size:13px;color:#6B7280;line-height:1.5;">
+            Ce lien est valable 72 heures. Si vous l'avez déjà utilisé, demandez un nouveau lien depuis la page connexion.
+          </p>
+          <p style="margin:0 0 16px;font-size:12px;color:#9CA3AF;word-break:break-all;">
+            Lien direct : ${activationUrl}
+          </p>
+          <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;">
+          <p style="margin:0;font-size:13px;color:#374151;line-height:1.6;">
+            Une question ? Répondez à ce mail ou écrivez à <a href="mailto:contact@${sector.brand.domain}" style="color:#1E40AF;">contact@${sector.brand.domain}</a>.
+          </p>
+          <p style="margin:16px 0 0;font-size:12px;color:#9CA3AF;">
+            Stéphane Jambu — Cipia · Edité par Haruna SARL (RCS Créteil 752 912 022).
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+  const text = `Bonjour ${firstName},
+
+Votre paiement Cipia Founder est confirmé. Bienvenue chez les fondateurs.
+
+Pour finaliser votre compte, ouvrez ce lien et choisissez votre mot de passe :
+${activationUrl}
+
+Ce lien est valable 72 heures. Si vous l'avez déjà utilisé, demandez un nouveau lien depuis ${SITE_URL}/connexion.
+
+Une question ? contact@${sector.brand.domain}
+
+Stéphane Jambu — Cipia (Haruna SARL).
+`;
+  await sendEmail({ to: email, subject, html, text });
+}
+
 export function teamInvitationEmail(params: {
   teamName: string;
   inviterName: string;

@@ -280,7 +280,7 @@ export default function SectorLandingPage({ sectorId }: { sectorId: string }) {
             </Link>
           </div>
           <p className="mt-6 text-sm text-gray-500">
-            Newsletter hebdo gratuite — Solo 19€/an — Cabinet 199€/an. Essai
+            Newsletter hebdo gratuite — Solo 39€/an — Cabinet 199€/an. Essai
             14 jours sans carte bancaire.
           </p>
         </div>

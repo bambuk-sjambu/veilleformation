@@ -104,7 +104,7 @@ export default function CguPage() {
                 <li><strong>Cipia Cabinet</strong> : <strong>199&nbsp;€/an pour 10 utilisateurs</strong> — toutes les fonctionnalités Solo, plus la gestion collaborative, l&apos;export PDF avec logo du cabinet et le suivi multi-utilisateurs. <em>14 jours d&apos;essai gratuit</em>.</li>
               </ul>
               <p className="mt-2">
-                Les plans payants sont sans engagement et résiliables en un clic depuis l&apos;espace personnel.
+                Les plans payants sont résiliables en un clic depuis l&apos;espace personnel, à tout moment.
                 Le paiement s&apos;effectue exclusivement via Stripe. Les modalités complètes de souscription,
                 de facturation et de résiliation sont détaillées dans les{" "}
                 <Link href="/cgv" className="text-primary hover:underline">Conditions Générales de Vente</Link>.

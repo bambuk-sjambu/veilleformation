@@ -1,12 +1,31 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { getDb, DbUser } from "@/lib/db";
 import { sessionOptions, SessionData } from "@/lib/session";
+import { rateLimitOk } from "@/lib/rate-limit";
 
-export async function POST(request: Request) {
+export const dynamic = "force-dynamic";
+
+interface DbUserWithPasswordSet extends DbUser {
+  password_set?: number;
+}
+
+export async function POST(request: NextRequest) {
   try {
+    // Rate limit anti-bruteforce : 5 tentatives/min/IP
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    if (!rateLimitOk(`auth:login:${ip}`, 5, 60_000)) {
+      return NextResponse.json(
+        { error: "Trop de tentatives. Réessayez dans une minute." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
@@ -21,12 +40,24 @@ export async function POST(request: Request) {
 
     const user = db
       .prepare("SELECT * FROM users WHERE email = ?")
-      .get(email.toLowerCase()) as DbUser | undefined;
+      .get(email.toLowerCase()) as DbUserWithPasswordSet | undefined;
 
     if (!user) {
       return NextResponse.json(
         { error: "Email ou mot de passe incorrect." },
         { status: 401 }
+      );
+    }
+
+    // Founder pending : mot de passe pas encore défini → orienter vers activation
+    if (user.password_set === 0) {
+      return NextResponse.json(
+        {
+          error:
+            "Compte non activé. Vérifiez votre email d'activation Founder, ou demandez un nouveau lien.",
+          requiresActivation: true,
+        },
+        { status: 403 }
       );
     }
 

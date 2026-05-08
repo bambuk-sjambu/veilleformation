@@ -542,7 +542,7 @@ export default async function BlogArticlePage({
                 href="/inscription"
                 className="inline-block bg-yellow-400 text-black font-bold px-5 py-2.5 rounded-lg hover:bg-yellow-300 transition"
               >
-                Essai gratuit — sans CB
+                Essai 14 jours — par simple email
               </Link>
             </div>
 

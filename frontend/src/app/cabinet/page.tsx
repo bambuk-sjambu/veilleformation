@@ -74,7 +74,7 @@ const faqItems = [
   {
     question: "Quelle est la différence avec Cipia Solo ?",
     answer:
-      "Cipia Solo (19€/an) est conçu pour les indépendants et TPE : 1 utilisateur, export PDF standard. Cipia Cabinet (199€/an) ajoute 10 utilisateurs, audit blanc-marque, newsletter white-label envoyée à vos clients depuis votre nom de domaine, accès API, support prioritaire et SLA 24h.",
+      "Cipia Solo (39€/an) est conçu pour les indépendants et TPE : 1 utilisateur, export PDF standard. Cipia Cabinet (199€/an) ajoute 10 utilisateurs, audit blanc-marque, newsletter white-label envoyée à vos clients depuis votre nom de domaine, accès API, support prioritaire et SLA 24h.",
   },
   {
     question: "Comment se passe la démo ?",

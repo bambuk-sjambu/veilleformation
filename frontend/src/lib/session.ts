@@ -8,8 +8,24 @@ export interface SessionData {
   isLoggedIn?: boolean;
 }
 
+const SESSION_PASSWORD = process.env.SESSION_PASSWORD;
+if (!SESSION_PASSWORD || SESSION_PASSWORD.length < 32) {
+  // En production : crash explicite au boot. En dev : warning + fallback dev-only
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "SESSION_PASSWORD must be set in production (32+ chars). Refusing to start."
+    );
+  }
+  console.warn(
+    "WARN: SESSION_PASSWORD missing or too short — using dev fallback. Set a real one for production."
+  );
+}
+
 export const sessionOptions: SessionOptions = {
-  password: process.env.SESSION_PASSWORD || "fallback-password-that-is-at-least-32-chars-long",
+  password:
+    SESSION_PASSWORD && SESSION_PASSWORD.length >= 32
+      ? SESSION_PASSWORD
+      : "dev-only-fallback-password-32-chars-min-do-not-use-in-prod",
   cookieName: "veille-formation-session",
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",

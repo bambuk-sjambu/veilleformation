@@ -73,7 +73,7 @@ export default function PolitiqueDonneesPage() {
                 4. Responsable de traitement et contact
               </h2>
               <ul className="space-y-1">
-                <li><strong>Responsable de traitement :</strong> Haruna SARL, représentée par son président Stéphane Jambu</li>
+                <li><strong>Responsable de traitement :</strong> Haruna SARL, représentée par sa gérante Madame Alina Constantin. <strong>Référent RGPD interne :</strong> Stéphane Jambu (directeur de la publication).</li>
                 <li><strong>Contact RGPD :</strong> <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a></li>
                 <li><strong>Coordonnées postales :</strong> voir <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link></li>
               </ul>

@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe, getPlanFromPriceId, type PlanType } from "@/lib/stripe";
 import { getDb } from "@/lib/db";
+import { releaseFounderReservation, markEventProcessed } from "@/lib/founder-reservations";
+import { createMagicLink } from "@/lib/founder-tokens";
+import { sendFounderActivationEmail } from "@/lib/resend";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -22,6 +28,12 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Idempotence sur event.id : Stripe garantit la stabilité de l'ID même sur retry
+  if (!markEventProcessed(event.id, event.type)) {
+    console.log(`Webhook event ${event.id} (${event.type}) déjà traité — skip`);
+    return NextResponse.json({ received: true, idempotent: true });
   }
 
   const db = getDb();
@@ -62,93 +74,151 @@ export async function POST(request: NextRequest) {
           const phase = parseInt(founderPhase, 10);
           if (phase !== 1 && phase !== 2) break;
 
-          const sessionId = session.id;
-          // Idempotence : si la session a déjà été traitée, on ne refait rien
-          const existing = db
-            .prepare(
-              "SELECT id FROM users WHERE founder_stripe_session_id = ?"
-            )
-            .get(sessionId);
-          if (existing) {
-            console.log(`Founder webhook: session ${sessionId} déjà traitée, skip`);
+          // Vérification que le paiement est effectivement capté (pas SEPA pending)
+          if (session.payment_status !== "paid") {
+            console.log(
+              `Founder webhook: session ${session.id} payment_status=${session.payment_status}, skip (waiting for async_payment_succeeded)`
+            );
             break;
           }
 
+          const sessionId = session.id;
           const email = (
             session.customer_details?.email ||
             session.customer_email ||
             ""
           ).toLowerCase().trim();
+
+          // Si pas d'email : retourner 500 pour que Stripe retente (jusqu'à 3 jours)
+          // → on a une fenêtre pour fix manuellement avant que le retry n'expire
           if (!email) {
             console.error(`Founder webhook: pas d'email pour session ${sessionId}`);
-            break;
+            return NextResponse.json(
+              { error: "Email manquant côté Stripe" },
+              { status: 500 }
+            );
           }
 
           const fullName = session.customer_details?.name || "";
           const [firstName, ...rest] = fullName.split(" ");
           const lastName = rest.join(" ") || firstName || "";
 
-          const sectorId = session.metadata?.sector_id || "cipia";
+          const VALID_SECTORS = new Set([
+            "cipia", "haccp", "medical", "avocats", "experts-comptables",
+          ]);
+          const rawSector = session.metadata?.sector_id || "cipia";
+          const sectorId = VALID_SECTORS.has(rawSector) ? rawSector : "cipia";
           const customerId = session.customer as string;
 
           // Date d'expiration : NULL pour phase 1 (lifetime), +5 ans pour phase 2
-          let founderUntilSql = "NULL";
-          if (phase === 2) {
-            founderUntilSql = "date('now', '+5 years')";
+          const founderUntilSql = phase === 2 ? "date('now', '+5 years')" : "NULL";
+
+          // Transaction atomique : empêche la race condition idempotence
+          // (UNIQUE INDEX partiel sur founder_stripe_session_id en DB → 2e webhook simultané throw)
+          let userId2: number = 0;
+          let isNewUser = false;
+          try {
+            db.transaction(() => {
+              // Recheck idempotence dans la transaction (le UNIQUE INDEX bloquerait sinon)
+              const existing = db
+                .prepare("SELECT id FROM users WHERE founder_stripe_session_id = ?")
+                .get(sessionId) as { id: number } | undefined;
+              if (existing) {
+                userId2 = existing.id;
+                return;
+              }
+
+              const existingUser = db
+                .prepare("SELECT id FROM users WHERE email = ?")
+                .get(email) as { id: number } | undefined;
+
+              if (existingUser) {
+                // Upgrade le user existant en founder
+                userId2 = existingUser.id;
+                db.prepare(`
+                  UPDATE users
+                  SET plan = 'founder',
+                      founder_phase = ?,
+                      founder_purchased_at = datetime('now'),
+                      founder_until_date = ${founderUntilSql},
+                      founder_stripe_session_id = ?,
+                      stripe_customer_id = ?,
+                      active_sector_id = ?
+                  WHERE id = ?
+                `).run(phase, sessionId, customerId, sectorId, userId2);
+                // Pas de magic link nécessaire : user a déjà un mot de passe
+              } else {
+                // Crée le user en mode "password pending" (set_password=0)
+                const result = db.prepare(`
+                  INSERT INTO users (
+                    email, password_hash, first_name, last_name,
+                    plan, founder_phase, founder_purchased_at,
+                    founder_until_date, founder_stripe_session_id,
+                    stripe_customer_id, active_sector_id, password_set
+                  ) VALUES (?, '', ?, ?, 'founder', ?, datetime('now'), ${founderUntilSql}, ?, ?, ?, 0)
+                `).run(
+                  email,
+                  firstName.trim() || "Founder",
+                  lastName.trim() || "Cipia",
+                  phase,
+                  sessionId,
+                  customerId,
+                  sectorId,
+                );
+                userId2 = Number(result.lastInsertRowid);
+                isNewUser = true;
+              }
+
+              // Inscrit au secteur (table user_sectors)
+              db.prepare(`
+                INSERT OR IGNORE INTO user_sectors (user_id, sector_id, is_primary)
+                VALUES (?, ?, 1)
+              `).run(userId2, sectorId);
+            })();
+          } catch (txErr: unknown) {
+            const msg = txErr instanceof Error ? txErr.message : String(txErr);
+            // SQLITE_CONSTRAINT_UNIQUE → un autre webhook concurrent a déjà créé le user
+            if (msg.includes("UNIQUE constraint failed")) {
+              console.log(`Founder webhook: race detected on session ${sessionId} — idempotent skip`);
+              releaseFounderReservation(sessionId);
+              break;
+            }
+            throw txErr;
           }
 
-          // Vérifie si un user existe déjà avec cet email
-          const existingUser = db
-            .prepare("SELECT id FROM users WHERE email = ?")
-            .get(email) as { id: number } | undefined;
+          // Libère la réservation (TOCTOU protection)
+          releaseFounderReservation(sessionId);
 
-          let userId2: number;
-          if (existingUser) {
-            // Upgrade le user existant en founder
-            userId2 = existingUser.id;
-            db.prepare(`
-              UPDATE users
-              SET plan = 'founder',
-                  founder_phase = ?,
-                  founder_purchased_at = datetime('now'),
-                  founder_until_date = ${founderUntilSql},
-                  founder_stripe_session_id = ?,
-                  stripe_customer_id = ?,
-                  active_sector_id = ?
-              WHERE id = ?
-            `).run(phase, sessionId, customerId, sectorId, userId2);
-          } else {
-            // Crée le user (mot de passe placeholder, sera défini via lien magique email)
-            const placeholder = "FOUNDER_PENDING_" + sessionId.slice(-12);
-            const result = db.prepare(`
-              INSERT INTO users (
-                email, password_hash, first_name, last_name,
-                plan, founder_phase, founder_purchased_at,
-                founder_until_date, founder_stripe_session_id,
-                stripe_customer_id, active_sector_id
-              ) VALUES (?, ?, ?, ?, 'founder', ?, datetime('now'), ${founderUntilSql}, ?, ?, ?)
-            `).run(
-              email,
-              placeholder,
-              firstName.trim() || "Founder",
-              lastName.trim() || "Cipia",
-              phase,
-              sessionId,
-              customerId,
-              sectorId,
-            );
-            userId2 = Number(result.lastInsertRowid);
+          // Envoi du magic link d'activation pour les nouveaux comptes Founder
+          // (les comptes upgradés conservent leur mot de passe existant)
+          if (isNewUser && userId2) {
+            try {
+              const link = createMagicLink(userId2, "set_password");
+              const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cipia.fr";
+              const activationUrl = `${baseUrl}/connexion/activer?token=${encodeURIComponent(link.token)}`;
+              await sendFounderActivationEmail(email, activationUrl, firstName.trim() || "Founder");
+            } catch (emailErr) {
+              console.error(
+                `Founder webhook: failed to send activation email for user ${userId2}`,
+                emailErr
+              );
+              // On ne bloque pas le webhook : Stéphane peut renvoyer le lien manuellement.
+            }
           }
 
-          // Inscrit au secteur (table user_sectors)
-          db.prepare(`
-            INSERT OR IGNORE INTO user_sectors (user_id, sector_id, is_primary)
-            VALUES (?, ?, 1)
-          `).run(userId2, sectorId);
-
+          // Log structuré sans PII complet (RGPD : on garde seulement le domaine)
           console.log(
-            `Founder webhook: phase=${phase} email=${email} user=${userId2} sector=${sectorId}`
+            `Founder webhook: phase=${phase} userId=${userId2} sector=${sectorId} domain=${email.split("@")[1] || "unknown"} new=${isNewUser}`
           );
+        }
+        break;
+      }
+
+      case "checkout.session.expired": {
+        // Libère la réservation pour rouvrir la place
+        const session = event.data.object as Stripe.Checkout.Session;
+        if (session.mode === "payment" && session.metadata?.founder_phase) {
+          releaseFounderReservation(session.id);
         }
         break;
       }

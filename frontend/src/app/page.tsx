@@ -41,7 +41,7 @@ const faqItems = [
   {
     question: "La newsletter est-elle vraiment gratuite ?",
     answer:
-      "Oui, le plan Newsletter vous donne accès à la newsletter hebdomadaire sur 1 secteur de votre choix, sans engagement et sans carte bancaire. Vous pouvez upgrader à Cipia Solo (39€/an) ou Cipia Cabinet (199€/an) à tout moment.",
+      "Oui, le plan Newsletter vous donne accès à la newsletter hebdomadaire sur 1 secteur de votre choix, par simple email. Vous pouvez upgrader à Cipia Solo (39€/an) ou Cipia Cabinet (199€/an) à tout moment.",
   },
   {
     question: "Comment est générée la classification IA ?",
@@ -61,7 +61,7 @@ const faqItems = [
   {
     question: "Mes données sont-elles sécurisées ?",
     answer:
-      "Oui, vos données sont hébergées en France, chiffrées en transit et au repos. Nous ne partageons jamais vos informations avec des tiers. Notre politique de confidentialité détaille l'ensemble de nos pratiques en matière de protection des données.",
+      "Oui, vos données sont hébergées en France, chiffrées en transit et au repos. Vos informations restent strictement chez Cipia. Notre politique de confidentialité détaille l'ensemble de nos pratiques en matière de protection des données.",
   },
 ];
 
@@ -155,7 +155,7 @@ function Hero() {
           <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Textes officiels, alertes et évolutions sectorielles classés par IA
             pour <strong className="text-gray-900">596 000 indépendants français</strong>.
-            Gagnez 3h par semaine, présentez vos preuves en 1 clic.
+            Gardez 3 à 5h par mois pour votre cœur de métier, présentez vos preuves en 1 clic.
           </p>
 
           <div className="mb-8 max-w-3xl mx-auto">
@@ -281,9 +281,9 @@ function PainPoints() {
   const benefits = [
     {
       icon: <Clock className="w-8 h-8" />,
-      title: "3 heures gagnées chaque semaine",
+      title: "3 à 5 heures gagnées par mois",
       description:
-        "Légifrance, BOAMP, 11 OPCO, France Travail, 13 Régions : toutes les sources collectées et synthétisées pour vous.",
+        "Légifrance, BOAMP, 11 OPCO, France Travail, 13 Régions : toutes les sources collectées et synthétisées pour vous. Et 6 à 8h en moins le jour de votre audit.",
     },
     {
       icon: <Brain className="w-8 h-8" />,
@@ -304,7 +304,7 @@ function PainPoints() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            La veille réglementaire sans effort
+            Votre veille réglementaire en pilote automatique
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             596 000 indépendants et cabinets français ont le même besoin :
@@ -666,7 +666,7 @@ function Pricing() {
       name: "Newsletter",
       price: "0",
       period: "/an",
-      description: "Pour découvrir, sans engagement",
+      description: "Pour découvrir, en libre choix",
       features: [
         "Newsletter hebdomadaire (mardi 8h)",
         "1 secteur au choix (Qualiopi, HACCP, médical, avocats ou EC)",

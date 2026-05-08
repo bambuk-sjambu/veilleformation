@@ -157,7 +157,7 @@ const SECTOR_CONTENT: Record<string, SectorContent> = {
       },
       {
         title: "URSSAF & social",
-        body: "Avenants conventions collectives, taux de cotisation, exonérations Madelin. Vous bouclez vos paies sans surprise.",
+        body: "Avenants conventions collectives, taux de cotisation, exonérations Madelin. Vous bouclez vos paies en totale clarté.",
       },
       {
         title: "Note de synthèse client",

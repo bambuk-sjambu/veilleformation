@@ -273,7 +273,7 @@ export default function FoundersClient() {
               {
                 icon: Clock,
                 title: "Économie de 3 à 5h par mois",
-                body: "Plus besoin de scroller manuellement Légifrance et les bulletins OPCO. Tout arrive trié et hiérarchisé. Et 6 à 8h en moins le jour de votre audit Qualiopi.",
+                body: "Tout arrive trié et hiérarchisé dans votre boîte mail : Légifrance, BOAMP, OPCO, France Travail. Et 6 à 8h économisées le jour de votre audit Qualiopi.",
               },
               {
                 icon: FileText,
@@ -304,12 +304,12 @@ export default function FoundersClient() {
         </div>
       </section>
 
-      {/* Pain points : la veille réglementaire sans effort */}
+      {/* Pain points : la veille en pilote automatique */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              La veille réglementaire sans effort
+              Votre veille réglementaire en pilote automatique
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               45 000 organismes de formation Qualiopi ont le même besoin : rester en règle.
@@ -320,9 +320,9 @@ export default function FoundersClient() {
             {[
               {
                 Icon: Clock,
-                title: "3 heures gagnées chaque semaine",
+                title: "3 à 5 heures gagnées par mois",
                 description:
-                  "Légifrance, BOAMP, 11 OPCO, France Travail, 13 Régions : toutes les sources collectées et synthétisées pour vous.",
+                  "Légifrance, BOAMP, 11 OPCO, France Travail, 13 Régions : toutes les sources collectées et synthétisées pour vous. Et 6 à 8h en moins le jour de votre audit Qualiopi.",
               },
               {
                 Icon: Brain,
@@ -578,13 +578,14 @@ export default function FoundersClient() {
             </div>
             <div className="bg-white rounded-xl p-5 border-2" style={{ borderColor: meta.primary }}>
               <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: meta.primary }}>
-                Vs Cipia Solo récurrent
+                Vs VeilleFormation.com (entrée de gamme)
               </p>
               <p className="text-2xl font-extrabold" style={{ color: meta.primaryDark }}>
-                Rentable dès 2 ans 7 mois
+                2 250€ HT économisés sur 5 ans
               </p>
               <p className="text-sm text-gray-600 mt-1">
-                Solo récurrent = 39€/an. Sur 5 ans = 195€. Vous économisez 95€ avec Founder, et plus encore au-delà.
+                VeilleFormation = 470€/an (entrée de gamme), soit 2 350€ HT sur 5 ans.
+                Cipia Founder = 100€ HT à vie. <strong>Vous gardez 2 250€ pour vos formateurs.</strong>
               </p>
             </div>
           </div>

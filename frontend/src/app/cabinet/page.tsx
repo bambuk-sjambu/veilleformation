@@ -364,9 +364,9 @@ function Benefits() {
   const benefits = [
     {
       icon: <Clock className="w-7 h-7" />,
-      title: "4 à 8 heures par semaine économisées",
+      title: "30 à 50 heures économisées par mois pour le cabinet",
       description:
-        "Toutes les sources collectées et synthétisées par l'IA. Vos collaborateurs se concentrent sur le conseil client.",
+        "Toutes les sources collectées et synthétisées par l'IA — 3 à 5h par mois et par collaborateur. Vos équipes se concentrent sur le conseil client.",
     },
     {
       icon: <FileText className="w-7 h-7" />,
@@ -503,7 +503,7 @@ function PricingBlock() {
               <span className="text-xl text-white/80">/an</span>
             </div>
             <p className="text-center text-white/70 text-sm mb-8">
-              Pour 10 utilisateurs, sans engagement, facturation annuelle.
+              Pour 10 utilisateurs, en libre choix, facturation annuelle.
             </p>
 
             <ul className="space-y-3 max-w-md mx-auto mb-8">

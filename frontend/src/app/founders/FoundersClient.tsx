@@ -291,77 +291,97 @@ export default function FoundersClient() {
         </div>
       </section>
 
-      {/* Comparaison Founder vs Solo récurrent */}
+      {/* Comparaison Founder vs concurrents */}
       <section className="py-16 sm:py-20" style={{ backgroundColor: meta.surface }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10" style={{ color: meta.primaryDark }}>
-            Pourquoi Founder est imbattable
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3" style={{ color: meta.primaryDark }}>
+            Cipia Founder, comparé au marché
           </h2>
-          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg">
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="p-6 rounded-xl border-2 border-gray-200">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
-                  Cipia Solo (récurrent)
-                </p>
-                <p className="text-3xl font-extrabold text-gray-900 mb-1">19€/an</p>
-                <p className="text-sm text-gray-500 mb-4">facturé tous les ans</p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 mt-0.5 text-gray-400 flex-shrink-0" />
-                    <span>Toutes les fonctionnalités</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 mt-0.5 text-gray-400 flex-shrink-0" />
-                    <span>Annulable à tout moment</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-gray-400">
-                    <span className="w-4">×</span>
-                    <span>Prix peut augmenter à chaque renouvellement</span>
-                  </li>
-                </ul>
-              </div>
-              <div
-                className="p-6 rounded-xl border-2 relative"
-                style={{ borderColor: meta.primary, backgroundColor: meta.surface }}
-              >
-                <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold text-white"
-                  style={{ backgroundColor: meta.primary }}
+          <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+            Coût total sur 5 ans pour un OF Qualiopi, audit-ready inclus.
+          </p>
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-gray-200">
+                  <th className="text-left p-3 font-semibold text-gray-700">Solution</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">Tarif</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">Coût 5 ans</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">Audit PDF auto</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">IA classification</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  className="border-b border-gray-100"
+                  style={{ backgroundColor: meta.surface }}
                 >
-                  RECOMMANDÉ
-                </span>
-                <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: meta.primary }}>
-                  Cipia Founder
-                </p>
-                <p className="text-3xl font-extrabold mb-1" style={{ color: meta.primaryDark }}>
-                  {conf.price}€ HT
-                </p>
-                <p className="text-sm mb-4" style={{ color: meta.primaryDark }}>
-                  une seule fois, {conf.duration}
-                </p>
-                <ul className="space-y-2 text-sm text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: meta.primary }} />
-                    <span>Toutes les fonctionnalités</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: meta.primary }} />
-                    <span><strong>Prix bloqué</strong> : aucune augmentation</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: meta.primary }} />
-                    <span>Évolutions futures incluses (Qualiopi V7+)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: meta.primary }} />
-                    <span>Statut Founder : visible dans votre dashboard</span>
-                  </li>
-                </ul>
-              </div>
+                  <td className="p-3 font-bold" style={{ color: meta.primaryDark }}>
+                    🏆 Cipia Founder
+                  </td>
+                  <td className="text-center p-3 font-bold" style={{ color: meta.primary }}>
+                    {conf.price}€ HT à vie
+                  </td>
+                  <td className="text-center p-3 font-bold" style={{ color: meta.primary }}>
+                    {conf.price}€
+                  </td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3">✅ Claude</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="p-3 font-medium text-gray-700">Cipia Solo (récurrent)</td>
+                  <td className="text-center p-3 text-gray-600">39€ HT/an</td>
+                  <td className="text-center p-3 text-gray-600">195€</td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3">✅ Claude</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="p-3 font-medium text-gray-700">VeilleFormation.com</td>
+                  <td className="text-center p-3 text-gray-600">39 à 97€/mois</td>
+                  <td className="text-center p-3 font-bold text-red-600">2 350 - 5 850€</td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="p-3 font-medium text-gray-700">Digiforma Veille (CRM)</td>
+                  <td className="text-center p-3 text-gray-600">Gratuit (produit appel)</td>
+                  <td className="text-center p-3 text-gray-600">0€</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-medium text-gray-700">Veille manuelle (Drive + classeur)</td>
+                  <td className="text-center p-3 text-gray-600">0€ + 6h/audit</td>
+                  <td className="text-center p-3 text-gray-600">~30h de prép</td>
+                  <td className="text-center p-3 text-gray-400">❌ (manuel)</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-8 grid sm:grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-5 border-2" style={{ borderColor: meta.primary }}>
+              <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: meta.primary }}>
+                Vs VeilleFormation
+              </p>
+              <p className="text-2xl font-extrabold" style={{ color: meta.primaryDark }}>
+                ÷25 à ÷60
+              </p>
+              <p className="text-sm text-gray-600 mt-1">
+                Cipia Founder coûte 25 à 60 fois moins cher sur 5 ans pour un service IA-native équivalent.
+              </p>
             </div>
-            <p className="mt-6 text-center text-sm text-gray-600">
-              Sur 10 ans : <strong>Solo récurrent ≈ 190€</strong> · <strong>Founder Lifetime = {conf.price}€</strong>
-            </p>
+            <div className="bg-white rounded-xl p-5 border-2" style={{ borderColor: meta.primary }}>
+              <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: meta.primary }}>
+                Vs Cipia Solo récurrent
+              </p>
+              <p className="text-2xl font-extrabold" style={{ color: meta.primaryDark }}>
+                Rentable dès 2 ans 7 mois
+              </p>
+              <p className="text-sm text-gray-600 mt-1">
+                Solo récurrent = 39€/an. Sur 5 ans = 195€. Vous économisez 95€ avec Founder, et plus encore au-delà.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -380,7 +400,7 @@ export default function FoundersClient() {
               },
               {
                 q: "Pourquoi seulement 250 places ?",
-                a: "Pour valoriser nos fondateurs et garder un volume tenable. Au-delà, l'offre Phase 2 (150€ HT pour 5 ans, 1000 places) prendra le relais. Quand toutes les places Founder sont vendues, le tarif normal est de 19€/an récurrent (Cipia Solo).",
+                a: "Pour valoriser nos fondateurs et garder un volume tenable. Au-delà, l'offre Phase 2 (150€ HT pour 5 ans, 1000 places) prendra le relais. Quand toutes les places Founder sont vendues, le tarif normal est de 39€ HT/an récurrent (Cipia Solo) — toujours 12 fois moins cher que VeilleFormation.com.",
               },
               {
                 q: "Et si Qualiopi V7 sort dans 2 ans ?",

@@ -235,6 +235,18 @@ export async function POST(request: NextRequest) {
         const charge = event.data.object as Stripe.Charge;
         const paymentIntent = charge.payment_intent as string;
         if (!paymentIntent) break;
+
+        // Refund partiel : on garde le founder actif (geste commercial Stéphane).
+        // Stripe envoie `charge.refunded` même pour partial → check explicite.
+        if (
+          event.type === "charge.refunded" &&
+          charge.amount_refunded < charge.amount
+        ) {
+          console.log(
+            `Refund partiel ${charge.amount_refunded}/${charge.amount} sur ${charge.id} — user reste founder`
+          );
+          break;
+        }
         // Retrouve la session checkout liée au PaymentIntent
         const sessions = await getStripe().checkout.sessions.list({
           payment_intent: paymentIntent,

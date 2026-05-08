@@ -182,8 +182,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash new password
-    const newPasswordHash = await bcrypt.hash(new_password, 10);
+    // Hash new password (12 rounds, cohérent avec /register et /set-password)
+    const newPasswordHash = await bcrypt.hash(new_password, 12);
 
     // Update password
     db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(newPasswordHash, session.userId);

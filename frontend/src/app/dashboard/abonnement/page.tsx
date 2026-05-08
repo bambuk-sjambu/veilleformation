@@ -221,7 +221,7 @@ export default function AbonnementPage() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {(["solo", "équipe", "agence"] as const).map((plan) => {
+            {(["solo", "cabinet"] as const).map((plan) => {
               const config = PLAN_CONFIG[plan];
               return (
                 <div

@@ -16,11 +16,18 @@ interface DbAction {
   updated_at: string;
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Auth requise : actions = données business privées des OF
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
     if (!dbExists()) {
       return NextResponse.json({ error: "Base non initialisee" }, { status: 500 });
     }

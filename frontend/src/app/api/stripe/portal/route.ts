@@ -12,9 +12,15 @@ export async function POST() {
 
     const db = getDb();
     const dbUser = db
-      .prepare("SELECT stripe_customer_id, plan FROM users WHERE id = ?")
+      .prepare(
+        "SELECT stripe_customer_id, stripe_subscription_id, plan FROM users WHERE id = ?"
+      )
       .get(user.userId) as
-      | { stripe_customer_id: string | null; plan: string | null }
+      | {
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          plan: string | null;
+        }
       | undefined;
 
     if (!dbUser?.stripe_customer_id) {
@@ -28,6 +34,19 @@ export async function POST() {
         {
           error:
             "Votre place Founder est un paiement unique sans abonnement. Aucun portail à gérer. Pour toute question : contact@cipia.fr",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Le portail Stripe sert à gérer une subscription active. Un user 'free'
+    // (sans subscription) ou un user qui a annulé ne doit pas y accéder
+    // (sinon UX confuse "vous n'avez aucun abonnement actif").
+    if (dbUser.plan === "free" || !dbUser.stripe_subscription_id) {
+      return NextResponse.json(
+        {
+          error:
+            "Aucun abonnement actif. Souscrivez à Cipia Solo ou Cabinet d'abord.",
         },
         { status: 400 }
       );

@@ -81,15 +81,10 @@ function JsonLd() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: [
-      { "@type": "Offer", price: "0", priceCurrency: "EUR", name: "Gratuit" },
-      { "@type": "Offer", price: "15", priceCurrency: "EUR", name: "Solo" },
-      {
-        "@type": "Offer",
-        price: "39",
-        priceCurrency: "EUR",
-        name: "Équipe",
-      },
-      { "@type": "Offer", price: "79", priceCurrency: "EUR", name: "Agence" },
+      { "@type": "Offer", price: "0", priceCurrency: "EUR", name: "Newsletter (gratuit)" },
+      { "@type": "Offer", price: "100", priceCurrency: "EUR", name: "Founder Lifetime (one-shot, 250 places)" },
+      { "@type": "Offer", price: "39", priceCurrency: "EUR", name: "Solo (annuel)" },
+      { "@type": "Offer", price: "199", priceCurrency: "EUR", name: "Cabinet (annuel, 10 utilisateurs)" },
     ],
   };
   const faqSchema = {

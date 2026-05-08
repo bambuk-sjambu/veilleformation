@@ -11,8 +11,14 @@ import {
   FileText,
   Sparkles,
   AlertCircle,
+  Brain,
+  ClipboardCheck,
+  UserPlus,
+  Send,
+  Download,
 } from "lucide-react";
 import { getSectorMeta } from "@/lib/sector-meta";
+import PreviewMockups from "@/components/PreviewMockups";
 
 interface FoundersCount {
   activePhase: 1 | 2;
@@ -297,6 +303,110 @@ export default function FoundersClient() {
           </div>
         </div>
       </section>
+
+      {/* Pain points : la veille réglementaire sans effort */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              La veille réglementaire sans effort
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              45 000 organismes de formation Qualiopi ont le même besoin : rester en règle.
+              Cipia le résout par IA en une newsletter hebdomadaire.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                Icon: Clock,
+                title: "3 heures gagnées chaque semaine",
+                description:
+                  "Légifrance, BOAMP, 11 OPCO, France Travail, 13 Régions : toutes les sources collectées et synthétisées pour vous.",
+              },
+              {
+                Icon: Brain,
+                title: "Classification IA instantanée",
+                description:
+                  "Chaque texte est automatiquement rattaché aux indicateurs 23, 24, 25 ou 26 par l'IA Anthropic Claude, avec justification claire.",
+              },
+              {
+                Icon: ClipboardCheck,
+                title: "Audit préparé en 1 clic",
+                description:
+                  "Exportez un PDF daté et structuré qui prouve votre veille régulière aux auditeurs Qualiopi.",
+              },
+            ].map((b, i) => (
+              <div
+                key={i}
+                className="p-6 rounded-2xl border"
+                style={{ backgroundColor: meta.surface, borderColor: meta.surface }}
+              >
+                <div style={{ color: meta.primary }} className="mb-4">
+                  <b.Icon className="w-8 h-8" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{b.title}</h3>
+                <p className="text-gray-600">{b.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Comment ça marche */}
+      <section className="py-20" style={{ backgroundColor: meta.surface }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Comment ça marche
+            </h2>
+            <p className="text-lg text-gray-600">
+              En 3 étapes simples, votre veille Qualiopi est en place.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {[
+              {
+                num: "1",
+                Icon: UserPlus,
+                title: "Devenez Founder",
+                description: "Paiement 100€ HT one-shot via Stripe. Compte activé sous 5 min par email.",
+              },
+              {
+                num: "2",
+                Icon: Send,
+                title: "Recevez votre newsletter",
+                description: "Chaque mardi à 8h, un résumé complet de la veille de la semaine dans votre boîte mail.",
+              },
+              {
+                num: "3",
+                Icon: Download,
+                title: "Documentez votre veille",
+                description: "Exportez le PDF de preuve, prêt à présenter lors de votre audit Qualiopi.",
+              },
+            ].map((step, i) => (
+              <div key={i} className="text-center">
+                <div
+                  className="w-16 h-16 rounded-full text-white flex items-center justify-center mx-auto mb-4 text-2xl font-bold"
+                  style={{ backgroundColor: meta.primary }}
+                >
+                  {step.num}
+                </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span style={{ color: meta.primary }}>
+                    <step.Icon className="w-6 h-6" />
+                  </span>
+                  <h3 className="text-lg font-bold text-gray-900">{step.title}</h3>
+                </div>
+                <p className="text-gray-600">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Aperçu mockups dashboard */}
+      <PreviewMockups showCta={false} />
 
       {/* Cipia automatise tout */}
       <section className="py-16 sm:py-20 bg-gray-50">

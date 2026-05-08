@@ -1,202 +1,132 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Check, Sparkles, ArrowRight } from "lucide-react";
 import { sector } from "@/config";
 
-// Tarif lancement -30% sur le prix plein post-lancement.
-// Le prix plein s'applique apres 200 inscriptions au tarif lancement.
-const LAUNCH_DISCOUNT = 0.30; // -30%
-const LAUNCH_TOTAL_SLOTS = 200;
+interface Plan {
+  id: string;
+  name: string;
+  badge?: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  cta: string;
+  ctaHref: string;
+  popular?: boolean;
+  highlight?: boolean;
+  externalNote?: string;
+}
 
-const plans = [
+const plans: Plan[] = [
   {
-    id: "gratuit",
-    name: "Gratuit",
-    price: 0,
-    originalPrice: 0,
-    period: "pour toujours",
-    description: "Pour découvrir la veille réglementaire",
+    id: "newsletter",
+    name: "Newsletter",
+    price: "0",
+    period: "€/an",
+    description: "Pour découvrir, sans carte bancaire",
     features: [
-      "Newsletter hebdomadaire",
-      "1 thème au choix",
-      "Résumé IA des articles",
-      "Export PDF audit (1x/mois)",
-      "Support email",
+      "Newsletter hebdomadaire (mardi 8h)",
+      "1 secteur au choix",
+      "Articles classés par IA Anthropic Claude",
+      "Sans engagement, sans CB",
     ],
-    cta: "Commencer gratuitement",
-    popular: false,
+    cta: "Lire un exemple",
+    ctaHref: "/exemple-newsletter",
+  },
+  {
+    id: "founder",
+    name: "Cipia Founder",
+    badge: "🔥 LIMITÉ 250 PLACES",
+    price: "100",
+    period: "€ HT à vie",
+    description: "Offre fondateur — un paiement, accès illimité",
+    features: [
+      "Tout Cipia Solo, à vie",
+      "Tableau de bord complet",
+      "Export PDF audit illimité",
+      "Alertes personnalisées",
+      "Évolutions Qualiopi V7+ incluses",
+      "Garantie 14 jours satisfait ou remboursé",
+    ],
+    cta: "Voir l'offre Founder",
+    ctaHref: "/founders",
+    highlight: true,
+    externalNote: "Phase 1 : 250 places. Phase 2 : 1000 places à 150€ HT pour 5 ans.",
   },
   {
     id: "solo",
-    name: "Solo",
-    price: 15,
-    originalPrice: 22,
-    period: "/mois",
-    description: "Pour les indépendants et TPE",
+    name: "Cipia Solo",
+    price: "39",
+    period: "€ HT/an",
+    description: "Pour les indépendants et TPE (1 utilisateur, 1 secteur)",
     features: [
-      "Tous les thèmes (23-26)",
+      "Tableau de bord temps réel",
       "Veille appels d'offres",
       "Alertes personnalisées",
-      "Export PDF illimité",
+      "Export PDF audit illimité",
       "Plan d'action intégré",
-      "Support prioritaire",
+      "Historique 24 mois",
+      "14 jours d'essai gratuit",
     ],
     cta: "Démarrer 14 jours d'essai",
+    ctaHref: "/inscription",
     popular: true,
   },
   {
-    id: "équipe",
-    name: "Équipe",
-    price: 39,
-    originalPrice: 56,
-    period: "/mois",
-    description: `Pour les ${sector.vocab.audience}`,
+    id: "cabinet",
+    name: "Cipia Cabinet",
+    price: "199",
+    period: "€ HT/an",
+    description: "Pour les cabinets (10 utilisateurs, multi-secteurs)",
     features: [
-      "5 utilisateurs inclus",
+      "10 utilisateurs inclus",
+      "Multi-secteurs (Qualiopi + HACCP + médical + avocats + EC)",
       "Toutes les fonctionnalités Solo",
-      "Export PDF avec logo",
-      "Collaboration équipe",
-      "Historique 12 mois",
-      "Formation inclusion (30 min)",
+      "Export PDF avec votre logo (white-label)",
+      "Switcher de secteur dans le dashboard",
+      "Audit blanc-marque",
+      "14 jours d'essai gratuit",
     ],
     cta: "Démarrer 14 jours d'essai",
-    popular: false,
-  },
-  {
-    id: "agence",
-    name: "Agence",
-    price: 79,
-    originalPrice: 113,
-    period: "/mois",
-    description: "Pour les consultants et accompagnateurs",
-    features: [
-      "20 utilisateurs inclus",
-      "Multi-sites (5 organismes)",
-      "API & Webhooks",
-      "White-label newsletter",
-      "Support dédié",
-      "SLA 99.9%",
-    ],
-    cta: "Contacter",
-    popular: false,
+    ctaHref: "/inscription",
   },
 ];
 
 export default function PricingPage() {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
-  const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch("/api/subscribers/count")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => data && setSubscriberCount(data.count))
-      .catch(() => setSubscriberCount(null));
-  }, []);
-
-  const getPrice = (plan: typeof plans[0]) => {
-    if (billingPeriod === "yearly") {
-      return Math.round(plan.price * 0.8); // 20% discount for yearly
-    }
-    return plan.price;
-  };
-
-  const getOriginalPrice = (plan: typeof plans[0]) => {
-    if (billingPeriod === "yearly") {
-      return Math.round(plan.originalPrice * 0.8);
-    }
-    return plan.originalPrice;
-  };
-
-  const placesLeft = subscriberCount !== null
-    ? Math.max(0, LAUNCH_TOTAL_SLOTS - subscriberCount)
-    : null;
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              {sector.brand.name}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold text-blue-600">
+            {sector.brand.name}
+          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/connexion" className="text-gray-600 hover:text-gray-900">
+              Connexion
             </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/connexion" className="text-gray-600 hover:text-gray-900">
-                Connexion
-              </Link>
-              <Link
-                href="/inscription"
-                className="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition"
-              >
-                Inscription
-              </Link>
-            </div>
+            <Link
+              href="/founders"
+              className="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition"
+            >
+              Cipia Founder
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Bandeau Lancement */}
-      <div className="bg-yellow-400 text-black py-3 text-center font-medium">
-        <span className="inline-flex items-center gap-2 flex-wrap justify-center px-4">
-          <span className="bg-black text-yellow-400 px-2 py-0.5 rounded text-sm font-bold">LANCEMENT -30%</span>
-          {placesLeft !== null && placesLeft > 0 && (
-            <span className="text-sm">
-              Plus que <strong>{placesLeft} places</strong> au tarif lancement, puis passage au prix plein.
-            </span>
-          )}
-          {placesLeft === 0 && (
-            <span className="text-sm">Tarif lancement épuisé. Inscriptions au prix plein.</span>
-          )}
-        </span>
-      </div>
-
       {/* Hero */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">
-            Conformité {sector.vocab.regulatorName} simplifiée
-          </h1>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            La veille réglementaire automatisée pour les 45 000 {sector.vocab.audience} certifiés {sector.vocab.regulatorName}
+          <h1 className="text-4xl font-bold mb-4">Tarifs Cipia</h1>
+          <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-2">
+            Veille réglementaire IA pour 596 000 indépendants et cabinets français.
+            Newsletter gratuite, abonnement low-cost, et offre fondateur à vie.
           </p>
-          {subscriberCount !== null && subscriberCount > 0 && (
-            <p className="text-blue-100 mb-6">
-              <strong className="text-yellow-300">{subscriberCount}</strong>{" "}
-              {subscriberCount === 1 ? "organisme déjà inscrit" : "organismes déjà inscrits"} —{" "}
-              le tarif augmente à chaque palier d&apos;adhésions.
-            </p>
-          )}
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={() => setBillingPeriod("monthly")}
-              className={`px-4 py-2 rounded-lg transition ${
-                billingPeriod === "monthly"
-                  ? "bg-white text-blue-600"
-                  : "bg-blue-700 text-white hover:bg-blue-500"
-              }`}
-            >
-              Mensuel
-            </button>
-            <button
-              onClick={() => setBillingPeriod("yearly")}
-              className={`px-4 py-2 rounded-lg transition ${
-                billingPeriod === "yearly"
-                  ? "bg-white text-blue-600"
-                  : "bg-blue-700 text-white hover:bg-blue-500"
-              }`}
-            >
-              Annuel (-20%)
-            </button>
-          </div>
-          <p className="mt-6 text-sm text-blue-100">
-            <Link href="/exemple-newsletter" className="underline hover:text-yellow-300 transition">
-              Voir un exemple de la newsletter du mardi →
-            </Link>
-            <span className="mx-3 text-blue-300">·</span>
-            <a href="/#apercu" className="underline hover:text-yellow-300 transition">
-              Aperçu de l&apos;outil
-            </a>
+          <p className="text-sm text-blue-200">
+            Comparé à VeilleFormation (470-1170€/an), Cipia = ÷6 à ÷25 sur 5 ans.
           </p>
         </div>
       </div>
@@ -207,144 +137,141 @@ export default function PricingPage() {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`bg-white rounded-xl shadow-lg overflow-hidden ${
-                plan.popular ? "ring-2 ring-blue-600" : ""
+              className={`bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col ${
+                plan.highlight ? "ring-4 ring-yellow-400" : plan.popular ? "ring-2 ring-blue-600" : ""
               }`}
             >
-              {plan.popular && (
+              {plan.badge && (
+                <div className="bg-yellow-400 text-black text-center py-2 text-xs font-bold uppercase tracking-wide">
+                  {plan.badge}
+                </div>
+              )}
+              {plan.popular && !plan.badge && (
                 <div className="bg-blue-600 text-white text-center py-2 text-sm font-medium">
                   Le plus populaire
                 </div>
               )}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
+              <div className="p-6 flex-grow flex flex-col">
+                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  {plan.highlight && <Sparkles className="w-5 h-5 text-yellow-500" />}
+                  {plan.name}
+                </h3>
                 <p className="text-gray-500 text-sm mt-1">{plan.description}</p>
                 <div className="mt-4">
-                  {plan.price > 0 && plan.originalPrice > plan.price && (
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-lg text-gray-400 line-through">
-                        {getOriginalPrice(plan)} EUR
-                      </span>
-                      <span className="bg-yellow-100 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded">
-                        −30% lancement
-                      </span>
-                    </div>
-                  )}
-                  <span className="text-4xl font-bold text-gray-900">
-                    {plan.price === 0 ? "Gratuit" : `${getPrice(plan)} EUR`}
+                  <span className="text-4xl font-extrabold text-gray-900">
+                    {plan.price === "0" ? "Gratuit" : plan.price}
                   </span>
-                  {plan.price > 0 && (
-                    <span className="text-gray-500">{plan.period}</span>
+                  {plan.price !== "0" && (
+                    <span className="text-gray-500 ml-1">{plan.period}</span>
                   )}
                 </div>
-                {billingPeriod === "yearly" && plan.price > 0 && (
-                  <p className="text-sm text-green-600 mt-1">
-                    Economisez {plan.price * 12 - getPrice(plan) * 12} EUR/an
-                  </p>
-                )}
-                {plan.price > 0 && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    14 jours d&apos;essai · Sans engagement · Annulation à tout moment
-                  </p>
-                )}
-                <ul className="mt-6 space-y-3">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-gray-600 text-sm">{feature}</span>
-                  </li>
+                <ul className="space-y-3 mt-6 flex-grow">
+                  {plan.features.map((feat, j) => (
+                    <li key={j} className="flex items-start gap-2 text-sm text-gray-700">
+                      <Check
+                        className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
+                          plan.highlight ? "text-yellow-600" : "text-blue-600"
+                        }`}
+                      />
+                      <span>{feat}</span>
+                    </li>
                   ))}
                 </ul>
+                {plan.externalNote && (
+                  <p className="text-xs text-gray-500 italic mt-4">{plan.externalNote}</p>
+                )}
                 <Link
-                  href={plan.id === "gratuit" ? "/inscription" : `/inscription?plan=${plan.id}`}
-                  className={`mt-6 block w-full text-center py-3 rounded-lg font-medium transition ${
-                    plan.popular
-                      ? "bg-yellow-400 text-black font-bold hover:bg-yellow-300"
-                      : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                  href={plan.ctaHref}
+                  className={`mt-6 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition-colors ${
+                    plan.highlight
+                      ? "bg-yellow-400 text-black hover:bg-yellow-300"
+                      : plan.popular
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-gray-900 text-white hover:bg-gray-800"
                   }`}
                 >
                   {plan.cta}
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
           ))}
         </div>
-      </div>
 
-      {/* FAQ */}
-      <div className="bg-white py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Questions fréquentes
+        {/* Comparatif concurrents */}
+        <div className="mt-16 bg-white rounded-2xl p-6 sm:p-8 shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
+            Comparé au marché de la veille réglementaire
           </h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Est-ce que je peux annuler à tout moment ?
-              </h3>
-              <p className="mt-2 text-gray-600">
-                Oui, il n&apos;y a aucun engagement. Vous pouvez annuler votre abonnement à tout moment depuis votre espace client.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Comment fonctionne l&apos;export PDF pour l&apos;{sector.vocab.auditName} ?
-              </h3>
-              <p className="mt-2 text-gray-600">
-                En un clic, vous générez un document PDF complet prêt à présenter à votre auditeur {sector.vocab.regulatorName},
-                incluant tous les articles surveillés, les actions menées et votre méthodologie de veille.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Quelles sources surveillez-vous ?
-              </h3>
-              <p className="mt-2 text-gray-600">
-                Nous collectons automatiquement les articles du BOAMP (appels d&apos;offres publics formation),
-                du Journal Officiel (JORF), de Centre Inffo, de France Travail, et de 6 OPCO sectoriels
-                (AKTO, OPCO 2i, OPCO EP, OPCO Santé, OPCOMMERCE, Uniformation). Tout est analysé
-                par IA pour ne vous présenter que ce qui impacte votre certification {sector.vocab.regulatorName}.
-              </p>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-gray-200">
+                  <th className="text-left p-3 font-semibold text-gray-700">Solution</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">Tarif</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">Coût 5 ans</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">Audit PDF auto</th>
+                  <th className="text-center p-3 font-semibold text-gray-700">IA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-100 bg-yellow-50">
+                  <td className="p-3 font-bold text-blue-900">🏆 Cipia Founder</td>
+                  <td className="text-center p-3 font-bold text-blue-700">100€ HT à vie</td>
+                  <td className="text-center p-3 font-bold text-blue-700">100€</td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3">✅</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="p-3 font-medium text-gray-700">Cipia Solo</td>
+                  <td className="text-center p-3 text-gray-600">39€ HT/an</td>
+                  <td className="text-center p-3 text-gray-600">195€</td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3">✅</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="p-3 font-medium text-gray-700">Cipia Cabinet</td>
+                  <td className="text-center p-3 text-gray-600">199€ HT/an</td>
+                  <td className="text-center p-3 text-gray-600">995€</td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3">✅</td>
+                </tr>
+                <tr className="border-b border-gray-100">
+                  <td className="p-3 font-medium text-gray-700">VeilleFormation.com</td>
+                  <td className="text-center p-3 text-gray-600">39 à 97€/mois</td>
+                  <td className="text-center p-3 font-bold text-red-600">2 350 - 5 850€</td>
+                  <td className="text-center p-3">✅</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-medium text-gray-700">Digiforma Veille (CRM)</td>
+                  <td className="text-center p-3 text-gray-600">Gratuit (produit appel)</td>
+                  <td className="text-center p-3 text-gray-600">0€</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                  <td className="text-center p-3 text-gray-400">❌</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
 
-      {/* CTA */}
-      <div className="bg-blue-600 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Prêt à simplifier votre veille réglementaire ?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Rejoignez les {sector.vocab.audience} qui font confiance à {sector.brand.name}
+        {/* CTA newsletter */}
+        <div className="mt-12 bg-blue-700 rounded-2xl p-8 md:p-10 text-center text-white">
+          <h3 className="text-2xl md:text-3xl font-bold mb-3">
+            Curieux de la newsletter du mardi ?
+          </h3>
+          <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+            Lisez l&apos;édition la plus récente avant même de créer un compte. Pas d&apos;email demandé,
+            pas de paywall.
           </p>
           <Link
-            href="/inscription"
-            className="inline-block bg-yellow-400 text-black px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition"
+            href="/exemple-newsletter"
+            className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 font-bold px-6 py-3 rounded-lg hover:bg-yellow-300 transition"
           >
-            Commencer gratuitement
+            Voir un exemple de newsletter →
           </Link>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p>&copy; 2026 {sector.brand.name} &mdash; Haruna SARL</p>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-4 md:mt-0">
-              <Link href="/mentions-legales" className="hover:text-white">Mentions légales</Link>
-              <Link href="/confidentialite" className="hover:text-white">Confidentialité</Link>
-              <Link href="/politique-donnees" className="hover:text-white">Politique données</Link>
-              <Link href="/cgu" className="hover:text-white">CGU</Link>
-              <Link href="/cgv" className="hover:text-white">CGV</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -402,8 +402,8 @@ export default function FoundersClient() {
           <div className="space-y-4">
             {[
               {
-                q: "C'est quoi exactement « à vie » ?",
-                a: "Tant que Cipia continue d'opérer le service. Nos CGV Founder garantissent un engagement minimum de 5 ans contractuels. Si Cipia cessait l'activité avant 5 ans, vous seriez remboursé au prorata des années restantes. Au-delà de 5 ans, votre accès continue tant que Cipia est en activité.",
+                q: "C'est quoi exactement « à vie » et est-ce que Cipia va durer ?",
+                a: "À vie = tant que Cipia continue d'opérer le service. Et Cipia est conçu pour durer : c'est un opérateur multi-secteurs (5 verticaux : OF Qualiopi, HACCP, médical libéral, avocats, experts-comptables — TAM cumulé 596 000 structures FR). Pas un mono-produit fragile. Si une source officielle change ou si un secteur évolue, les autres continuent de tourner et financent l'ensemble. Le service est porté par Hi-Commerce SAS (8 ans, 650+ clients SEO, RCS Bordeaux 909 044 632) — pas une startup qui doit lever pour survivre. Et nos CGV Founder garantissent un engagement minimum de 5 ans contractuels : si Cipia cessait l'activité avant 5 ans, vous seriez remboursé au prorata des années restantes. Au-delà de 5 ans, votre accès continue tant que Cipia est en activité.",
               },
               {
                 q: "Pourquoi seulement 250 places ?",

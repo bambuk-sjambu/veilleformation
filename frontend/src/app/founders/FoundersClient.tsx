@@ -224,9 +224,16 @@ export default function FoundersClient() {
                 )}
               </button>
               <p className="mt-4 text-sm text-gray-500">
-                Paiement sécurisé Stripe • Facture PDF envoyée automatiquement •
-                Garantie 14 jours satisfait ou remboursé
+                Paiement sécurisé Stripe • Facture PDF envoyée automatiquement
               </p>
+              <div className="mt-6 max-w-md mx-auto bg-red-600 text-white rounded-2xl px-6 py-4 shadow-lg border-4 border-red-700">
+                <p className="text-xl sm:text-2xl font-extrabold tracking-tight">
+                  ✓ Garantie 14 jours satisfait ou remboursé
+                </p>
+                <p className="text-sm font-medium opacity-95 mt-1">
+                  Sans justification. Remboursement intégral par Stripe sous 7 jours.
+                </p>
+              </div>
 
               {error && (
                 <div className="mt-4 max-w-md mx-auto p-3 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200 flex items-start gap-2">
@@ -255,12 +262,12 @@ export default function FoundersClient() {
               {
                 icon: Zap,
                 title: "Veille IA automatisée",
-                body: "Anthropic Claude Haiku lit chaque texte (Légifrance, BOAMP, JORF, OPCO), résume et classe par indicateur Qualiopi. Vous recevez la newsletter du mardi.",
+                body: "Anthropic Claude lit chaque texte (Légifrance, BOAMP, JORF, OPCO), résume et classe par indicateur Qualiopi. Vous recevez la newsletter du mardi.",
               },
               {
                 icon: Clock,
-                title: "Économie de 8h/semaine",
-                body: "Plus besoin de scroller manuellement Légifrance et les bulletins OPCO. Tout arrive trié et hiérarchisé.",
+                title: "Économie de 3 à 5h par mois",
+                body: "Plus besoin de scroller manuellement Légifrance et les bulletins OPCO. Tout arrive trié et hiérarchisé. Et 6 à 8h en moins le jour de votre audit Qualiopi.",
               },
               {
                 icon: FileText,

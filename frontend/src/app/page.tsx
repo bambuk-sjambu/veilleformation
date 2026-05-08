@@ -117,7 +117,7 @@ function JsonLd() {
 
 function Header() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+    <header className="fixed top-9 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
@@ -273,6 +273,60 @@ function Hero() {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function FounderTopBanner() {
+  return (
+    <Link
+      href="/founders"
+      className="fixed top-0 left-0 right-0 z-[60] block text-center py-2 text-sm font-semibold transition-opacity hover:opacity-95"
+      style={{ background: "linear-gradient(90deg, #F59E0B 0%, #EAB308 50%, #F59E0B 100%)", color: "#1F2937" }}
+    >
+      🔥 <strong>Cipia Founder</strong> · 100€ HT à vie · 250 places limitées · Économisez 2 250€ vs VeilleFormation →
+    </Link>
+  );
+}
+
+function FounderHighlight() {
+  return (
+    <section className="py-12 sm:py-16 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%)" }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wide" style={{ backgroundColor: "#F59E0B", color: "#1F2937" }}>
+          <Sparkles className="w-3.5 h-3.5" />
+          🔥 OFFRE FONDATEUR — 250 PLACES
+        </div>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
+          <span style={{ color: "#F59E0B" }}>100€ HT à vie.</span>
+          <br className="sm:hidden" />
+          <span className="block sm:inline"> Pas par an, à vie.</span>
+        </h2>
+        <p className="text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+          Pour les 250 premiers organismes de formation Qualiopi : un seul paiement,
+          accès illimité tant que Cipia opère le service. Économisez{" "}
+          <strong className="text-white">2 250€ HT sur 5 ans</strong> vs VeilleFormation.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+          <Link
+            href="/founders"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg shadow-xl transition-all hover:scale-105"
+            style={{ backgroundColor: "#F59E0B", color: "#1F2937" }}
+          >
+            Devenir Founder à 100€ HT
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+          <Link
+            href="/founders"
+            className="text-blue-100 hover:text-white text-sm underline underline-offset-4"
+          >
+            Voir le compteur de places restantes →
+          </Link>
+        </div>
+        <p className="mt-6 text-sm text-blue-200">
+          ✓ Garantie 14 jours satisfait ou remboursé · ✓ Évolutions Qualiopi V7+ incluses · ✓ Édité par Haruna SARL (RCS Créteil 752 912 022, 13 ans d'existence)
+        </p>
       </div>
     </section>
   );
@@ -930,10 +984,12 @@ export default function HomePage() {
   return (
     <>
       <JsonLd />
+      <FounderTopBanner />
       <Header />
-      <main className="pt-16">
+      <main className="pt-24">
         <AudienceSelector active="solo" variant="hero" />
         <Hero />
+        <FounderHighlight />
         <SectorSelectorCards />
         <PainPoints />
         <Solution />

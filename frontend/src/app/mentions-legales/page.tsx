@@ -32,25 +32,30 @@ export default function MentionsLegalesPage() {
                 experts-comptables indépendants).
               </p>
               <ul className="mt-2 space-y-1">
-                <li><strong>Raison sociale :</strong> Haruna SARL</li>
-                <li><strong>Forme juridique :</strong> Société par actions simplifiée (SAS) de droit français</li>
-                <li><strong>Siège social :</strong> à compléter</li>
-                <li><strong>RCS :</strong> à compléter</li>
+                <li><strong>Raison sociale :</strong> HARUNA</li>
+                <li><strong>Forme juridique :</strong> Société à responsabilité limitée (SARL) de droit français</li>
+                <li><strong>Siège social :</strong> CS60002, 112 avenue de Paris, 94300 Vincennes, France</li>
+                <li><strong>RCS :</strong> 752 912 022 R.C.S. Créteil (immatriculée le 31/07/2012)</li>
                 <li><strong>SIREN :</strong> 752 912 022</li>
-                <li><strong>SIRET :</strong> à compléter</li>
-                <li><strong>Code APE :</strong> à compléter</li>
-                <li><strong>N° TVA intracommunautaire :</strong> à compléter</li>
-                <li><strong>Capital social :</strong> à compléter</li>
+                <li><strong>SIRET (siège) :</strong> 752 912 022 00015</li>
+                <li><strong>Code APE :</strong> 62.02A — Conseil en systèmes et logiciels informatiques</li>
+                <li><strong>N° TVA intracommunautaire :</strong> FR92 752 912 022</li>
+                <li><strong>Capital social :</strong> 10 000 €</li>
+                <li><strong>Convention collective :</strong> Bureaux d&apos;études techniques (IDCC 1486)</li>
                 <li><strong>Email :</strong> {`contact@${sector.brand.domain}`}</li>
               </ul>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                2. Directeur de la publication
+                2. Représentation légale et direction de la publication
               </h2>
               <p>
-                Stéphane Jambu, en qualité de gérant de Haruna SARL.
+                <strong>Représentante légale :</strong> Madame Alina Constantin, en qualité de gérante de Haruna SARL.
+              </p>
+              <p className="mt-2">
+                <strong>Directeur de la publication :</strong> Stéphane Jambu, en qualité de responsable
+                éditorial du service {sector.brand.name}.
               </p>
             </div>
 

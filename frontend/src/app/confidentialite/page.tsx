@@ -42,9 +42,9 @@ export default function ConfidentialitePage() {
                 2. Responsable du traitement
               </h2>
               <p>
-                Le responsable du traitement est <strong>Haruna SARL</strong>, représentée par son président
-                Stéphane Jambu, qui assure également la fonction de référent RGPD interne (coordonnées complètes
-                dans les{" "}
+                Le responsable du traitement est <strong>Haruna SARL</strong>, représentée par sa gérante
+                Alina Constantin. Le référent RGPD interne est Stéphane Jambu, directeur de la publication
+                (coordonnées complètes dans les{" "}
                 <Link href="/mentions-legales" className="text-primary hover:underline">mentions légales</Link>).
                 Pour toute question relative à vos données personnelles :{" "}
                 <a href={`mailto:contact@${sector.brand.domain}`} className="text-primary hover:underline">{`contact@${sector.brand.domain}`}</a>.

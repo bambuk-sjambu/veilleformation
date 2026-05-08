@@ -84,7 +84,7 @@ export default function AudienceSelector({
                 Indépendant
               </div>
               <div className="text-sm text-gray-600">
-                TPE, freelance, formateur · Cipia Solo, 19€/an
+                TPE, freelance, formateur · Cipia Solo, 39€/an
               </div>
             </div>
             <ArrowRight className="w-5 h-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />

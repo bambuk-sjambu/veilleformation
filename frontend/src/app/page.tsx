@@ -36,12 +36,12 @@ const faqItems = [
   {
     question: "Combien ça coûte ?",
     answer:
-      "19€/an pour Cipia Solo (indépendants, TPE) — soit 50 fois moins cher que Lefebvre ou Dalloz qui facturent 800 à 5 000€/an. Pour les cabinets et structures, Cipia Cabinet à 199€/an pour 10 utilisateurs avec audit blanc-marque, white-label newsletter et API.",
+      "39€/an pour Cipia Solo (indépendants, TPE) — soit 50 fois moins cher que Lefebvre ou Dalloz qui facturent 800 à 5 000€/an. Pour les cabinets et structures, Cipia Cabinet à 199€/an pour 10 utilisateurs avec audit blanc-marque, white-label newsletter et API.",
   },
   {
     question: "La newsletter est-elle vraiment gratuite ?",
     answer:
-      "Oui, le plan Newsletter vous donne accès à la newsletter hebdomadaire sur 1 secteur de votre choix, sans engagement et sans carte bancaire. Vous pouvez upgrader à Cipia Solo (19€/an) ou Cipia Cabinet (199€/an) à tout moment.",
+      "Oui, le plan Newsletter vous donne accès à la newsletter hebdomadaire sur 1 secteur de votre choix, sans engagement et sans carte bancaire. Vous pouvez upgrader à Cipia Solo (39€/an) ou Cipia Cabinet (199€/an) à tout moment.",
   },
   {
     question: "Comment est générée la classification IA ?",
@@ -696,7 +696,7 @@ function Pricing() {
         "Historique complet",
         "Support email 72h",
       ],
-      cta: "Choisir Cipia Solo (19€/an)",
+      cta: "Choisir Cipia Solo (39€/an)",
       ctaHref: "/inscription",
       highlighted: true,
       sticker: "Le meilleur prix du marché",
@@ -840,7 +840,7 @@ function FinalCTA() {
           href="/inscription"
           className="inline-flex items-center px-8 py-4 rounded-lg bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-300 transition-colors"
         >
-          Découvrir Cipia Solo (19€/an)
+          Découvrir Cipia Solo (39€/an)
         </Link>
         <p className="text-sm text-blue-300 mt-4">
           14 jours d&apos;essai gratuit. Sans engagement. Sans carte bancaire.

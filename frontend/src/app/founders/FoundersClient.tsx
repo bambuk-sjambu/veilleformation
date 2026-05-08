@@ -193,7 +193,7 @@ export default function FoundersClient() {
                 Toutes les places Founder sont vendues 🎉
               </p>
               <p className="text-sm text-red-600 mb-4">
-                Vous pouvez quand même vous inscrire à Cipia Solo (19€/an) ou
+                Vous pouvez quand même vous inscrire à Cipia Solo (39€/an) ou
                 Cipia Cabinet (199€/an).
               </p>
               <Link
@@ -294,6 +294,94 @@ export default function FoundersClient() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Cipia automatise tout */}
+      <section className="py-16 sm:py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+              Cipia automatise tout, peu importe votre secteur
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Concentrez-vous sur votre cœur de métier. On s&apos;occupe de la veille.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-6 border-2" style={{ borderColor: meta.surface }}>
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-2xl"
+                style={{ backgroundColor: meta.surface }}
+              >
+                📡
+              </div>
+              <h3 className="font-bold text-lg mb-2" style={{ color: meta.primaryDark }}>
+                Sources élargies
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Légifrance, BOAMP, RappelConso, ANSM, BOFiP, Judilibre, Cassation, OPCO,
+                France Travail : nous agrégeons les sources officielles de vos 5 secteurs.
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border-2" style={{ borderColor: meta.surface }}>
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-2xl"
+                style={{ backgroundColor: meta.surface }}
+              >
+                🧠
+              </div>
+              <h3 className="font-bold text-lg mb-2" style={{ color: meta.primaryDark }}>
+                Classification IA par taxonomie de votre secteur
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                L&apos;IA Anthropic Claude classe chaque texte selon la taxonomie de votre
+                métier — indicateurs Qualiopi 23-26 pour les OF, principes HACCP,
+                recommandations HAS, jurisprudence par chambre, BOFiP fiscal…
+              </p>
+            </div>
+            <div className="bg-white rounded-xl p-6 border-2" style={{ borderColor: meta.surface }}>
+              <div
+                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-2xl"
+                style={{ backgroundColor: meta.surface }}
+              >
+                📄
+              </div>
+              <h3 className="font-bold text-lg mb-2" style={{ color: meta.primaryDark }}>
+                Export PDF prêt pour l&apos;audit
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Générez un document PDF structuré, daté et complet, à présenter à votre
+                auditeur Qualiopi, contrôle DDPP, audit HACCP, ou inspection ANSM selon
+                votre secteur.
+              </p>
+            </div>
+          </div>
+
+          {/* Aperçu newsletter du mardi */}
+          <div
+            className="mt-12 rounded-2xl p-6 sm:p-8 text-center"
+            style={{
+              background: `linear-gradient(135deg, ${meta.primary}, ${meta.primaryDark})`,
+            }}
+          >
+            <p className="text-2xl sm:text-3xl font-bold text-white mb-3">
+              Curieux de la newsletter du mardi&nbsp;?
+            </p>
+            <p className="text-base sm:text-lg text-white/90 mb-6 max-w-2xl mx-auto">
+              Voyez exactement à quoi ressemble votre veille livrée chaque mardi
+              à 8h&nbsp;: textes officiels résumés, classés par indicateur, prêts
+              à présenter en réunion équipe ou en audit.
+            </p>
+            <Link
+              href="/exemple-newsletter"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white font-bold text-base shadow-lg transition-transform hover:scale-105"
+              style={{ color: meta.primaryDark }}
+            >
+              Voir un exemple complet
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>

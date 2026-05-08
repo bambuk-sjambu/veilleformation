@@ -90,7 +90,7 @@ export interface AudienceVocabulary {
 const SOLO_THEME: AudienceTheme = {
   id: "solo",
   label: "Indépendant",
-  shortPitch: "L'IA qui veille pour vous, à 19€/an.",
+  shortPitch: "L'IA qui veille pour vous, à 39€/an.",
   primaryHex: "#1d4ed8",
   accentHex: "#fbbf24",
   surfaceHex: "#eff6ff",
@@ -104,7 +104,7 @@ const SOLO_THEME: AudienceTheme = {
   primaryBorderClass: "border-primary",
   primarySoftBgClass: "bg-primary/10",
   headingFontClass: "font-sans",
-  ctaText: "Découvrir Cipia Solo (19€/an)",
+  ctaText: "Découvrir Cipia Solo (39€/an)",
   ctaHref: "/inscription",
   vocabulary: {
     youAddress: "vous, indépendant",

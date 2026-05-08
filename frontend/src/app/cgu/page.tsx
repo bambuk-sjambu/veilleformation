@@ -100,7 +100,7 @@ export default function CguPage() {
               <p>Le Service est proposé selon les plans suivants :</p>
               <ul className="list-disc pl-5 space-y-1 mt-2">
                 <li><strong>Cipia Newsletter</strong> : <strong>0&nbsp;€/an</strong> — newsletter hebdomadaire sur 1 secteur, sans saisie de carte bancaire.</li>
-                <li><strong>Cipia Solo</strong> : <strong>19&nbsp;€/an</strong> — accès complet au tableau de bord, alertes personnalisées, export PDF illimité, 1 utilisateur. <em>14 jours d&apos;essai gratuit</em>.</li>
+                <li><strong>Cipia Solo</strong> : <strong>39&nbsp;€/an</strong> — accès complet au tableau de bord, alertes personnalisées, export PDF illimité, 1 utilisateur. <em>14 jours d&apos;essai gratuit</em>.</li>
                 <li><strong>Cipia Cabinet</strong> : <strong>199&nbsp;€/an pour 10 utilisateurs</strong> — toutes les fonctionnalités Solo, plus la gestion collaborative, l&apos;export PDF avec logo du cabinet et le suivi multi-utilisateurs. <em>14 jours d&apos;essai gratuit</em>.</li>
               </ul>
               <p className="mt-2">

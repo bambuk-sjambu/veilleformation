@@ -915,6 +915,9 @@ function Footer() {
             <Link href="/cgv" className="hover:text-white transition-colors">
               CGV
             </Link>
+            <Link href="/cgv-founder" className="hover:text-white transition-colors">
+              CGV Founder
+            </Link>
           </div>
         </div>
       </div>

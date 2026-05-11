@@ -73,6 +73,13 @@ export default function FoundersClient() {
   async function handleCheckout() {
     setLoading(true);
     setError(null);
+    // Umami event tracking — clic CTA Devenir Founder
+    if (typeof window !== "undefined" && (window as unknown as { umami?: { track: (n: string, d?: Record<string, unknown>) => void } }).umami) {
+      (window as unknown as { umami: { track: (n: string, d?: Record<string, unknown>) => void } }).umami.track("founder_cta_clicked", {
+        phase: count?.activePhase ?? 1,
+        remaining: count?.remaining ?? null,
+      });
+    }
     try {
       const res = await fetch("/api/founders/checkout", {
         method: "POST",
@@ -84,6 +91,12 @@ export default function FoundersClient() {
         setError(data.error || "Erreur lors de la création de la session.");
         setLoading(false);
         return;
+      }
+      // Umami event — redirection Stripe (succès création session)
+      if (typeof window !== "undefined" && (window as unknown as { umami?: { track: (n: string, d?: Record<string, unknown>) => void } }).umami) {
+        (window as unknown as { umami: { track: (n: string, d?: Record<string, unknown>) => void } }).umami.track("stripe_redirect", {
+          phase: count?.activePhase ?? 1,
+        });
       }
       window.location.href = data.url;
     } catch {

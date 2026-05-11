@@ -148,8 +148,13 @@ def _score_email(email: str, site_host: str) -> int:
     return score
 
 
+MAX_HTML_BYTES = 500_000   # skip pages > 500KB (sites encyclopédiques style tomatis.com)
+MAX_QUEUE_SIZE = 60        # cap absolu sur la queue (évite explosion BFS)
+MAX_LINKS_PER_PAGE = 50    # ne pas extraire plus de 50 liens par page
+
+
 def _deep_crawl(site_url: str, max_pages: int = 50) -> tuple[Optional[str], Optional[str], Optional[str]]:
-    """BFS sur le site, priorise les pages contact/mentions, retourne le meilleur email."""
+    """BFS sur le site avec cap mémoire strict. Yield le meilleur email."""
     try:
         parsed = urlparse(site_url)
         host = (parsed.hostname or "").lower()
@@ -162,74 +167,111 @@ def _deep_crawl(site_url: str, max_pages: int = 50) -> tuple[Optional[str], Opti
         return None, None, None
 
     visited: set[str] = set()
-    queue: deque = deque([(root + "/", 0, 100)])  # (url, depth, priority_score)
-    found_emails: list[tuple[str, str]] = []  # (email, source_url)
+    queue: list = [(100, 0, root + "/")]  # (priority, depth, url) — list pour sort in-place
+    best_email: Optional[str] = None
+    best_score: int = -1
+    best_page: Optional[str] = None
 
-    with httpx.Client(
+    # Client local : créé puis fermé pour cette OF (libère sockets)
+    client = httpx.Client(
         timeout=HTTP_TIMEOUT,
         follow_redirects=True,
         headers={"User-Agent": USER_AGENT},
         verify=False,
-    ) as client:
+    )
+    try:
         page_count = 0
         while queue and page_count < max_pages:
-            # Sort by priority desc, take highest
-            queue = deque(sorted(queue, key=lambda x: -x[2]))
-            url, depth, _ = queue.popleft()
+            # Pop highest priority
+            queue.sort(key=lambda x: -x[0])
+            _, depth, url = queue.pop(0)
 
             if url in visited:
                 continue
             visited.add(url)
             page_count += 1
 
+            html = None
             try:
-                r = client.get(url)
+                # Stream + check Content-Length
+                with client.stream("GET", url) as r:
+                    if r.status_code != 200:
+                        continue
+                    cl = r.headers.get("content-length")
+                    if cl and int(cl) > MAX_HTML_BYTES:
+                        continue  # skip page trop grosse
+                    chunks = []
+                    total = 0
+                    for chunk in r.iter_bytes(chunk_size=16384):
+                        chunks.append(chunk)
+                        total += len(chunk)
+                        if total > MAX_HTML_BYTES:
+                            chunks = None
+                            break
+                    if chunks is None:
+                        continue
+                    html = b"".join(chunks).decode("utf-8", errors="ignore")
             except Exception:
                 continue
-            if r.status_code != 200 or not r.text:
+
+            if not html:
                 continue
 
             # Extraire emails de cette page
-            for e in _extract_emails(r.text):
-                found_emails.append((e, url))
+            for e in _extract_emails(html):
+                s = _score_email(e, host)
+                if s > best_score:
+                    best_email = e
+                    best_score = s
+                    best_page = url
+                    # Early exit si email haute qualité trouvé
+                    if best_score >= 1080:
+                        return best_email, "deep_crawl", best_page
 
-            # Si on a déjà trouvé un email same_domain de qualité → arrêt rapide
-            if found_emails:
-                best = max(found_emails, key=lambda x: _score_email(x[0], host))
-                if _score_email(best[0], host) >= 1080:  # same_domain + contact@/info@/etc.
-                    return best[0], "deep_crawl", best[1]
-
-            # Si depth max atteinte, ne pas suivre
-            if depth >= 2:
+            # Si depth max atteinte ou queue déjà saturée, ne pas suivre
+            if depth >= 2 or len(queue) >= MAX_QUEUE_SIZE:
+                html = None
                 continue
 
-            # Trouver liens internes
+            # Trouver liens internes — limite stricte
             try:
-                soup = BeautifulSoup(r.text, "html.parser")
+                soup = BeautifulSoup(html, "html.parser")
             except Exception:
+                html = None
                 continue
+            html = None  # libère mémoire HTML après parsing
+
+            link_count = 0
             for a in soup.find_all("a", href=True):
+                if link_count >= MAX_LINKS_PER_PAGE:
+                    break
                 href = a["href"].strip()
-                if not href or href.startswith("#") or href.startswith("javascript:"):
-                    continue
-                if href.startswith("mailto:") or href.startswith("tel:"):
+                if not href or href.startswith(("#", "javascript:", "mailto:", "tel:")):
                     continue
                 full = urljoin(url, href)
                 fp = urlparse(full)
-                if (fp.hostname or "").lower().lstrip("www.").replace("www.", "") != host:
+                fh = (fp.hostname or "").lower()
+                if fh.startswith("www."):
+                    fh = fh[4:]
+                if fh != host:
                     continue
-                # Strip fragment
                 clean = full.split("#")[0]
                 if clean in visited:
                     continue
-                # Score path
+                if len(queue) >= MAX_QUEUE_SIZE:
+                    break
                 score = 100 if PATH_PRIORITY.search(clean) else 10
-                queue.append((clean, depth + 1, score))
+                queue.append((score, depth + 1, clean))
+                link_count += 1
+            soup.decompose()  # libère la mémoire BS4 explicitement
+            del soup
+    finally:
+        client.close()
+        del client
 
-    if not found_emails:
+    if best_email is None:
         return None, None, None
-    best = max(found_emails, key=lambda x: _score_email(x[0], host))
-    return best[0], "deep_crawl", best[1]
+    return best_email, "deep_crawl", best_page
 
 
 def _process_one(siret: str, site_url: str, max_pages: int = 25) -> Optional[dict]:

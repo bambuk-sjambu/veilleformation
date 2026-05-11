@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { sector } from "@/config";
 import "./globals.css";
@@ -88,6 +89,12 @@ export default function RootLayout({
         className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
       >
         {children}
+        <Script
+          src="https://analytics.hi-commerce.fr/script.js"
+          data-website-id="d4355a8e-dbc5-4b62-b38d-355a7775f639"
+          strategy="afterInteractive"
+          defer
+        />
       </body>
     </html>
   );

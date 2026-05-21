@@ -67,6 +67,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    try {
+      db.prepare(
+        "UPDATE users SET last_login_at = CURRENT_TIMESTAMP, login_count = COALESCE(login_count, 0) + 1 WHERE id = ?"
+      ).run(user.id);
+    } catch (e) {
+      console.error("Login tracking update failed:", e);
+    }
+
     const cookieStore = await cookies();
     const session = await getIronSession<SessionData>(cookieStore, sessionOptions);
     session.userId = user.id;

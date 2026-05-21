@@ -18,6 +18,8 @@ interface RecentSignup {
   plan: string;
   organisme: string | null;
   created_at: string;
+  login_count: number | null;
+  last_login_at: string | null;
 }
 
 interface ActivityBlock {
@@ -174,7 +176,7 @@ export async function GET() {
 
     const usersRows = db
       .prepare(
-        `SELECT email, plan, created_at
+        `SELECT email, plan, created_at, last_login_at, login_count
          FROM users
          ORDER BY created_at DESC
          LIMIT 20`
@@ -183,6 +185,8 @@ export async function GET() {
         email: string;
         plan: string | null;
         created_at: string;
+        last_login_at: string | null;
+        login_count: number | null;
       }>;
 
     const merged: RecentSignup[] = [
@@ -192,6 +196,8 @@ export async function GET() {
         plan: s.plan || "gratuit",
         organisme: s.organisme,
         created_at: s.created_at,
+        login_count: null,
+        last_login_at: null,
       })),
       ...usersRows.map((u) => ({
         type: "Compte" as const,
@@ -199,6 +205,8 @@ export async function GET() {
         plan: u.plan || "free",
         organisme: null,
         created_at: u.created_at,
+        login_count: u.login_count ?? 0,
+        last_login_at: u.last_login_at,
       })),
     ];
 

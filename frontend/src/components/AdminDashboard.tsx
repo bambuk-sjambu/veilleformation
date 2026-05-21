@@ -30,6 +30,8 @@ interface RecentSignup {
   plan: string;
   organisme: string | null;
   created_at: string;
+  login_count: number | null;
+  last_login_at: string | null;
 }
 interface ActivityBlock {
   read_this_week: number;
@@ -464,18 +466,24 @@ export default function AdminDashboard() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                     Organisme
                   </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Connexions
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Dernière connexion
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {loading && !data ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
                       Chargement...
                     </td>
                   </tr>
                 ) : !data?.recent_signups || data.recent_signups.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
                       Aucune donnée pour le moment
                     </td>
                   </tr>
@@ -504,6 +512,14 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-700">
                         {s.organisme || "—"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-700">
+                        {s.type === "Compte" ? (s.login_count ?? 0) : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        {s.type === "Compte" && s.last_login_at
+                          ? formatDate(s.last_login_at)
+                          : "—"}
                       </td>
                     </tr>
                   ))

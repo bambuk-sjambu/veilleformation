@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { sendEmail, subscribeConfirmationEmail } from "@/lib/resend";
+import { sendEmail, subscribeConfirmationEmail, sendAdminSignupNotification } from "@/lib/resend";
 
 interface SubscribeRequest {
   email: string;
@@ -43,6 +43,22 @@ export async function POST(request: NextRequest) {
       await sendEmail({ to: normalizedEmail, ...mail });
     } catch (e) {
       console.error("Subscribe confirmation email failed:", e);
+    }
+
+    try {
+      const totalInscrits = (db
+        .prepare("SELECT COUNT(*) AS n FROM subscribers WHERE is_active = 1")
+        .get() as { n: number }).n;
+      await sendAdminSignupNotification({
+        type: "Newsletter",
+        email: normalizedEmail,
+        firstName,
+        lastName,
+        plan: "Gratuit",
+        totalInscrits,
+      });
+    } catch (e) {
+      console.error("Admin signup notification failed:", e);
     }
 
     return NextResponse.json({ success: true, message: "Inscription reussie" });

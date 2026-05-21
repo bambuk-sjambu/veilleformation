@@ -9,6 +9,7 @@ import {
   setActiveSectorForUser,
   DEFAULT_SECTOR_ID,
 } from "@/lib/sector-context";
+import { sendAdminSignupNotification } from "@/lib/resend";
 
 const VALID_SECTORS = new Set([
   "cipia",
@@ -83,6 +84,22 @@ export async function POST(request: Request) {
     const newUserId = Number(result.lastInsertRowid);
     addSectorForUser(newUserId, requestedSector, true);
     setActiveSectorForUser(newUserId, requestedSector);
+
+    try {
+      const totalInscrits = (db
+        .prepare("SELECT COUNT(*) AS n FROM users")
+        .get() as { n: number }).n;
+      await sendAdminSignupNotification({
+        type: "Compte",
+        email: email.toLowerCase(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        plan: "free",
+        totalInscrits,
+      });
+    } catch (e) {
+      console.error("Admin signup notification failed:", e);
+    }
 
     const cookieStore = await cookies();
     const session = await getIronSession<SessionData>(cookieStore, sessionOptions);

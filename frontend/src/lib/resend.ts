@@ -203,6 +203,57 @@ ${brandName} — ${brandDomain}`;
   return { subject, html, text };
 }
 
+const ADMIN_NOTIFY_EMAILS = (process.env.ADMIN_NOTIFY_EMAIL ||
+  "stephane@hi-commerce.fr,hicommerceweb@gmail.com")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+export async function sendAdminSignupNotification(params: {
+  type: "Newsletter" | "Compte";
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  organisme?: string | null;
+  plan?: string | null;
+  totalInscrits?: number;
+}): Promise<void> {
+  if (ADMIN_NOTIFY_EMAILS.length === 0) return;
+
+  const brandName = sector.brand.name;
+  const planLabel = params.plan || (params.type === "Newsletter" ? "Gratuit" : "free");
+  const subject = `[${brandName}] +1 ${params.type} : ${params.email}${params.type === "Compte" ? ` (${planLabel})` : ""}`;
+  const fullName = [params.firstName, params.lastName].filter(Boolean).join(" ") || "—";
+  const totalLine = params.totalInscrits
+    ? `<tr><td style="padding:6px 12px;color:#6b7280;">Total inscrits</td><td style="padding:6px 12px;"><strong>${params.totalInscrits}</strong></td></tr>`
+    : "";
+
+  const html = `<!DOCTYPE html>
+<html><body style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#1a1a1a;">
+  <h2 style="font-size:18px;margin:0 0 16px;">Nouvelle inscription ${brandName}</h2>
+  <table style="border-collapse:collapse;font-size:14px;">
+    <tr><td style="padding:6px 12px;color:#6b7280;">Type</td><td style="padding:6px 12px;"><strong>${params.type}</strong></td></tr>
+    <tr><td style="padding:6px 12px;color:#6b7280;">Email</td><td style="padding:6px 12px;"><strong>${params.email}</strong></td></tr>
+    <tr><td style="padding:6px 12px;color:#6b7280;">Nom</td><td style="padding:6px 12px;">${fullName}</td></tr>
+    <tr><td style="padding:6px 12px;color:#6b7280;">Organisme</td><td style="padding:6px 12px;">${params.organisme || "—"}</td></tr>
+    <tr><td style="padding:6px 12px;color:#6b7280;">Plan</td><td style="padding:6px 12px;">${planLabel}</td></tr>
+    <tr><td style="padding:6px 12px;color:#6b7280;">Date</td><td style="padding:6px 12px;">${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}</td></tr>
+    ${totalLine}
+  </table>
+</body></html>`;
+
+  const text = `Nouvelle inscription ${brandName}
+Type: ${params.type}
+Email: ${params.email}
+Nom: ${fullName}
+Organisme: ${params.organisme || "—"}
+Plan: ${planLabel}
+Date: ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}${params.totalInscrits ? `\nTotal inscrits: ${params.totalInscrits}` : ""}
+`;
+
+  await sendEmail({ to: ADMIN_NOTIFY_EMAILS, subject, html, text });
+}
+
 export function subscribeConfirmationEmail(params: {
   firstName?: string;
 }): { subject: string; html: string; text: string } {

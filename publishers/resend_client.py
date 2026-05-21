@@ -41,19 +41,37 @@ class ResendClient:
             logger.warning("RESEND_API_KEY non configuree -- les envois Resend echoueront")
 
     def get_subscriber_count(self, db_path: str, sector_id: Optional[str] = None) -> int:
-        """Return number of active (non-unsubscribed) subscribers, optionally
-        filtered by sector_id (pivot multi-personas C.5)."""
+        """Return number of unique recipients = newsletter subscribers UNION
+        registered users (whatever the plan). The newsletter is included in
+        every plan including free. Dédup par email (lowercase already enforced
+        at insert time). Optionally filtered by sector_id."""
         conn = get_connection(db_path)
         try:
             if sector_id:
                 row = conn.execute(
-                    "SELECT COUNT(*) FROM subscribers "
-                    "WHERE unsubscribed_at IS NULL AND is_active = 1 AND sector_id = ?",
-                    (sector_id,),
+                    """
+                    SELECT COUNT(*) FROM (
+                        SELECT email FROM subscribers
+                          WHERE unsubscribed_at IS NULL AND is_active = 1
+                            AND email IS NOT NULL AND sector_id = ?
+                        UNION
+                        SELECT email FROM users
+                          WHERE email IS NOT NULL AND active_sector_id = ?
+                    )
+                    """,
+                    (sector_id, sector_id),
                 ).fetchone()
             else:
                 row = conn.execute(
-                    "SELECT COUNT(*) FROM subscribers WHERE unsubscribed_at IS NULL AND is_active = 1"
+                    """
+                    SELECT COUNT(*) FROM (
+                        SELECT email FROM subscribers
+                          WHERE unsubscribed_at IS NULL AND is_active = 1
+                            AND email IS NOT NULL
+                        UNION
+                        SELECT email FROM users WHERE email IS NOT NULL
+                    )
+                    """
                 ).fetchone()
             return int(row[0]) if row else 0
         finally:
@@ -122,15 +140,29 @@ class ResendClient:
         try:
             if sector_id:
                 rows = conn.execute(
-                    "SELECT email FROM subscribers "
-                    "WHERE unsubscribed_at IS NULL AND is_active = 1 "
-                    "AND email IS NOT NULL AND sector_id = ?",
-                    (sector_id,),
+                    """
+                    SELECT email FROM (
+                        SELECT email FROM subscribers
+                          WHERE unsubscribed_at IS NULL AND is_active = 1
+                            AND email IS NOT NULL AND sector_id = ?
+                        UNION
+                        SELECT email FROM users
+                          WHERE email IS NOT NULL AND active_sector_id = ?
+                    )
+                    """,
+                    (sector_id, sector_id),
                 ).fetchall()
             else:
                 rows = conn.execute(
-                    "SELECT email FROM subscribers "
-                    "WHERE unsubscribed_at IS NULL AND is_active = 1 AND email IS NOT NULL"
+                    """
+                    SELECT email FROM (
+                        SELECT email FROM subscribers
+                          WHERE unsubscribed_at IS NULL AND is_active = 1
+                            AND email IS NOT NULL
+                        UNION
+                        SELECT email FROM users WHERE email IS NOT NULL
+                    )
+                    """
                 ).fetchall()
         finally:
             conn.close()
